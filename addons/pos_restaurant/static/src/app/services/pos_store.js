@@ -139,7 +139,7 @@ patch(PosStore.prototype, {
             const firstCourse = order.getFirstCourse();
             if (firstCourse && !firstCourse.fired) {
                 firstCourse.fired = true;
-                this.getOrder().deselectCourse();
+                order.deselectCourse();
             }
         }
 
@@ -149,15 +149,24 @@ patch(PosStore.prototype, {
         const srcKey = srcLine.preparationKey;
         const destKey = destLine.preparationKey;
         const srcQty = srcPrep[srcKey]?.quantity;
+        const existingDestQty = destPrep[destKey]?.quantity || 0;
 
         if (srcQty) {
             if (srcQty <= qty) {
-                const newPrep = { ...srcPrep[srcKey], uuid: destLine.uuid };
+                const newPrep = {
+                    ...srcPrep[srcKey],
+                    uuid: destLine.uuid,
+                    quantity: existingDestQty + srcQty,
+                };
                 destPrep[destKey] = newPrep;
                 delete srcPrep[srcKey];
             } else {
                 srcPrep[srcKey].quantity = srcQty - qty;
-                destPrep[destKey] = { ...srcPrep[srcKey], uuid: destLine.uuid, quantity: qty };
+                destPrep[destKey] = {
+                    ...srcPrep[srcKey],
+                    uuid: destLine.uuid,
+                    quantity: existingDestQty + qty,
+                };
             }
         }
     },
@@ -207,6 +216,8 @@ patch(PosStore.prototype, {
     async _mergeOrders(sourceOrder, destOrder) {
         const mergedCourses = this.mergeCourses(sourceOrder, destOrder);
 
+        const sourceLastPrint = sourceOrder.uiState.lastPrints.at(-1);
+
         // Sum the guest counts from both orders
         const totalGuests = sourceOrder.getCustomerCount() + destOrder.getCustomerCount();
         destOrder.setCustomerCount(totalGuests);
@@ -248,6 +259,32 @@ patch(PosStore.prototype, {
                     }
                 });
             }
+        }
+        const destLastPrint = destOrder.uiState.lastPrints.at(-1);
+        const combinedPrint = {
+            new: [...(destLastPrint?.new || []), ...(sourceLastPrint?.new || [])],
+            cancelled: [...(destLastPrint?.cancelled || []), ...(sourceLastPrint?.cancelled || [])],
+            noteUpdate: [
+                ...(destLastPrint?.noteUpdate || []),
+                ...(sourceLastPrint?.noteUpdate || []),
+            ],
+        };
+        if (destLastPrint?.internal_note || sourceLastPrint?.internal_note) {
+            combinedPrint.internal_note =
+                destLastPrint?.internal_note || sourceLastPrint?.internal_note;
+        }
+        if (destLastPrint?.general_customer_note || sourceLastPrint?.general_customer_note) {
+            combinedPrint.general_customer_note =
+                destLastPrint?.general_customer_note || sourceLastPrint?.general_customer_note;
+        }
+        if (
+            combinedPrint.new.length ||
+            combinedPrint.cancelled.length ||
+            combinedPrint.noteUpdate.length ||
+            combinedPrint.internal_note ||
+            combinedPrint.general_customer_note
+        ) {
+            destOrder.uiState.lastPrints.push(combinedPrint);
         }
     },
     async mergeOrders(sourceOrder, destOrder) {
@@ -566,9 +603,9 @@ patch(PosStore.prototype, {
     async submitOrder() {
         const order = this.getOrder();
         await this.ensureGuestCustomerCount(order);
+        this.showDefault();
         await this.sendOrderInPreparationUpdateLastChange(order);
         this.addPendingOrder([order.id]);
-        this.showDefault();
     },
     async reprintOrder() {
         const order = this.getOrder();
@@ -695,6 +732,9 @@ patch(PosStore.prototype, {
         return false;
     },
     async setTableFromUi(table, orderUuid = null) {
+        if (this.isOrderSyncing(table.getOrder())) {
+            return;
+        }
         try {
             if (!orderUuid && this.getOrder()?.isFilledDirectSale) {
                 this.transferOrder(this.getOrder().uuid, table);
@@ -1069,6 +1109,7 @@ patch(PosStore.prototype, {
     getOrderData(order, reprint) {
         return {
             ...super.getOrderData(order, reprint),
+            floor_name: order.table_id?.floor_id?.name || "",
             customer_count: order.getCustomerCount(),
         };
     },

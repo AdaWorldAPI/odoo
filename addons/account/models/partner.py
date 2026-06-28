@@ -154,8 +154,8 @@ class AccountFiscalPosition(models.Model):
     def map_tax(self, taxes):
         if not self:
             return taxes
-        if not self.tax_ids and taxes.fiscal_position_ids:  # empty fiscal positions (like those created by tax units) remove all taxes
-            return self.env['account.tax']
+        if not self.tax_ids:
+            return taxes.filtered(lambda tax: not tax.fiscal_position_ids)
         return self.env['account.tax'].browse(unique(
             tax_id
             for tax in taxes
@@ -206,7 +206,7 @@ class AccountFiscalPosition(models.Model):
         return super(AccountFiscalPosition, self).write(vals)
 
     def _get_first_matching_fpos(self, partner):
-        sorted_fpos = self.sorted(key=lambda f: (-len(f.company_id.parent_ids), f.sequence))  # company specific first, then sequence
+        sorted_fpos = self.sorted(key=lambda f: (-len(f.company_id.sudo().parent_ids), f.sequence))  # company specific first, then sequence
         for fpos in sorted_fpos:
             if all(fn(fpos) for fn in self._get_fpos_validation_functions(partner)):
                 return fpos
@@ -280,12 +280,18 @@ class AccountFiscalPosition(models.Model):
 
     def action_open_related_taxes(self):
         list_view = self.env.ref('account.account_tax_fiscal_position_view_tree', raise_if_not_found=False)
+        domain = [
+            *self.env['account.tax']._check_company_domain(self.company_id),
+            '|',
+                ('id', 'in', self.tax_ids.ids),
+                ('fiscal_position_ids', '=', False),
+        ]
         return {
             'type': 'ir.actions.act_window',
             'name': self.env._("%s taxes", self.display_name),
             'res_model': 'account.tax',
             'views': [(list_view.id if list_view else False, 'list'), (False, 'form')],
-            'domain': [('id', 'in', self.tax_ids.ids)],
+            'domain': domain,
             'context': {'active_test': False},
         }
 
@@ -955,6 +961,24 @@ class ResPartner(models.Model):
         return []
 
     @api.model
+    def _import_retrieve_customer_from_bank_account_number(self, customer_values):
+        account_numbers = customer_values.get('account_numbers')
+        if not account_numbers:
+            return
+
+        return {
+            'criteria': [{
+                'domain': [
+                    ('bank_ids', 'any', [
+                        '&',
+                        ('acc_number', 'in', account_numbers),
+                        ('allow_out_payment', '=', True),
+                    ]),
+                ],
+            }]
+        }
+
+    @api.model
     def _import_retrieve_customer_from_phone(self, customer_values):
         phone = customer_values.get('phone')
         if not phone:
@@ -986,7 +1010,7 @@ class ResPartner(models.Model):
 
         return {
             'criteria': [{
-                'domain': [('name', 'ilike', name)],
+                'domain': [('name', '=ilike', name)],
             }],
         }
 
@@ -1025,7 +1049,7 @@ class ResPartner(models.Model):
                         full_domain = Domain.AND([static_domain, domain])
                         partner = self.search(
                             full_domain,
-                            order='company_id, parent_id DESC, id DESC',
+                            order='is_company DESC, supplier_rank DESC, company_id, parent_id DESC, id DESC',
                             limit=1,
                         )
                     elif search_method:

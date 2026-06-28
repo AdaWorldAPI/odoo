@@ -8,6 +8,7 @@ import { cleanTextNode, fillEmpty, removeClass, splitTextNode, unwrapContents } 
 import {
     areSimilarElements,
     isContentEditable,
+    isContentEditableAncestor,
     isElement,
     isEmptyBlock,
     isEmptyTextNode,
@@ -119,7 +120,7 @@ export class FormatPlugin extends Plugin {
                 id: "removeFormat",
                 description: (sel, nodes) =>
                     nodes && this.hasAnyFormat(nodes)
-                        ? _t("Remove Format")
+                        ? _t("Remove Format (Ctrl + Space)")
                         : _t("Selection has no format"),
                 icon: "fa-eraser",
                 run: this.removeAllFormats.bind(this),
@@ -267,7 +268,8 @@ export class FormatPlugin extends Plugin {
             (node) =>
                 isTextNode(node) &&
                 !isNonFormattedWhiteSpaces(node) &&
-                this.dependencies.selection.isNodeEditable(node)
+                this.dependencies.selection.isNodeEditable(node) &&
+                (this.checkPredicates("is_formattable_node_predicates", node) ?? true)
         );
         return (
             targetedTextNodes.length &&
@@ -395,7 +397,8 @@ export class FormatPlugin extends Plugin {
                 parentNode &&
                 !isBlock(parentNode) &&
                 this.dependencies.split.isUnsplittable(parentNode) &&
-                this.dependencies.selection.areNodeContentsFullySelected(parentNode)
+                this.dependencies.selection.areNodeContentsFullySelected(parentNode) &&
+                !isContentEditableAncestor(parentNode)
             ) {
                 inlineAncestors.push(parentNode);
             }

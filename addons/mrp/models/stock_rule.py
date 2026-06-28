@@ -92,13 +92,16 @@ class StockRule(models.Model):
                 mo = self.env['mrp.production'].sudo().search(domain, limit=1)
             is_batch_size = bom and bom.enable_batch_size
             if not mo or is_batch_size:
+                if not bom:
+                    # No BOM: skip MO creation, only replenishment rules should handle this
+                    continue
                 procurement_qty = procurement.product_qty
                 batch_size = bom.product_uom_id._compute_quantity(bom.batch_size, procurement.product_uom) if is_batch_size else procurement_qty
                 vals = rule._prepare_mo_vals(*procurement, bom)
                 while procurement.product_uom.compare(procurement_qty, 0) > 0:
                     new_productions_values_by_company[procurement.company_id.id]['values'].append({
                         **vals,
-                        'product_qty': procurement.product_uom._compute_quantity(batch_size, bom.product_uom_id) if bom else procurement_qty,
+                        'product_qty': procurement.product_uom._compute_quantity(batch_size, bom.product_uom_id),
                     })
                     new_productions_values_by_company[procurement.company_id.id]['procurements'].append(procurement)
                     procurement_qty -= batch_size
@@ -108,6 +111,10 @@ class StockRule(models.Model):
                     'mo_id': mo.id,
                     'product_qty': mo.product_id.uom_id._compute_quantity((mo.product_uom_qty + procurement_product_uom_qty), mo.product_uom_id),
                 }).change_prod_qty()
+                if procurement.values.get('move_dest_ids'):
+                    mo.move_finished_ids.filtered(
+                        lambda m: m.product_id == procurement.product_id and m.state not in ('done', 'cancel')
+                    ).move_dest_ids = [Command.link(m.id) for m in procurement.values['move_dest_ids']]
 
         for company_id in new_productions_values_by_company:
             productions_vals_list = new_productions_values_by_company[company_id]['values']

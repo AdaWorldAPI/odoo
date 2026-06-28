@@ -169,11 +169,20 @@ class PeppolRegistration(models.TransientModel):
     def _compute_peppol_warnings(self):
         for wizard in self:
             peppol_warnings = {}
-            if all((
-                wizard.peppol_eas,
-                wizard.peppol_endpoint,
-                not wizard.selected_company_id._check_peppol_endpoint_number(warning=True),
-            )):
+            if wizard.company_id._peppol_is_french_company():
+                pdp_module = self.env['ir.module.module']._get('l10n_fr_pdp')
+                if pdp_module and pdp_module.state != 'installed':
+                    peppol_warnings['company_french_warning'] = {
+                        'level': 'warning',
+                        'message': self.env._("To use the Approved Platform for French E-Invoicing install the module"),
+                        'action_text': self.env._("France - E-Invoicing (Approved Platform)"),
+                        'action': pdp_module.sudo()._get_records_action(),
+                    }
+            if (
+                wizard.peppol_eas
+                and wizard.peppol_endpoint
+                and not wizard.selected_company_id._check_peppol_endpoint_number(warning=True)
+            ):
                 peppol_warnings['company_peppol_endpoint_warning'] = {
                     'level': 'warning',
                     'message': _("The endpoint number might not be correct. "
@@ -403,6 +412,7 @@ class PeppolRegistration(models.TransientModel):
             'peppol_migration_key': company.sudo().account_peppol_migration_key,
             'peppol_webhook_endpoint': company._get_peppol_webhook_endpoint(),
             'peppol_webhook_token': self.env['account_edi_proxy_client.user']._generate_webhook_token(company),
+            'supported_identifiers':  company._peppol_supported_document_types(),
         }
 
     def button_register_with_itsme(self):
@@ -421,6 +431,12 @@ class PeppolRegistration(models.TransientModel):
         ])
         old_proxy_users.active = False
         _logger.debug("De-registering existing Peppol proxy user for company %s", self.company_id.display_name)
+
+        blocking_proxy_types = set(self.env['account_edi_proxy_client.user']._get_peppol_proxy_types()) - {'peppol'}
+        blocking_user = self.company_id.account_edi_proxy_client_ids.filtered(lambda u: u.proxy_type in blocking_proxy_types)
+        if blocking_user:
+            blocking_proxy_type = dict(blocking_user._fields['proxy_type']._description_selection(self.env))[blocking_user[:1].proxy_type]
+            raise UserError(self.env._("A connection to '%s' already exists.", blocking_proxy_type))
 
         if self.use_parent_connection:
             self.company_id.write({

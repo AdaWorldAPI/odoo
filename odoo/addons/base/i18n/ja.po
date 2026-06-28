@@ -11,15 +11,15 @@
 # Ryoko Tsuda <ryoko@quartile.co>, 2023, 2025, 2026.
 # "Dylan Kiss (dyki)" <dyki@odoo.com>, 2025.
 # "Junko Augias (juau)" <juau@odoo.com>, 2025, 2026.
-# Weblate <noreply-mt-weblate@weblate.org>, 2025.
+# Weblate <noreply-mt-weblate@weblate.org>, 2025, 2026.
 # Yoshi Tashiro <tashiro@quartile.co>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-24 14:12+0000\n"
-"PO-Revision-Date: 2026-05-23 09:50+0000\n"
-"Last-Translator: \"Junko Augias (juau)\" <juau@odoo.com>\n"
+"PO-Revision-Date: 2026-06-13 09:34+0000\n"
+"Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
 "Language-Team: Japanese <https://translate.odoo.com/projects/odoo-19/base/"
 "ja/>\n"
 "Language: ja\n"
@@ -27,7 +27,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.17\n"
+"X-Generator: Weblate 2026.6.1\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_at_reports
@@ -554,6 +554,7 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_pos_edi_ubl
+#, fuzzy
 msgid ""
 "\n"
 "\n"
@@ -561,6 +562,11 @@ msgid ""
 "formats.\n"
 "\n"
 msgstr ""
+"\n"
+"\n"
+"このモジュールは、POS販売オーダをさまざまなUBL 2.1形式でエクスポートするため"
+"のヘルパー機能を提供します。\n"
+"\n"
 
 #. module: base
 #. odoo-python
@@ -2349,6 +2355,7 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_sk_reports
+#, fuzzy
 msgid ""
 "\n"
 "Accounting reports for Slovakia\n"
@@ -2356,6 +2363,12 @@ msgid ""
 "This module includes accounting reports for Slovakia, including:\n"
 "-Balance Sheet + Profit and Loss (XML export)\n"
 msgstr ""
+"\n"
+"スロバキア向け会計レポート\n"
+"=====================================\n"
+"このモジュールには、スロバキア向けの会計レポートが含まれます。内容は次のとお"
+"りです:\n"
+"-貸借対照表＋損益計算書（XMLエクスポート）\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_za_reports
@@ -2381,10 +2394,13 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_lk_reports
+#, fuzzy
 msgid ""
 "\n"
 "Accounting reports for Sri Lanka\n"
 msgstr ""
+"\n"
+"スリランカ向け会計レポート\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_se_reports
@@ -2600,11 +2616,15 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_ae_faf
+#, fuzzy
 msgid ""
 "\n"
 "Accounting reports:\n"
 "- FTA VAT Audit\n"
 msgstr ""
+"\n"
+"会計レポート：\n"
+"- FTA VAT(付加価値税)監査\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_se_returns
@@ -2768,11 +2788,15 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_purchase_accountant
+#, fuzzy
 msgid ""
 "\n"
 "Add accrued menus and specific filters on purchase order lines for an easier "
 "closing process.\n"
 msgstr ""
+"\n"
+"決算処理をより簡単にするために、仕入オーダ明細行に繰延メニューと特定の"
+"フィルタを追加しました。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_mx_edi_website_sale
@@ -2871,11 +2895,15 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_fr_facturx_chorus_pro
+#, fuzzy
 msgid ""
 "\n"
 "Add support to fill three fields used when using Chorus Pro, especially when "
 "invoicing public services.\n"
 msgstr ""
+"\n"
+"Chorus Pro を使用する際に必要となる3項目の入力に対応しました。特に公共機関へ"
+"の請求時に使用されます。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_documents_project
@@ -3042,6 +3070,7 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_pos_dpopay
+#, fuzzy
 msgid ""
 "\n"
 "Allow DPO POS payments\n"
@@ -3058,6 +3087,21 @@ msgid ""
 "Mobile Money (Airtel Money / M-Pesa) at the payment terminal.\n"
 "* Supported cards: Visa, MasterCard, American Express etc.\n"
 msgstr ""
+"\n"
+"DPO POS決済を許可\n"
+"==============================\n"
+"\n"
+"端末で対応しているすべての通貨が利用可能です(主に**アフリカ地域**での利用を想"
+"定)。\n"
+"本機能により、お客様はDPO POS端末を介して、デビット/クレジットカードや"
+"モバイルマネーで注文の支払いができるようになります。\n"
+"決済処理にはDPO加盟店アカウントが必要です。\n"
+"主な機能:\n"
+"\n"
+"* 迅速な決済: 決済端末でのクレジットカード/デビットカードやモバイルマネー"
+"(Airtel Money / M-Pesa)のスワイプ、スキャン、タッチ決済(タップ)による迅速な支"
+"払い。\n"
+"* 対応カード: Visa、MasterCard、American Expressなど。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_pos_pine_labs
@@ -5050,6 +5094,7 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_databases
+#, fuzzy
 msgid ""
 "\n"
 "Connect and manage all your client databases\n"
@@ -5063,6 +5108,15 @@ msgid ""
 "tasks\n"
 "and more.\n"
 msgstr ""
+"\n"
+"すべての顧客データベースを接続・管理\n"
+"============================================\n"
+"\n"
+"データベースアプリを使えば、すべての顧客データベースを 1 つのOdoo"
+"ワークスペースから接続・管理できます。\n"
+"会計事務所であっても、Odooパートナーであっても、\n"
+"簡単に把握し、タイムシート、タスクなどのフォローアップが可能です。\n"
+"が可能です。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_uk_reports_cis
@@ -6441,11 +6495,14 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_gt_edi_pos
+#, fuzzy
 msgid ""
 "\n"
 "Extends the Point of Sale module to comply with Guatemalan electronic "
 "invoicing regulations (FEL).\n"
 msgstr ""
+"\n"
+"POSモジュールを拡張し、グアテマラの電子請求書規制(FEL)に準拠させます。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_be_reports_client_nihil
@@ -7233,11 +7290,14 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_fi_intrastat
+#, fuzzy
 msgid ""
 "\n"
 "Generates Intrastat CSV report for declaration based on invoices for "
 "Finland.\n"
 msgstr ""
+"\n"
+"フィンランド向けの請求書に基づく申告用Intrastat CSV報告書を生成します。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_at_intrastat
@@ -7505,11 +7565,15 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_hk_hr_payroll_empf
+#, fuzzy
 msgid ""
 "\n"
 "Hong Kong Payroll eMPF.\n"
 "========================\n"
 msgstr ""
+"\n"
+"香港給与計算 eMPF。\n"
+"========================\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_html_editor
@@ -7923,20 +7987,28 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_documents_l10n_mx_hr_payroll_account_edi
+#, fuzzy
 msgid ""
 "\n"
 "Integrates the Mexican payroll with the Documents app so that CFDI XML "
 "files\n"
 "can be attached on payslips emails.\n"
 msgstr ""
+"\n"
+"メキシコの給与計算機能をドキュメントアプリと統合し、CFDI XMLファイルを\n"
+"給与明細のメールに添付できるようにします。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_be_intervat
+#, fuzzy
 msgid ""
 "\n"
 "Integration with Intervat & MyMinfin APIs, allowing to send and receive\n"
 "your electronic VAT declarations.\n"
 msgstr ""
+"\n"
+"IntervatおよびMyMinfin API との連携により、電子VAT申告の\n"
+"送受信が可能になります。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_account_intrastat
@@ -8049,12 +8121,17 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_jo_edi_pos
+#, fuzzy
 msgid ""
 "\n"
 "Jordan Accounting EDI for POS\n"
 "=============================\n"
 "Provides electronic invoicing for Jordan in the POS.\n"
 msgstr ""
+"\n"
+"Jordan 会計 EDI POS\n"
+"=============================\n"
+"POSにおけるヨルダン向けの電子請求書発行機能が入力されます。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_jo_hr_payroll
@@ -8732,8 +8809,8 @@ msgstr ""
 "一括メールイベントセッションスピーカー\n"
 "==============================\n"
 "\n"
-"ブリッジモジュールは、イベントトセッションスピーカーの一括メールを容易にする"
-"ためにUX要件を追加します。\n"
+"ブリッジモジュールは、イベントセッションスピーカーの一括メールを容易にするた"
+"めにUX要件を追加します。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_mrp_mps
@@ -8778,6 +8855,7 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_mr_reports
+#, fuzzy
 msgid ""
 "\n"
 "Mauritania accounting reports.\n"
@@ -8785,14 +8863,22 @@ msgid ""
 "-Profit and Loss\n"
 "-Balance Sheet\n"
 msgstr ""
+"\n"
+"モーリタニアの会計報告書。\n"
+"====================================================\n"
+"-損益計算書\n"
+"-貸借対照表\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_mr
+#, fuzzy
 msgid ""
 "\n"
 "Mauritania basic package that contains the chart of accounts, the taxes, tax "
 "reports, etc.\n"
 msgstr ""
+"\n"
+"勘定科目表、税金、税務報告書などを含むモーリタニア向け基本パッケージ。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_mx_hr_payroll
@@ -10308,10 +10394,13 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_ro_intrastat
+#, fuzzy
 msgid ""
 "\n"
 "Romania - Intrastat Declaration\n"
 msgstr ""
+"\n"
+"ルーマニア - Intrastat申告\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_rw
@@ -10764,10 +10853,13 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_es_intrastat
+#, fuzzy
 msgid ""
 "\n"
 "Spain - Intrastat Report\n"
 msgstr ""
+"\n"
+"スペイン - Intrastat報告書\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_es
@@ -10821,6 +10913,7 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_lk
+#, fuzzy
 msgid ""
 "\n"
 "Sri Lankan Accounting module\n"
@@ -10834,6 +10927,17 @@ msgid ""
 "- VAT001\n"
 "- WHT001\n"
 msgstr ""
+"\n"
+"スリランカ会計モジュール\n"
+"============================\n"
+"- 勘定科目表\n"
+"- 会計ポジション\n"
+"- 税金及び税グループ\n"
+"\n"
+"フォーム\n"
+"=====\n"
+"- VAT001\n"
+"- WHT001\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_stock_maintenance
@@ -11481,11 +11585,15 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_tw_edi_ecpay_website_sale
+#, fuzzy
 msgid ""
 "\n"
 "This bridge module allows the user to input Ecpay information in ecommerce "
 "for sending their invoices to the Ecpay system\n"
 msgstr ""
+"\n"
+"このブリッジモジュールにより、ユーザはeコマースでEcpay情報を入力し、請求書を"
+"Ecpayシステムに送信できるようになります。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_mrp_subcontracting_dropshipping
@@ -11664,8 +11772,8 @@ msgstr ""
 "これは、Odooのプロダクトと価格表を管理するための基本モジュールです。\n"
 "====================================================\n"
 "\n"
-"プロダクトサポートバリアント、さまざまな価格設定方法、仕入先情報、在庫/オー"
-"ダ、計量単位、パッケージング、属性等。\n"
+"プロダクトサポートバリアント、さまざまな価格設定方法、仕入先情報、見込/受注生"
+"産、計量単位、パッケージング、属性等。\n"
 "\n"
 "価格表サポート：\n"
 "-------------------\n"
@@ -13207,6 +13315,7 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_us_direct_deposit
+#, fuzzy
 msgid ""
 "\n"
 "This module allows you to initiate batch payments directly in Odoo via Wise "
@@ -13216,6 +13325,13 @@ msgid ""
 "can be initiated digitally from within Odoo and redirect to be completed "
 "within Wise via Direct Debit ACH, Standard ACH, FedWire, or Wise Balance.\n"
 msgstr ""
+"\n"
+"このモジュールにより、Wise（https://wise.com）経由でOdooから直接一括支払いを"
+"開始できます。\n"
+"Wiseアカウントを作成し、設定で認証情報を追加すると、Odoo内からデジタルで一括"
+"仕入先支払いを開始でき、\n"
+"ダイレクトデビットACH、スタンダードACH、FedWire、またはWise残高を利用してWise"
+"内で完了するようリダイレクトされます。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_partnership
@@ -13684,6 +13800,7 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_ch_hr_payroll_elm_transmission_5_3
+#, fuzzy
 msgid ""
 "\n"
 "This module extends the certification to ELM 5.1 and ELM 5.3 adds various "
@@ -13691,6 +13808,11 @@ msgid ""
 "- Possibility to attribute LPP amounts in %\n"
 "- Add custom amounts for employer parts for LAAC and IJM\n"
 msgstr ""
+"\n"
+"このモジュールは認証を ELM 5.1 および ELM 5.3 に拡張し、以下のようなさまざま"
+"な利便性の向上を追加します: \n"
+"- LPP 金額をパーセンテージで割り当てる機能%\n"
+"- LAAC および IJM に対する雇用主負担分のカスタム金額の設定\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_sms
@@ -15047,11 +15169,15 @@ msgstr ""
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "\n"
 "User: %(user)s\n"
 "Groups: %(allowed_groups_msg)s"
 msgstr ""
+"\n"
+"ユーザ：%(user)s\n"
+"グループ：%(allowed_groups_msg)s"
 
 #. module: base
 #: model:ir.module.module,description:base.module_sales_team
@@ -15351,10 +15477,13 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_hr_edi
+#, fuzzy
 msgid ""
 "\n"
 "e-invoicing for Croatia\n"
 msgstr ""
+"\n"
+"クロアチア向け電子請求書\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_rs_edi
@@ -15620,8 +15749,9 @@ msgstr "'new'は確保されており、パスとして使用することはで�
 #. module: base
 #. odoo-python
 #: code:addons/fields.py:0 code:addons/fields_relational.py:0
+#, fuzzy
 msgid "(Record: %(record)s, User: %(user)s)"
-msgstr ""
+msgstr "(レコード: %(record)s, ユーザ: %(user)s)"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_partner_form
@@ -15657,18 +15787,24 @@ msgstr "- %(description)s (%(model)s)"
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "- Only a root company can be set on “%(record)s”. Currently set to “%"
 "(company)s”"
 msgstr ""
+"- ルート会社のみ “%(record)s”で設定できます。現在 “%(company)s”に設定されてい"
+"ます"
 
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "- Record is company “%(company)s” while “%(field)s” (%(fname)s: %(values)s) "
 "belongs to another company."
 msgstr ""
+"- レコードは会社「%(company)s」のものですが、「%(field)s」(%(fname)s:%"
+"(values)s )は別の会社のものであり、これらは区別してください。"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.report_irmodeloverview
@@ -15727,10 +15863,13 @@ msgstr "- サイズ="
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "- “%(record)s” belongs to company “%(company)s” while “%(field)s” (%"
 "(fname)s: %(values)s) belongs to another company."
 msgstr ""
+"- 「%(record)s」は「%(company)s」という会社に属していますが、「%(field)s」（%"
+"(fname)s:%(values)s ）は別の会社に属しています。"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__base_enable_profiling_wizard__duration__days_1
@@ -15789,10 +15928,13 @@ msgstr "5 分"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_pe_reports_lib
+#, fuzzy
 msgid ""
 "5th and 6th Set Financial Reports. Inventory and Balance 3.1-3.7, 3.11-3.18, "
 "3.20,3.24 and 3.25"
 msgstr ""
+"第5および第6セット会計レポート。在庫および残高 3.1-3.7、3.11-3.18、3.20、3.24"
+"および3.25"
 
 #. module: base
 #: model_terms:res.partner,website_description:base.res_partner_1
@@ -15982,8 +16124,9 @@ msgstr "<i class=\"fa fa-fw fa-envelope text-primary\" title=\"Eメール\"/>"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_users_form
+#, fuzzy
 msgid "<i class=\"fa fa-fw fa-phone me-1 text-primary\" title=\"Phone\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-fw fa-phone me-1 text-primary\" title=\"電話\"/>"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_users_form_simple_modif
@@ -16708,7 +16851,7 @@ msgstr "デモ用に偽の支払いフローを実行するための決済プロ
 #. odoo-python
 #: code:addons/base/models/ir_actions.py:0
 msgid "A sequence must only be used with character fields."
-msgstr "シーケンスは文字型フィールドでのみ使用する必要があります。"
+msgstr "シーケンスは、文字列フィールドでのみ使用できます。"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_base_partner_merge_automatic_wizard__exclude_contact
@@ -16941,8 +17084,9 @@ msgstr "APIキー 最長有効期間日数"
 #. module: base
 #. odoo-python
 #: code:addons/fields_binary.py:0
+#, fuzzy
 msgid "ASCII characters are required for %(value)s in %(field)s"
-msgstr ""
+msgstr "%(value)s(%(field)s内)にはASCII文字が必要です"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_model_search
@@ -17066,8 +17210,9 @@ msgstr "アカウント - 税グリッドの更新を許可"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_pos_settle_due
+#, fuzzy
 msgid "Account - Point of Sale Settle Due"
-msgstr ""
+msgstr "会計 - POS未収金決済"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_bank_statement_extract
@@ -17268,30 +17413,43 @@ msgstr "会計/フリートブリッジ"
 #. module: base
 #: model_terms:res.partner,website_description:base.res_partner_2
 #: model_terms:res.partner,website_description:base.res_partner_4
+#, fuzzy
 msgid ""
 "Acme Corporation designs, develops, integrates and supports HR and Supply\n"
 "                Chain processes in order to make our customers more "
 "productive,\n"
 "                responsive and profitable."
 msgstr ""
+"Acme Corporationは、顧客の生産性、\n"
+"                対応力、収益性を高めるため、\n"
+"                人事およびサプライチェーンプロセスの設計、開発、統合、および"
+"サポートを行っています。"
 
 #. module: base
 #: model:res.partner,website_short_description:base.res_partner_2
 #: model:res.partner,website_short_description:base.res_partner_4
+#, fuzzy
 msgid ""
 "Acme Corporation designs, develops, integrates and supports HR and Supply "
 "Chain processes in order to make our customers more productive, responsive "
 "and profitable."
 msgstr ""
+"Acme Corporationは、顧客の生産性、対応力、収益性を高めるため、人事および"
+"サプライチェーンプロセスの設計、開発、統合、およびサポートを行っています。"
 
 #. module: base
 #: model_terms:res.partner,website_description:base.res_partner_2
 #: model_terms:res.partner,website_description:base.res_partner_4
+#, fuzzy
 msgid ""
 "Acme Corporation integrates ERP for Global Companies and supports PME\n"
 "                with Open Sources software to manage their businesses. Our\n"
 "                consultants are experts in the following areas:"
 msgstr ""
+"Acme Corporationは、グローバル企業向けにERPを統合するとともに、\n"
+"                オープンソースソフトウェアを活用して中小企業(PME)のビジネス管"
+"理を支援しています。\n"
+"                当社のコンサルタントは、以下の分野における専門家です："
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_actions_act_window_view__act_window_id
@@ -17507,8 +17665,9 @@ msgstr "ディスカッションにOdooBotを追加する"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_add_gln
+#, fuzzy
 msgid "Add Partner GLN"
-msgstr ""
+msgstr "パートナーGLNを追加"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_crm_sms
@@ -17712,8 +17871,9 @@ msgstr "追加"
 
 #. module: base
 #: model:res.partner,website_short_description:base.res_partner_address_31
+#, fuzzy
 msgid "Addison Olson is a mighty sales representative at Acme Corporation."
-msgstr ""
+msgstr "アディソン・オルソンは、Acme Corporationの非常に優秀な営業担当者です。"
 
 #. module: base
 #: model_terms:res.partner,website_description:base.res_partner_address_31
@@ -17722,9 +17882,9 @@ msgid ""
 "    notably for selling mouse traps. With that trick he cut\n"
 "    IT budget by almost half within the last 2 years."
 msgstr ""
-"Addison Olsonは、<b>10年以来</b>IT部門で働いています。\n"
-"彼は特にネズミ捕りを売ることで知られています。\n"
-"その技術で、彼は過去2年間でIT予算をほぼ半分に削減しました。"
+"アディソン・オルソンは、IT業界で<b>10年以上</b>のキャリアの持ち主です。\n"
+"彼は特に、無駄を徹底的に排除する画期的なアプローチで知られています。\n"
+"この独自の手法により、過去2年間でIT予算をほぼ半減させることに成功しました。"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_self_order
@@ -19660,10 +19820,13 @@ msgstr "find_or_createを機能させるにはメールが必要です"
 #. module: base
 #. odoo-python
 #: code:addons/base/models/ir_model.py:0
+#, fuzzy
 msgid ""
 "An error occurred while evaluating the domain:\n"
 "%(error)s"
 msgstr ""
+"ドメインの評価中にエラーが発生しました:\n"
+"%(error)s"
 
 #. module: base
 #. odoo-python
@@ -19734,6 +19897,7 @@ msgstr "アンギラ"
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "Another model is using the record you are trying to delete.\n"
 "\n"
@@ -19741,6 +19905,11 @@ msgid ""
 "Thanks to the following constraint: %(field_display)s\n"
 "How about archiving the record instead?"
 msgstr ""
+"削除しようとしているレコードは、別のモデルで使用されています。\n"
+"\n"
+"原因となっているモデル：%(model_display)s\n"
+"関連している制約項目：%(field_display)s\n"
+"代わりに、このレコードをアーカイブしてみてはいかがでしょうか?"
 
 #. module: base
 #. odoo-python
@@ -20758,8 +20927,9 @@ msgstr "Att"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_documents_l10n_mx_hr_payroll_account_edi
+#, fuzzy
 msgid "Attach Mexican payroll CFDI XML to payslips emails"
-msgstr ""
+msgstr "メキシコの給与計算CFDI XMLを給与計算メールに添付"
 
 #. module: base
 #: model_terms:ir.actions.act_window,help:base.action_attachment
@@ -21016,8 +21186,9 @@ msgstr "オーストリアの財務報告"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_at_intrastat
+#, fuzzy
 msgid "Austrian Intrastat Declaration"
-msgstr ""
+msgstr "オーストリアのIntrastat申告"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_at_saft
@@ -21242,13 +21413,15 @@ msgstr "Avataxブラジル"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_br_edi_fiscal_reform
+#, fuzzy
 msgid "Avatax Brazil Fiscal Reform"
-msgstr ""
+msgstr "AvaTaxブラジル税制改革対応"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_br_edi_pos_fiscal_reform
+#, fuzzy
 msgid "Avatax Brazil POS Fiscal Reform"
-msgstr ""
+msgstr "AvaTaxブラジルPOS税制改革対応"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_br_avatax_sale
@@ -21257,13 +21430,15 @@ msgstr "Avataxブラジル販売"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_br_edi_sale_fiscal_reform
+#, fuzzy
 msgid "Avatax Brazil Sale Fiscal Reform"
-msgstr ""
+msgstr "AvaTaxブラジル販売税制改革対応"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_br_website_sale_fiscal_reform
+#, fuzzy
 msgid "Avatax Brazil eCommerce Fiscal Reform"
-msgstr ""
+msgstr "AvaTaxブラジルeコマース税制改革対応"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_avatax_stock
@@ -21306,8 +21481,8 @@ msgid ""
 "Azure Interior brings honesty and seriousness to wood industry while helping "
 "customers deal with trees, flowers and fungi."
 msgstr ""
-"Azure Interiorは、顧客が木、花、菌類を扱うのを支援しながら、木材産業に誠実さ"
-"と真剣さをもたらします。"
+"木材業界に誠実さと真摯なモノづくりを。Azure Interiorは、木や花、菌類といった"
+"自然の恵みと向き合うお客様をサポートします。"
 
 #. module: base
 #: model:res.partner.industry,full_name:base.res_partner_industry_B
@@ -21778,8 +21953,9 @@ msgstr "ベラルーシ"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_be_intervat
+#, fuzzy
 msgid "Belgian Intervat & Myminfin Edi"
-msgstr ""
+msgstr "ベルギーのIntervatおよびMyMinfin EDI"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_be_intrastat
@@ -22159,9 +22335,11 @@ msgid ""
 "                notably for selling mouse traps. With that trick he cut\n"
 "                IT budget by almost half within the last 2 years."
 msgstr ""
-"Brandonは<b>10年以来</b>IT部門で働いています。\n"
-"彼は特にネズミ捕りを売ることで知られています。\n"
-"その技術で、彼は過去2年間でIT予算をほぼ半分に削減しました。"
+"ブランドンはIT業界で<b>10年以上</b>のキャリアの持ち主です。\n"
+"                彼は特に、無駄を徹底的に排除する画期的なアプローチで知られて"
+"います。\n"
+"                この独自の手法により、過去2年間でIT予算をほぼ半減させることに"
+"成功しました。"
 
 #. module: base
 #: model:res.country,name:base.br
@@ -22272,8 +22450,9 @@ msgstr "MRPと会計のブリッジ"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_purchase_accountant
+#, fuzzy
 msgid "Bridge between Purchase and Accounting"
-msgstr ""
+msgstr "購買と会計のブリッジモジュール"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_sale_account_accountant
@@ -22429,7 +22608,7 @@ msgstr "イベント参加者に通知をプッシュするためのブリッジ
 #. module: base
 #: model:ir.module.module,summary:base.module_website_event_track_live_quiz
 msgid "Bridge module to support quiz features during \"live\" tracks. "
-msgstr "ライブ'トラック中のクイズ機能をサポートするブリッジモジュール。 "
+msgstr "\"ライブ\"セッション中のクイズ機能をサポートするブリッジモジュール。"
 
 #. module: base
 #: model:res.country,name:base.io
@@ -22876,8 +23055,9 @@ msgstr "構成を複製することはできません！"
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid "Cannot grab a lock on records"
-msgstr ""
+msgstr "レコードのロックを取得できません"
 
 #. module: base
 #. odoo-python
@@ -22894,8 +23074,9 @@ msgstr ""
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid "Cannot update a record without specifying its id or xml_id"
-msgstr ""
+msgstr "IDまたはxml_idを指定せずにレコードを更新することはできません"
 
 #. module: base
 #. odoo-python
@@ -22941,8 +23122,9 @@ msgstr "カテゴリー"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_catering
+#, fuzzy
 msgid "Catering"
-msgstr ""
+msgstr "ケータリング"
 
 #. module: base
 #: model:res.country,name:base.ky
@@ -23128,10 +23310,10 @@ msgid ""
 "the legislation of the country in which the client is located."
 msgstr ""
 "一部の国では、国内法に従い、請求書の金額に対して源泉徴収が適用されます。源泉"
-"徴収は、クライアントが税務当局に支払うことになります。いかなる場合において"
-"も、My Company（San Francisco）は、その国の法律に関連する費用に関与することは"
-"できません。従って、請求書の金額は、その全額がMy Company (San Francisco)に対"
-"するものであり、顧客が所在する国の法律に関連する費用は含まれません。"
+"徴収は、顧客が税務当局に支払うことになります。いかなる場合においても、My "
+"Company（San Francisco）は、その国の法律に関連する費用に関与することはできま"
+"せん。従って、請求書の金額は、その全額がMy Company (San Francisco)に対するも"
+"のであり、顧客が所在する国の法律に関連する費用は含まれません。"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_certificate
@@ -23523,8 +23705,9 @@ msgstr "クラウドストレージGoogle"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_cloud_storage_migration
+#, fuzzy
 msgid "Cloud Storage Migration"
-msgstr ""
+msgstr "クラウドストレージ移行"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_cf_turnstile
@@ -23617,9 +23800,11 @@ msgid ""
 "                notably for selling mouse traps. With that trick he cut\n"
 "                IT budget by almost half within the last 2 years."
 msgstr ""
-"Colleen Diazは、<b>10年以来</b>IT部門で働いています。\n"
-"彼は特にネズミ捕りを売ることで知られています。\n"
-"その技術で、彼は過去2年間でIT予算をほぼ半分に削減しました。"
+"Colleen DiazはIT業界で<b>10年以上</b>のキャリアの持ち主です。\n"
+"                彼は特に、無駄を徹底的に排除する画期的なアプローチで知られて"
+"います。\n"
+"                この独自の手法により、過去2年間でIT予算をほぼ半減させることに"
+"成功しました。"
 
 #. module: base
 #: model:res.country,name:base.co
@@ -24223,13 +24408,15 @@ msgstr "建設"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_construction
+#, fuzzy
 msgid "Construction Builder"
-msgstr ""
+msgstr "建設業ビルダー"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_construction_developer
+#, fuzzy
 msgid "Construction Developer"
-msgstr ""
+msgstr "建設デベロッパー"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_theme_paptic
@@ -24431,11 +24618,15 @@ msgstr "メールアドレスのない連絡先は作成できません！"
 #. module: base
 #. odoo-python
 #: code:addons/fields_relational.py:0
+#, fuzzy
 msgid ""
 "Couldn't generate a company-dependent domain for field %s. The model doesn't "
 "have a 'company_id' or 'company_ids' field, and isn't company-dependent "
 "either."
 msgstr ""
+"フィールド %s の会社依存ドメインを生成できませんでした。モデルに "
+"'company_id' または 'company_ids' フィールドが存在せず、会社依存（company-"
+"dependent）の設定にもなっていません。"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_model__count
@@ -24996,8 +25187,9 @@ msgstr "クロアチア - 会計レポート"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_hr_edi
+#, fuzzy
 msgid "Croatia - e-invoicing"
-msgstr ""
+msgstr "クロアチア - 電子請求書"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_hr_intrastat
@@ -25333,8 +25525,9 @@ msgstr "DIN 5008"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_din5008_expense
+#, fuzzy
 msgid "DIN 5008 - Expenses"
-msgstr ""
+msgstr "DIN 5008 - 経費"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_din5008_industry_fsm
@@ -25460,8 +25653,9 @@ msgstr "データベース構造"
 #. module: base
 #: model:ir.module.category,name:base.module_category_services_databases
 #: model:ir.module.module,shortdesc:base.module_databases
+#, fuzzy
 msgid "Databases"
-msgstr ""
+msgstr "データベース"
 
 #. module: base
 #. odoo-python
@@ -25702,10 +25896,13 @@ msgstr "アクションを削除"
 #. module: base
 #. odoo-python
 #: code:addons/base/models/res_users.py:0
+#, fuzzy
 msgid ""
 "Deleting the public user is not allowed. Deleting this profile will "
 "compromise critical functionalities."
 msgstr ""
+"一般ユーザを削除することは許可されていません。このプロファイルを削除すると、"
+"重要な関数が損なわれます。"
 
 #. module: base
 #. odoo-python
@@ -25863,8 +26060,9 @@ msgstr "依存関係"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_deposit_management
+#, fuzzy
 msgid "Deposit Management"
-msgstr ""
+msgstr "デポジット管理"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_attachment__description
@@ -26393,8 +26591,9 @@ msgstr "ドキュメント -  ケニア給与"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_documents_l10n_mx_hr_payroll_account_edi
+#, fuzzy
 msgid "Documents - Mexican Payroll"
-msgstr ""
+msgstr "ドキュメント - メキシコの給与計算"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_documents_hr_payroll
@@ -26446,8 +26645,9 @@ msgstr "ドキュメントスプレッドシート"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_test_documents_full
 #: model:ir.module.module,summary:base.module_test_documents_full
+#, fuzzy
 msgid "Documents Testing Module"
-msgstr ""
+msgstr "ドキュメントテストモジュール"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_documents_account_peppol
@@ -26563,8 +26763,9 @@ msgstr "ドン"
 
 #. module: base
 #: model:res.partner,website_short_description:base.res_partner_address_3
+#, fuzzy
 msgid "Douglas Fletcher is a mighty functional consultant at Acme Corporation"
-msgstr ""
+msgstr "Douglas FletcherはAcme Corporationの非常に優秀な機能コンサルタントです"
 
 #. module: base
 #: model_terms:res.partner,website_description:base.res_partner_address_3
@@ -26687,8 +26888,9 @@ msgstr "ViettelによるSInvoiceを使用した電子請求"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_tw_edi_ecpay_website_sale
+#, fuzzy
 msgid "ECpay E-invoice bridge module for Ecommerce"
-msgstr ""
+msgstr "ECpay Eコマース向け電子請求書連携モジュール"
 
 #. module: base
 #: model:ir.module.category,name:base.module_category_accounting_localizations_edi
@@ -27187,11 +27389,15 @@ msgstr "エネルギー"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_uy_edi_stock
+#, fuzzy
 msgid ""
 "Enhances stock picking operations with compliant electronic delivery guides "
 "(e-Remitos) for Uruguay. This module integrates with the EDI system to "
 "generate e-Remitos according to Uruguayan fiscal requirements."
 msgstr ""
+"ウルグアイ向けの電子配送伝票(e-Remitos)に対応した出荷オペレーションを強化しま"
+"す。本モジュールはEDIシステムと連携し、ウルグアイの税務要件に従ったe-Remitos"
+"の作成が可能になります。"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_crm_iap_enrich
@@ -27967,7 +28173,7 @@ msgstr "ユーロ"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_mass_mailing_event_sms
 msgid "Event Attendees SMS Marketing"
-msgstr "イベントはSMSマーケティングに参加します"
+msgstr "イベント参加者向けSMSマーケティング"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_website_event_booth_exhibitor
@@ -28229,9 +28435,10 @@ msgstr "エクスポート完了"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_pl_edi
+#, fuzzy
 msgid ""
 "Export FA(3) compliant XML invoices and prepare for integration with KSeF."
-msgstr ""
+msgstr "FA(3)準拠のXML請求書をエクスポートし、KSeFとの統合に備えます。"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_exports__export_fields
@@ -28526,8 +28733,9 @@ msgstr ""
 #. module: base
 #. odoo-python
 #: code:addons/fields_relational.py:0
+#, fuzzy
 msgid "Failed to write field %s"
-msgstr ""
+msgstr "フィールドへの書き込みに失敗しました%s"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_cron__failure_count
@@ -28994,8 +29202,9 @@ msgstr "フィンランド販売"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_fi_intrastat
+#, fuzzy
 msgid "Finnish Intrastat Declaration"
-msgstr ""
+msgstr "フィンランド語Intrastat 申告書"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__res_company__font__fira_mono
@@ -29083,8 +29292,9 @@ msgstr "花屋、庭園、花、自然、緑、美しさ、店舗"
 
 #. module: base
 #: model:res.partner,website_short_description:base.res_partner_address_4
+#, fuzzy
 msgid "Floyd Steward is a mighty analyst at Acme Corporation."
-msgstr ""
+msgstr "Floyd StewardはAcme Corporationの優秀なアナリストです。"
 
 #. module: base
 #: model_terms:res.partner,website_description:base.res_partner_address_4
@@ -29093,9 +29303,11 @@ msgid ""
 "    notably for selling mouse traps. With that trick he cut\n"
 "    IT budget by almost half within the last 2 years."
 msgstr ""
-"Floyd Stewardは、<b>10年以来</b>IT部門で働いています。\n"
-"彼は特にネズミ捕りを売ることで知られています。\n"
-"その技術で、彼は過去2年間でIT予算をほぼ半分に削減しました。"
+"Floyd StewardはIT業界で<b>10年以上</b>のキャリアの持ち主です。\n"
+"                彼は特に、無駄を徹底的に排除する画期的なアプローチで知られて"
+"います。\n"
+"                この独自の手法により、過去2年間でIT予算をほぼ半減させることに"
+"成功しました。"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_model__fold_name
@@ -29334,8 +29546,9 @@ msgstr "フランス-会計報告"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_fr_facturx_chorus_pro
+#, fuzzy
 msgid "France - BIS3 integration for Chorus Pro"
-msgstr ""
+msgstr "フランス - Chorus Pro向けBIS3連携"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_fr_fec_import
@@ -29913,9 +30126,11 @@ msgid ""
 "                IT budget by almost half within the last 2 years.\n"
 "                Famous Senior Consultant."
 msgstr ""
-"Gordon Owensは、IT領域で<b>10年</b>働いています。\n"
-"                彼はネズミ捕りを販売することで知られています。\n"
-"                彼はその手腕で過去2年間でIT予算をほぼ半分にしました。\n"
+"Gordon OwensはIT業界で<b>10年以上</b>のキャリアの持ち主です。\n"
+"                彼は特に、無駄を徹底的に排除する画期的なアプローチで知られて"
+"います。\n"
+"                この独自の手法により、過去2年間でIT予算をほぼ半減させることに"
+"成功しました。\n"
 "                有名なシニアコンサルタントです。"
 
 #. module: base
@@ -30037,8 +30252,9 @@ msgstr "グループ依存ルールは論理演算子 OR で結合されます�
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid "Grouping by HTML properties is not supported."
-msgstr ""
+msgstr "HTMLプロパティによるグループ化はサポートされていません。"
 
 #. module: base
 #. odoo-python
@@ -30130,8 +30346,9 @@ msgstr "グアテマラ - 電子請求"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_gt_edi_pos
+#, fuzzy
 msgid "Guatemalan Accounting EDI for POS"
-msgstr ""
+msgstr "POS向けグアテマラ会計EDI"
 
 #. module: base
 #: model:res.country,name:base.gg
@@ -30586,8 +30803,9 @@ msgstr "ホリデーハウス"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_holidays_homeworking
+#, fuzzy
 msgid "Holidays with Remote Work"
-msgstr ""
+msgstr "リモートワークでの休暇"
 
 #. module: base
 #: model:res.country,name:base.va
@@ -30636,8 +30854,9 @@ msgstr "香港 - 給与"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_hk_hr_payroll_empf
+#, fuzzy
 msgid "Hong Kong - Payroll eMPF"
-msgstr ""
+msgstr "香港 - 給与計算 eMPF"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_hk_hr_payroll_account
@@ -31273,8 +31492,9 @@ msgstr "イメージ混合"
 #. module: base
 #. odoo-python
 #: code:addons/fields_binary.py:0
+#, fuzzy
 msgid "Image is not encoded in base64."
-msgstr ""
+msgstr "画像はbase64でエンコードされていません。"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_base_module_upgrade
@@ -31408,8 +31628,9 @@ msgstr "Winbooksからデータをインポートする"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_sale_lazada
+#, fuzzy
 msgid "Import Lazada orders and sync deliveries"
-msgstr ""
+msgstr "Lazadaのオーダをインポートし、配送状況を同期"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_bank_statement_import_ofx
@@ -31932,8 +32153,9 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_dpopay
+#, fuzzy
 msgid "Integrate your POS with DPO payment terminal."
-msgstr ""
+msgstr "POSをDPO決済端末と連携させます。"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_pine_labs
@@ -31947,8 +32169,9 @@ msgstr "POSとGlory自動釣銭機を連携"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_mollie
+#, fuzzy
 msgid "Integrate your POS with a Mollie payment terminal"
-msgstr ""
+msgstr "POSをMollie決済端末と連携"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_razorpay
@@ -32615,8 +32838,9 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_it_intrastat
+#, fuzzy
 msgid "Italian Intrastat Declaration"
-msgstr ""
+msgstr "イタリア Intrastat申告書"
 
 #. module: base
 #: model:res.country,name:base.it
@@ -32779,8 +33003,9 @@ msgstr "ヨルダン - 会計の給与"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_jo_edi_pos
+#, fuzzy
 msgid "Jordan Accounting EDI for POS"
-msgstr ""
+msgstr "Jordan 会計 EDI POS"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_jo_edi
@@ -33454,8 +33679,9 @@ msgstr "帳票でのレイアウト"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_sale_lazada
+#, fuzzy
 msgid "Lazada Connector"
-msgstr ""
+msgstr "Lazadaコネクタ"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_crm_iap_enrich
@@ -33652,8 +33878,9 @@ msgstr "制限"
 #. module: base
 #. odoo-python
 #: code:addons/base/models/res_users.py:0
+#, fuzzy
 msgid "Limit of %s API keys is reached for programmatic creation"
-msgstr ""
+msgstr "%s API キーのプログラムによる作成上限に達しました"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_logging__line
@@ -33911,8 +34138,9 @@ msgstr "ローカリゼーション"
 
 #. module: base
 #: model:ir.module.category,name:base.module_category_website_sale_localizations
+#, fuzzy
 msgid "Localizations"
-msgstr ""
+msgstr "ローカリゼーション"
 
 #. module: base
 #: model:ir.module.module,description:base.module_theme_loftspace
@@ -34125,8 +34353,9 @@ msgstr "マカオ"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_machine_tool_rental
+#, fuzzy
 msgid "Machine & Tools Rental"
-msgstr ""
+msgstr "機械・工具レンタル"
 
 #. module: base
 #: model:res.country,name:base.mg
@@ -34480,8 +34709,9 @@ msgstr "給与明細内での休暇管理 企業版"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_databases
+#, fuzzy
 msgid "Manage a fleet of Odoo databases"
-msgstr ""
+msgstr "Odooデータベースのフリート管理"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_website_forum
@@ -34570,8 +34800,9 @@ msgstr "フリートによる会計カテゴリの管理"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_hr_holidays_homeworking
+#, fuzzy
 msgid "Manage holidays with remote work"
-msgstr ""
+msgstr "リモート勤務の休暇管理"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_website_sale_stock
@@ -34862,7 +35093,7 @@ msgstr "販売サブスクリプションのメール一括送信"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_mass_mailing_event_track
 msgid "Mass mailing on track speakers"
-msgstr "トラックスピーカーでの一括メーリング"
+msgstr "セッションスピーカーの一括メーリング"
 
 #. module: base
 #: model:ir.module.module,description:base.module_mass_mailing_crm_sms
@@ -34906,13 +35137,15 @@ msgstr "モーリタニア"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_mr
+#, fuzzy
 msgid "Mauritania - Accounting"
-msgstr ""
+msgstr "モーリタニア - 会計"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_mr_reports
+#, fuzzy
 msgid "Mauritania - Accounting Reports"
-msgstr ""
+msgstr "モーリタニア - 会計レポート"
 
 #. module: base
 #: model:res.country,name:base.mu
@@ -34969,8 +35202,9 @@ msgstr "メンバークラブ"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_mental_therapy
+#, fuzzy
 msgid "Mental Therapy"
-msgstr ""
+msgstr "心理セラビー"
 
 #. module: base
 #: model:ir.model,name:base.model_ir_ui_menu
@@ -35153,8 +35387,9 @@ msgstr "マイクロソフトユーザー"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_cloud_storage_migration
+#, fuzzy
 msgid "Migrate local attachments to cloud storage"
-msgstr ""
+msgstr "ローカルの添付ファイルをクラウドストレージに移行"
 
 #. module: base
 #: model:res.currency,currency_subunit_label:base.TND
@@ -35358,8 +35593,9 @@ msgstr "その他"
 #. module: base
 #. odoo-python
 #: code:addons/template_inheritance.py:0
+#, fuzzy
 msgid "Missing 'expr' attribute in xpath specification"
-msgstr ""
+msgstr "xpath 仕様で 'expr' 属性が未設定です"
 
 #. module: base
 #. odoo-python
@@ -36202,10 +36438,13 @@ msgid ""
 "                from 1 to 55 employees mostly by reselling services on\n"
 "                Odoo."
 msgstr ""
-"ニコール<b>は20年以来</b>IT部門で働いています。彼女はウェブサイトの開発を支援"
-"するソフトウェアを開発しています。彼女は30歳で最初の会社を売却し、主にOdooで"
-"サービスを再販することにより、AzureInteriorを1人から55人の従業員に成長させる"
-"ことができました。"
+"Nicoleは、IT業界で<b>20年のキャリア</b>を持っています。彼女は\n"
+"                ウェブサイト制作を支援するソフトウェアを開発しています。  30"
+"歳で最初の会社を\n"
+"                売却し、主にOdoo上でのサービス転売によって、Azure Interior社"
+"を\n"
+"                従業員1名から55名規模の企業へと成長\n"
+"                させました。"
 
 #. module: base
 #: model:res.country,name:base.ne
@@ -36282,8 +36521,9 @@ msgstr "現在、この操作を許可しているグループはありません
 #. module: base
 #. odoo-python
 #: code:addons/fields_relational.py:0
+#, fuzzy
 msgid "No inverse field \"%(inverse_field)s\" found for \"%(comodel)s\""
-msgstr ""
+msgstr "逆フィールド「%(inverse_field)s」(「%(comodel)s」用)が見つかりません"
 
 #. module: base
 #. odoo-python
@@ -37002,6 +37242,7 @@ msgstr "Odoo企業版モジュール"
 
 #. module: base
 #: model:ir.module.module,description:base.module_hr
+#, fuzzy
 msgid ""
 "Odoo Human Resources\n"
 "--------------------\n"
@@ -37108,6 +37349,101 @@ msgid ""
 "Compare revenues with forecasts and budgets in real time.\n"
 "\n"
 msgstr ""
+"Odoo 人事\n"
+"--------------------\n"
+"\n"
+"Odoo <a href=\"https://www.odoo.com/app/employees\">人事</a>で\n"
+"会社の最も重要な資産である「人」を管理しましょう。\n"
+"\n"
+"全ての人事業務:ナレッジの共有、採用、評価、タイムシート、契約、勤怠、給与など"
+"を簡単に管理します。\n"
+"\n"
+"それぞれのニーズは、オンデマンドで起動する特定のアプリによって提供されます"
+"。\n"
+"\n"
+"従業員の管理\n"
+"---------------------\n"
+"\n"
+"会社のアドレス帳のすべての重要な情報を管理します。\n"
+"HRマネージャに限定されている情報と、同僚が簡単に見ることができる 情報が\n"
+"あります。\n"
+"\n"
+"従業員契約書を記録し、更新時期が近づくとアラートが届きます。\n"
+"\n"
+"採用プロセスの合理化\n"
+"-----------------------------------\n"
+"\n"
+" <a href=\"https://www.odoo.com/app/employees\">Odoo人事</a>で履歴書の"
+"インデックス化、応募者の追跡、プロフィールの検索ができます。\n"
+"\n"
+"求人広告を掲載し、各応募を追跡します。スマートなかんばんビュー\n"
+"で採用プロセス中の応募者をフォローしましょう。\n"
+"\n"
+"Eメールテンプレートを使ってコミュニケーションを自動化し、時間を節約します。履"
+"歴書は\n"
+"自動的にインデックス化され、特定のプロフィールを簡単に見つけることができます"
+"。\n"
+"\n"
+"企業版ソーシャルネットワーク\n"
+"-------------------------\n"
+"\n"
+"情報のサイロ化を解消します。全従業員の間で、ナレッジとベストプラクティスを\n"
+"共有します。特定の人やドキュメントをフォローし、関心のあるグループに\n"
+"参加して専門知識やドキュメントを共有できます。ウェブサイトライブチャットで"
+"リアルタイムに同僚と交流できます。\n"
+"\n"
+"時間と勤務の追跡\n"
+"--------------------------\n"
+"\n"
+"プロジェクト、顧客、タスクごとに消費時間を記録します。各従業員の\n"
+"タイムシートを記録したり、勤務を確認することが簡単にできます。プロジェクトの"
+"消費時間に基づいて\n"
+"自動的に記帳される分析勘定を入手しましょう。\n"
+"\n"
+"休暇管理\n"
+"-------------------\n"
+"\n"
+"各従業員の休暇日数を記録します。従業員は申請\n"
+"(有給休暇、病欠休暇など)を行い、マネージャが承認および検証を行います。\n"
+"これらは全て数回のクリックで完了します。各従業員のアジェンダが\n"
+"それに応じて更新されます。\n"
+"\n"
+"従業員の経費を追跡\n"
+"-------------------------------\n"
+"\n"
+"ペーパーワークを排除し、従業員の経費をOdooで直接フォローします。経費の検証、"
+"従業員の経費精算、経理への計上、顧客への再請求といった一連の流れを管理し、時"
+"間やコストを無駄を回避できます。\n"
+"\n"
+"定期的な評価のフォロー\n"
+"--------------------------\n"
+"\n"
+"従業員の評価計画やアンケートを設定し、その変化を観察します。面談の\n"
+"ステップを定義すると、Odooが自動的に上司や部下に評価の準備を\n"
+"するよう通知します。\n"
+"定期的にスタッフの進歩を追跡することができます。\n"
+"\n"
+"ゲーミフィケーションでエンゲージメントを高める\n"
+"----------------------------------\n"
+"\n"
+"### 明確な目標を定め、リアルタイムでフィードバックを提供\n"
+"\n"
+"チャレンジ、目標、報酬で達成意欲を高めます。明確な目標を定め\n"
+"リアルタイムのフィードバックと具体的な結果を提供しましょう。\n"
+"チャネル全体にトップパフォーマーを紹介し、良い業績を公にしましょう。\n"
+"\n"
+"### リーダーボード\n"
+"\n"
+"営業チームのリーダーを育成し、業績比率で競争させます。\n"
+"\n"
+"### 個人目標\n"
+"\n"
+"ユーザに明確な目標を割り当て、会社の目標と一致させます。\n"
+"\n"
+"### チーム目標\n"
+"\n"
+"収益と予測および予算をリアルタイムで比較します。\n"
+"\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_mrp
@@ -38978,10 +39314,10 @@ msgstr ""
 "------------------------------------- \n"
 "###スケジュール、宣伝、販売、整理イベントごとに追加機能を取得します。\n"
 "複数のページ、スポンサー、複数の講演、講演提案フォーム、議題、イベント関連の"
-"ニュース、ドキュメント(プレゼンテーションのスライド)、イベント固有のメ"
-"ニュー。\n"
+"ニュース、ドキュメント(プレゼンテーションのスライド)、イベント固有のメニュー"
+"。\n"
 "\n"
-"トラックを整理する\n"
+"セッションを整理して管理する\n"
 "-------------------- \n"
 "###講演の提案から出版物までイベントに講演の提案フォームを追加して、訪問者が講"
 "演や講演者を提出できるようにします。\n"
@@ -39002,15 +39338,15 @@ msgstr ""
 "###スポンサーシップの販売、スポンサーの宣伝イベントにスポンサーを追加し、\n"
 "すべてのページの下部にレベル(ブロンズ、シルバー、ゴールドなど)ごとにイベント"
 "のスポンサーを公開します。 \n"
-"Odoo eコマースを通じてスポンサーシップパッケージをオンラインで販売し、販売サ"
-"イクルを完全に統合します。\n"
+"Odoo eコマースを通じてスポンサーシップパッケージをオンラインで販売し、販売"
+"サイクルを完全に統合します。\n"
 "\n"
 "\n"
 "効率的なコミュニケーション\n"
 "----------------------- \n"
 "###一部のイベントのブログを有効化するイベントごとにブログを有効化して、\n"
-"特定のイベントについてコミュニケーションをとることができます。訪問者はニュー"
-"スを購読して情報を得ることができます。"
+"特定のイベントについてコミュニケーションをとることができます。訪問者は"
+"ニュースを購読して情報を得ることができます。"
 
 #. module: base
 #: model:ir.module.module,description:base.module_website_event
@@ -39525,8 +39861,9 @@ msgstr "モバイルでのPOSバーコードスキャン"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_enterprise_sms_whatsapp
+#, fuzzy
 msgid "POS Enterprise SMS Whatsapp"
-msgstr ""
+msgstr "POS 企業版 SMS WhatsApp"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_glory_cash
@@ -39550,8 +39887,9 @@ msgstr "POS Mercado Pago"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_mollie
+#, fuzzy
 msgid "POS Mollie"
-msgstr ""
+msgstr "POS Mollie"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_pine_labs
@@ -40246,8 +40584,9 @@ msgstr "フォーマットするパターン"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_us_direct_deposit
+#, fuzzy
 msgid "Pay Vendors via Wise"
-msgstr ""
+msgstr "Wise経由で仕入先に支払う"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_appointment_account_payment
@@ -40491,8 +40830,9 @@ msgstr "ペルー - 会計レポート"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_pe_reports_lib
+#, fuzzy
 msgid "Peru - Inventory and Balance Reports"
-msgstr ""
+msgstr "ペルー - 在庫および残高レポート"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_pe_reports_stock
@@ -40657,8 +40997,9 @@ msgstr "写真"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_physical_therapy
+#, fuzzy
 msgid "Physical Therapy"
-msgstr ""
+msgstr "理学療法"
 
 #. module: base
 #: model:res.currency,currency_subunit_label:base.SSP
@@ -40782,8 +41123,9 @@ msgstr "PoS - イベント販売"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_dpopay
+#, fuzzy
 msgid "PoS DPO Pay"
-msgstr ""
+msgstr "POS DPO Pay"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_iot_adam_scale
@@ -40880,8 +41222,9 @@ msgstr "POSサブスクリプション"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_edi_ubl
+#, fuzzy
 msgid "Point of Sale UBL"
-msgstr ""
+msgstr "POS UBL"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_enterprise
@@ -40931,13 +41274,15 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_pl_edi
+#, fuzzy
 msgid "Polish E-Invoicing FA(3)"
-msgstr ""
+msgstr "ポーランド電子請求書 FA(3)"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_pl_intrastat
+#, fuzzy
 msgid "Polish Intrastat Declaration"
-msgstr ""
+msgstr "ポーランドIntrastat申告書"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_portal_rating
@@ -40984,8 +41329,9 @@ msgstr "ポルトガル - 会計レポート"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_pt_intrastat
+#, fuzzy
 msgid "Portuguese Intrastat Declaration"
-msgstr ""
+msgstr "ポルトガルIntrastat申告書"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_ir_model_constraint__definition
@@ -41192,8 +41538,9 @@ msgstr "プロダクト比較"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_product_conversion
+#, fuzzy
 msgid "Product Conversion & Grading Management"
-msgstr ""
+msgstr "プロダクトの変換およびグレード管理"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_product_email_template
@@ -41286,8 +41633,9 @@ msgstr "結果プロファイリング"
 #. module: base
 #. odoo-python
 #: code:addons/base/models/res_users.py:0
+#, fuzzy
 msgid "Programmatic API keys are not enabled"
-msgstr ""
+msgstr "プログラム用 API キーは有効になっていません"
 
 #. module: base
 #: model:ir.model,name:base.model_ir_cron_progress
@@ -41708,8 +42056,9 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_industry_real_estate
+#, fuzzy
 msgid "Property Management"
-msgstr ""
+msgstr "不動産管理"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_condominium
@@ -41723,8 +42072,9 @@ msgstr "見込顧客"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_lk
+#, fuzzy
 msgid "Provides accounting localizations for Sri Lanka."
-msgstr ""
+msgstr "スリランカ向けの会計ローカライゼーションを提供します。"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_mail_mobile
@@ -41824,8 +42174,9 @@ msgstr "購買"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_purchase_accountant
+#, fuzzy
 msgid "Purchase Accounting"
-msgstr ""
+msgstr "購買 会計"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_purchase_requisition
@@ -42016,7 +42367,7 @@ msgstr "ライブイベントセッションのクイズ"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_event_track_quiz
 msgid "Quizzes on Tracks"
-msgstr "トラックのクイズ"
+msgstr "セッションのクイズ"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_website_event_track_quiz
@@ -42128,8 +42479,9 @@ msgstr "Qwebフィールドmany2many"
 
 #. module: base
 #: model:ir.model,name:base.model_ir_qweb_field_one2many
+#, fuzzy
 msgid "Qweb field one2many"
-msgstr ""
+msgstr "Qweb フィールド １対多"
 
 #. module: base
 #: model:res.partner.industry,full_name:base.res_partner_industry_R
@@ -42357,8 +42709,9 @@ msgstr "採用レポート"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_recruitment_ai
+#, fuzzy
 msgid "Recruitment With AI"
-msgstr ""
+msgstr "AIを活用した採用"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_appointment_hr_recruitment
@@ -42919,8 +43272,9 @@ msgstr "ルーマニア - 電子請求"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_ro_intrastat
+#, fuzzy
 msgid "Romania - Intrastat Declaration"
-msgstr ""
+msgstr "ルーマニア - Intrastat申告"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_ro_hr_payroll
@@ -43092,7 +43446,7 @@ msgstr "SEPA諸国"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_iso20022
 msgid "SEPA Credit Transfer / ISO20022"
-msgstr "SEPAクレジット振替 / ISO20022"
+msgstr "SEPA送金(SCT) / ISO20022"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_sepa_direct_debit
@@ -44468,7 +44822,7 @@ msgstr "共有ユーザ"
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.ir_filters_view_form
 msgid "Shared with"
-msgstr "以下と共有:"
+msgstr "共有先"
 
 #. module: base
 #: model:res.currency,currency_unit_label:base.ILS
@@ -44720,11 +45074,15 @@ msgstr "これらの連絡先をスキップする"
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "Skipping a company check for model %(model_name)s. Its fields %"
 "(field_names)s are set as company-dependent, but the model doesn't have a "
 "`company_id` or `company_ids` field!"
 msgstr ""
+"モデル%(model_name)sの会社チェックをスキップします。 そのフィールド%"
+"(field_names)s は会社依存として設定されていますが、モデルには `company_id` ま"
+"たは `company_ids` フィールドがありません。"
 
 #. module: base
 #. odoo-python
@@ -44744,8 +45102,9 @@ msgstr "スロバキア"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_sk_reports
+#, fuzzy
 msgid "Slovakia - Accounting Reports"
-msgstr ""
+msgstr "スロバキア - 会計レポート"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_sk_hr_payroll
@@ -45029,8 +45388,9 @@ msgstr "スペイン - Facturae EDI"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_es_intrastat
+#, fuzzy
 msgid "Spain - Intrastat Declaration"
-msgstr ""
+msgstr "スペイン - Intrastat申告"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_es_edi_tbai_pos
@@ -45357,13 +45717,15 @@ msgstr "スリランカ"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_lk
+#, fuzzy
 msgid "Sri Lanka - Accounting"
-msgstr ""
+msgstr "スリランカ - 会計"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_lk_reports
+#, fuzzy
 msgid "Sri Lanka - Accounting Reports"
-msgstr ""
+msgstr "スリランカ - 会計レポート"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__ir_sequence__implementation__standard
@@ -45742,13 +46104,14 @@ msgstr "サプライチェーン"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_pl_edi
+#, fuzzy
 msgid "Support for FA(3) electronic invoices in Poland via KSeF"
-msgstr ""
+msgstr "ポーランドにおけるKSeF経由のFA(3)電子請求書のサポート"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_website_event_track_live
 msgid "Support live tracks: streaming, participation, youtube"
-msgstr "ライブトラックのサポート:ストリーミング、参加、YouTube"
+msgstr "ライブセッションのサポート:ストリーミング、参加、YouTube"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_quality_control_picking_batch
@@ -45834,8 +46197,9 @@ msgstr "スイス - POS"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_ch_hr_payroll_elm_transmission_5_3
+#, fuzzy
 msgid "Swissdec Certified Payroll ELM 5.3"
-msgstr ""
+msgstr "Swissdec認定給与計算 ELM 5.3"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.language_install_view_form_lang_switch
@@ -46016,8 +46380,9 @@ msgstr "台湾 - 電子請求"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_tw_edi_ecpay_website_sale
+#, fuzzy
 msgid "Taiwan - E-invoicing Ecommerce"
-msgstr ""
+msgstr "台湾 - 電子請求書 eコマース"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__res_company__font__tajawal
@@ -46053,7 +46418,7 @@ msgstr "人材派遣"
 #: model_terms:res.partner,website_description:base.res_partner_2
 #: model_terms:res.partner,website_description:base.res_partner_4
 msgid "Talent Management"
-msgstr "タレントマネジメント"
+msgstr "人材管理"
 
 #. module: base
 #: model:res.currency,currency_subunit_label:base.MWK
@@ -46329,7 +46694,7 @@ msgstr "全CRMフローをテストする"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_test_event_full
 msgid "Test Full Event Flow"
-msgstr "全てのイベントフローをテストする"
+msgstr "イベントの全フローテスト"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_test_website_slides_full
@@ -46594,8 +46959,8 @@ msgid ""
 "The Jackson Group brings honesty and seriousness to wood industry while "
 "helping customers deal with trees, flowers and fungi."
 msgstr ""
-"ジャクソングループは、顧客が木、花、菌類を扱うのをお手伝いしながら、木材産業"
-"で誠実に真剣に向き合っています。"
+"Jackson Groupは、樹木や草花、菌類のケアを通じてお客様の課題を解決し、木材業界"
+"に「誠実」と「信頼」をお届けします。"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_res_lang__url_code
@@ -46859,12 +47224,16 @@ msgstr ""
 #. module: base
 #. odoo-python
 #: code:addons/fields_textual.py:0
+#, fuzzy
 msgid ""
 "The field value you're saving (%(model)s %(field)s) includes content that is "
 "restricted for security reasons. It is possible that someone with higher "
 "privileges previously modified it, and you are therefore not able to modify "
 "it yourself while preserving the content."
 msgstr ""
+"保存しようとしているフィールド値(%(model)s%(field)s)には、セキュリティ上の理"
+"由で制限されている内容が含まれています。より高い権限を持つ誰かが以前に変更し"
+"た可能性があり、そのため内容を保持したまま自分で変更することはできません。"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_ir_cron__first_failure_date
@@ -46874,8 +47243,9 @@ msgstr "最初のcronは失敗しました。成功すると自動的にリセ�
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid "The following languages are not activated: %(missing_names)s"
-msgstr ""
+msgstr "以下の言語は有効化されていません:%(missing_names)s"
 
 #. module: base
 #. odoo-python
@@ -47190,14 +47560,16 @@ msgstr ""
 #. module: base
 #. odoo-python
 #: code:addons/base/models/res_users.py:0
+#, fuzzy
 msgid "The provided API key is invalid or does not belong to the current user."
-msgstr ""
+msgstr "入力されたAPIキーは無効であるか、現在のユーザのものではありません。"
 
 #. module: base
 #. odoo-python
 #: code:addons/base/models/res_users.py:0
+#, fuzzy
 msgid "The provided API key is invalid."
-msgstr ""
+msgstr "入力されたAPIキーは無効です。"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_res_currency_rate__rate
@@ -47217,6 +47589,7 @@ msgstr "レートが1である通貨に対しての通貨のレート"
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "The record %(xml_id)s has the module prefix %(module_name)s. This is the "
 "part before the '.' in the external id. Because the prefix refers to an "
@@ -47225,6 +47598,12 @@ msgid ""
 "For example, __import__, resulting in the external id __import__.%"
 "(record_id)s."
 msgstr ""
+"レコード%(xml_id)sにはモジュールプレフィックス%(module_name)sがあります。 こ"
+"れは外部 ID の '.' の前の部分です。このプレフィックスは既存のモジュールを指す"
+"ので、モジュールがアップグレードされるとレコードは削除されます。"
+"プレフィックスもドットもないか、既存のモジュールではないプレフィックスを使用"
+"して下さい。例えば、__import__とすると、外部IDは__import__...となります%"
+"(record_id)s。"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_res_company__company_registry
@@ -47359,11 +47738,15 @@ msgstr "渡される値 (%s)は正でなくてはなりません。"
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "The value for %(field_display)s already exists.\n"
 "\n"
 "Detail: %(detail)s\n"
 msgstr ""
+"%(field_display)s の値は既に存在します。\n"
+"\n"
+"詳細：%(detail)s\n"
 
 #. module: base
 #. odoo-python
@@ -47728,10 +48111,13 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,description:base.module_whatsapp_sign
+#, fuzzy
 msgid ""
 "This module allows users to send signature requests via WhatsApp using Odoo "
 "Sign"
 msgstr ""
+"このモジュールを使用すると、ユーザは Odoo署名を通じて WhatsApp経由で署名依頼"
+"を送信できます"
 
 #. module: base
 #: model:ir.module.module,description:base.module_iot_box_image
@@ -48013,10 +48399,13 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_enterprise_sms_whatsapp
+#, fuzzy
 msgid ""
 "This module enables communication via WhatsApp and SMS in the preparation "
 "display"
 msgstr ""
+"このモジュールは、調理ディスプレイでのWhatsApp およびSMSによる連絡を有効にし"
+"ます"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_barcodelookup
@@ -48029,10 +48418,13 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,summary:base.module_whatsapp_sign
+#, fuzzy
 msgid ""
 "This module enables users to send signature requests via WhatsApp in Odoo "
 "Sign"
 msgstr ""
+"このモジュールにより、ユーザは Odoo署名を通じてWhatsApp経由で署名依頼を送信で"
+"きるようになります"
 
 #. module: base
 #: model:ir.module.module,description:base.module_website_event_track_gantt
@@ -48334,8 +48726,9 @@ msgstr "未処理"
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid "To avoid a mess, no company crossover is allowed!"
-msgstr ""
+msgstr "混乱を避けるため、会社をまたいだ紐付けは許可されていません!"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__ir_module_module__state__to_install
@@ -48423,10 +48816,12 @@ msgid ""
 "                IT budget by almost half within the last 2 years.\n"
 "                Famous Managing Partner."
 msgstr ""
-"Toni Rhodesは、<b>10年以来</b>IT部門で働いています。\n"
-"彼は特にネズミ捕りを売ることで知られています。\n"
-"その技術で、彼は過去2年間でIT予算をほぼ半分に削減しました。有名なマネージング"
-"パートナー。"
+"Toni Rhodesは、IT業界で<b>10年以上</b>のキャリアの持ち主です。\n"
+"                彼は特に、無駄を徹底的に排除する画期的なアプローチで知られて"
+"います。\n"
+"                この独自の手法により、過去2年間でIT予算をほぼ半減させることに"
+"成功しました。\n"
+"                有名なマネージング・パートナーです。"
 
 #. module: base
 #. odoo-python
@@ -48484,7 +48879,7 @@ msgstr "同期をトレース"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_mass_mailing_event_track_sms
 msgid "Track Speakers SMS Marketing"
-msgstr "スピーカーのSMSマーケティングを追跡する"
+msgstr "セッションスピーカーSMSマーケティング"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_hr_attendance
@@ -48590,9 +48985,10 @@ msgstr "翻訳"
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "Translations for model translated fields only accept falsy values and str"
-msgstr ""
+msgstr "モデル翻訳されたフィールドの翻訳は、偽の値とstr値のみ許可します"
 
 #. module: base
 #: model:ir.module.module,description:base.module_stock_fleet
@@ -48823,8 +49219,9 @@ msgstr "U -域外組織および団体の活動"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_edi_ubl
+#, fuzzy
 msgid "UBL in the Point of Sale "
-msgstr ""
+msgstr "POSにおけるUBL "
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__res_partner__tz__uct
@@ -48893,8 +49290,9 @@ msgstr "URLコード"
 #. module: base
 #. odoo-python
 #: code:addons/base/models/ir_attachment.py:0
+#, fuzzy
 msgid "URL attachment (%s) shouldn't be migrated to local."
-msgstr ""
+msgstr "添付のURL (%s) はローカルに移行しないでください。"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_ir_actions_server__webhook_url
@@ -49048,8 +49446,9 @@ msgstr ""
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid "Uh-oh! You’ve got some company inconsistencies here:"
-msgstr ""
+msgstr "おっと！ ここには文体の一貫性に欠ける部分があります："
 
 #. module: base
 #: model:res.country,name:base.ua
@@ -49064,10 +49463,13 @@ msgstr "ウクライナ-会計"
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "Unable to delete %(record)s because it is used as the default value of %"
 "(field)s"
 msgstr ""
+"%(record)s を削除することができません。 %(field)sのデフォルト値として使用され"
+"ています"
 
 #. module: base
 #. odoo-python
@@ -49210,8 +49612,9 @@ msgstr "アラブ首長国連邦 - 会計レポート"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_ae_faf
+#, fuzzy
 msgid "United Arab Emirates - FTA VAT Audit"
-msgstr ""
+msgstr "アラブ首長国連邦 - FTA VAT(付加価値税)監査"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_ae_hr_payroll
@@ -49250,8 +49653,9 @@ msgstr "アメリカ合衆国 - 会計"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_us_direct_deposit
+#, fuzzy
 msgid "United States - Direct Deposit"
-msgstr ""
+msgstr "米国 - ダイレクトデポジット"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_us
@@ -49322,8 +49726,9 @@ msgstr "不明なデータベースシステム識別子: '%s'"
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid "Unknown error during import: %(error_type)s: %(error_message)s"
-msgstr ""
+msgstr "以下のインポート中の不明なエラー: %(error_type)s: %(error_message)s"
 
 #. module: base
 #. odoo-python
@@ -49414,8 +49819,9 @@ msgstr "Unsplash 画像ライブラリ"
 #. module: base
 #. odoo-python
 #: code:addons/domains.py:0
+#, fuzzy
 msgid "Unsupported operator on %(field_label)s %(model_label)s in %(domain)s"
-msgstr ""
+msgstr "%(field_label)s %(model_label)s (%(domain)s)内での未サポートの演算子"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_appointment_account_payment
@@ -49479,10 +49885,13 @@ msgstr "関連モデルを更新"
 #. module: base
 #. odoo-python
 #: code:addons/fields_properties.py:0
+#, fuzzy
 msgid ""
 "Updating records with different property fields definitions is not "
 "supported. Update by separate definition instead."
 msgstr ""
+"プロパティフィールドの定義が異なるレコードの更新はサポートされていません。代"
+"わりに、個別の定義を使用して更新してください。"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.module_form
@@ -49529,8 +49938,9 @@ msgstr "ウルグアイ - 会計レポート"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_uy_edi_stock
+#, fuzzy
 msgid "Uruguay - E-Remitos"
-msgstr ""
+msgstr "ウルグアイ - E-Remitos"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_uy_edi
@@ -50203,8 +50613,9 @@ msgstr "このビューを継承するビュー"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_vineyard
+#, fuzzy
 msgid "Vineyard"
-msgstr ""
+msgstr "ブドウ園"
 
 #. module: base
 #: model:res.country,name:base.vg
@@ -50533,8 +50944,9 @@ msgstr "ウェブサイト支払い"
 
 #. module: base
 #: model:ir.module.category,name:base.module_category_website_sale
+#, fuzzy
 msgid "Website Sale"
-msgstr ""
+msgstr "ウェブサイト販売"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_test_website_sale_full
@@ -50672,8 +51084,9 @@ msgstr "WhatsApp-販売"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_whatsapp_sign
+#, fuzzy
 msgid "WhatsApp-Sign"
-msgstr ""
+msgstr "WhatsApp-署名"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_whatsapp_event
@@ -50895,8 +51308,8 @@ msgid ""
 "Wood Corner brings honesty and seriousness to wood industry while helping "
 "customers deal with trees, flowers and fungi."
 msgstr ""
-"ウッドコーナーは、顧客が木、花、菌類を扱うのを助けながら、木材産業に誠実さと"
-"真剣さをもたらします。"
+"Wood Cornerは、樹木や草花、菌類のケアを通じてお客様の課題を解決し、木材業界に"
+"「誠実」と「信頼」をお届けしています。"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_work_entry
@@ -51247,10 +51660,13 @@ msgstr "現在ログインしているユーザを無効にすることはでき
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "You cannot delete %(to_delete_record)s, as it is used by %"
 "(on_restrict_record)s"
 msgstr ""
+"%(to_delete_record)sを削除することはできません。 %(on_restrict_record)sによっ"
+"て使用されています"
 
 #. module: base
 #. odoo-python
@@ -51358,14 +51774,18 @@ msgstr "キー%sで設定パラメータの名前を変更することはでき�
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "You cannot use “%(property_name)s” because the linked “%(model_name)s” model "
 "doesn't exist or is invalid"
 msgstr ""
+"“%(property_name)s” を使用することができません。“%(model_name)s” モデルが存在"
+"しないか無効なためです"
 
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid ""
 "You do not have enough rights to access the field \"%(field)s\" on %"
 "(document_kind)s (%(document_model)s). Please contact your system "
@@ -51373,6 +51793,10 @@ msgid ""
 "\n"
 "Operation: %(operation)s"
 msgstr ""
+"フィールド \"%(field)s\" (%(document_kind)s(%(document_model)s))にアクセスす"
+"る権限がありません。システム管理者に連絡してください。\n"
+"\n"
+"オペレーション: %(operation)s"
 
 #. module: base
 #. odoo-python
@@ -51548,8 +51972,9 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_es_pos
+#, fuzzy
 msgid "[Deprecated] Spain - Point of Sale"
-msgstr ""
+msgstr "[非推奨] スペイン - POS"
 
 #. module: base
 #: model:ir.module.category,name:base.module_category_account
@@ -51644,8 +52069,9 @@ msgstr "作成"
 #. module: base
 #. odoo-python
 #: code:addons/models.py:0
+#, fuzzy
 msgid "custom field access rules"
-msgstr ""
+msgstr "カスタムフィールドのアクセスルール"
 
 #. module: base
 #: model:res.currency,currency_subunit_label:base.STN

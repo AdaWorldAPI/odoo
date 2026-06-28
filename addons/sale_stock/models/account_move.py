@@ -70,9 +70,9 @@ class AccountMove(models.Model):
 
             # is it a stock return considering the document type (should it be it thought of as positively or negatively?)
             is_stock_return = (
-                    self.move_type == 'out_invoice' and (sml.location_id.usage, sml.location_dest_id.usage) == ('customer', 'internal')
+                    self.move_type == 'out_invoice' and sml.location_id.usage == 'customer' and sml.location_dest_id.usage in ('internal', 'supplier')
                     or
-                    self.move_type == 'out_refund' and (sml.location_id.usage, sml.location_dest_id.usage) == ('internal', 'customer')
+                    self.move_type == 'out_refund' and sml.location_dest_id.usage == 'customer' and sml.location_id.usage in ('internal', 'supplier')
             )
             if is_stock_return:
                 returned_qty = min(qties_per_lot[sml.lot_id], quantity)
@@ -153,7 +153,10 @@ class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
     def _get_stock_moves(self):
-        return super()._get_stock_moves() | self.sale_line_ids.move_ids
+        return super()._get_stock_moves() | self._get_sale_stock_move()
+
+    def _get_sale_stock_move(self):
+        return self.sale_line_ids.move_ids
 
     def _sale_can_be_reinvoice(self):
         self.ensure_one()
@@ -168,6 +171,7 @@ class AccountMoveLine(models.Model):
         )
         posted_cogs_qty_prod_uom = sum(posted_cogs_lines.mapped(
             lambda line: line.product_uom_id._compute_quantity(line.quantity, line.product_id.uom_id)
+             * (-1 if line.move_id.move_type == "out_refund" else 1)
         ))
         return posted_cogs_qty_prod_uom + super()._get_cogs_qty()
 

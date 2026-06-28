@@ -38,7 +38,7 @@ export default class OrderPaymentValidation {
     }
 
     get nextPage() {
-        if (this.pos.config.iface_print_auto && this.pos.config.iface_print_skip_screen) {
+        if (this.pos.config.autoPrint && this.pos.config.iface_print_skip_screen) {
             return {
                 page: "FeedbackScreen",
                 params: {
@@ -174,7 +174,19 @@ export default class OrderPaymentValidation {
                 }
             }
 
-            // 3. Post process.
+            // 3. Print stock reports if needed.
+            if (this.order.picking_type_id?.has_stock_reports_to_print) {
+                const reports = await this.pos.data.call(
+                    "pos.order",
+                    "get_stock_reports_to_print",
+                    [this.order.id]
+                );
+                for (const report of reports) {
+                    await this.pos.action.doAction(report);
+                }
+            }
+
+            // 4. Post process.
             const postPushOrders = syncOrderResult.filter((order) => order.waitForPushOrder());
             if (postPushOrders.length > 0) {
                 await this.postPushOrderResolve(postPushOrders.map((order) => order.id));
@@ -199,7 +211,7 @@ export default class OrderPaymentValidation {
     get canPrintReceipt() {
         return (
             this.order.nb_print === 0 &&
-            this.pos.config.iface_print_auto &&
+            this.pos.config.autoPrint &&
             (this.order.isToInvoice() ? this.order.finalized : true)
         );
     }
