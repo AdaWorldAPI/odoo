@@ -46,7 +46,8 @@ variable **is** ticking the box).
 | `PORT`                    | `8069`       | Injected by Railway; the entrypoint forwards it to `--http-port`.              |
 | `ODOO_DATABASE`           | from URL     | Target/pinned database name. Defaults to the DB in `DATABASE_URL` (so init needs no `CREATEDB`); set a different name only if the PG role has `CREATEDB`. |
 | `ODOO_SETUP_MODULES`      | `base`       | Comma-separated modules to install during first-boot setup.                    |
-| `ODOO_ADMIN_PASSWORD`     | _(unset)_    | If set, the admin user's password is set to this value right after init.       |
+| `ODOO_ADMIN_PASSWORD`     | _(unset)_    | Admin password, set right after init and **login-verified** (`res.users.authenticate`) before being reported. `generate` mints a random 20-char password, verifies it, and prints it ONCE in the deploy logs. Unset → loud `admin`/`admin` nudge in the logs. |
+| `ODOO_ONBOARDING`         | `1`          | When the DB is uninitialized and `ODOO_DB_SETUP` is unset, serve a **graceful onboarding page** on `0.0.0.0:$PORT` (200 on every path incl. `/web/health`, so the healthcheck stays green) instead of booting Odoo into a broken no-schema state. Set `0` to boot Odoo anyway. |
 | `ODOO_UPDATE_MODULES`     | _(unset)_    | Comma-separated; runs `-u` on boot (schema upgrades on an existing DB).        |
 | `ODOO_INIT_MODULES`       | _(unset)_    | Legacy manual bootstrap (`--init … --stop-after-init` on every boot). Prefer `ODOO_DB_SETUP`. |
 | `POSTGRES_WAIT_ATTEMPTS`  | `30`         | Times to retry `pg_isready` before giving up.                                  |
@@ -68,9 +69,30 @@ schema (presence of the `ir_module_module` table). If it does **not**:
 
 Because detection is idempotent, you can leave `ODOO_DB_SETUP=1` (and, for a
 staging/demo environment, `ODOO_POPULATE_TEST_DATA=1`) set permanently — later
-boots see the schema and skip straight to serving. If the DB is uninitialized
-and `ODOO_DB_SETUP` is **not** set, the container still starts (so `/web/health`
-stays green) and logs the exact variables to set, then redeploy.
+boots see the schema and skip straight to serving.
+
+### Graceful onboarding (no DB / first visit)
+
+If the DB is uninitialized and `ODOO_DB_SETUP` is **not** set, the container
+serves an **onboarding page** on `0.0.0.0:$PORT` instead of a broken Odoo: it
+answers 200 on every path (Railway's `/web/health` check stays green), shows
+whether Postgres is reachable, and lists the exact three variables to set
+(`ODOO_DB_SETUP=1`, optional `ODOO_POPULATE_TEST_DATA=1`,
+`ODOO_ADMIN_PASSWORD=<pw>` or `=generate`) — then redeploy. `ODOO_ONBOARDING=0`
+restores the old boot-anyway behaviour. A legacy deployment bootstrapping via
+`ODOO_INIT_MODULES` is exempt: its `--init … --stop-after-init` run proceeds
+as before, no onboarding interception.
+
+### Admin credentials (verified, no email confirmation)
+
+The root admin needs no email confirmation. After first-boot init the
+entrypoint sets the password from `ODOO_ADMIN_PASSWORD`, then **verifies the
+login actually works** through `res.users.authenticate` (the same code path
+as the login form) before reporting it. `ODOO_ADMIN_PASSWORD=generate` mints
+a random password, verifies it, and prints it **once** in the deploy logs.
+With no password set, the logs carry a loud `admin`/`admin` change-me nudge.
+Postgres is this image's system of record — the lance-graph V3 storage lane
+belongs to the separate odoo-rs deployment, not this container.
 
 > Legacy path: `ODOO_INIT_MODULES` still works (manual `--stop-after-init` on
 > every boot, then unset), but `ODOO_DB_SETUP` supersedes it for the hands-off

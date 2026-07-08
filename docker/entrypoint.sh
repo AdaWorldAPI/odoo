@@ -146,10 +146,84 @@ set_admin_password() {
         --db_user "$PGUSER" --db_password "$PGPASSWORD" --no-http <<'PYEOF'
 import os
 admin = env.ref('base.user_admin')
+admin.login = 'admin'  # root admin login is deterministic; no email confirmation involved
 admin.password = os.environ['ODOO_ADMIN_PASSWORD']
 env.cr.commit()
 PYEOF
 }
+
+# Double-check the admin credential actually AUTHENTICATES before presenting
+# it (Odoo 19: `res.users.authenticate(credential, user_agent_env)` — the
+# same code path the login form uses, so a pass here is a real login).
+# Prints VERIFY_OK / VERIFY_FAIL; the function's exit status follows.
+verify_admin_password() {
+    local marker
+    marker=$(/opt/odoo/odoo-bin shell \
+        --config "${ODOO_RC:-/etc/odoo/odoo.conf}" \
+        -d "$SETUP_DB" --db_host "$PGHOST" --db_port "$PGPORT" \
+        --db_user "$PGUSER" --db_password "$PGPASSWORD" --no-http <<'PYEOF' 2>/dev/null | grep -oE 'VERIFY_(OK|FAIL)' | tail -1
+import os
+try:
+    info = env['res.users'].authenticate(
+        {'type': 'password', 'login': 'admin',
+         'password': os.environ['ODOO_ADMIN_PASSWORD']},
+        {'interactive': False},
+    )
+    uid = info.get('uid') if isinstance(info, dict) else info
+    print('VERIFY_OK' if uid else 'VERIFY_FAIL')
+except Exception:
+    print('VERIFY_FAIL')
+PYEOF
+    )
+    [[ "$marker" == "VERIFY_OK" ]]
+}
+
+# Post-init admin handling: generate-on-request, set, VERIFY, then present /
+# nudge — loudly, in one banner block.
+finalize_admin_credentials() {
+    local generated=0
+    if [[ "${ODOO_ADMIN_PASSWORD:-}" == "generate" ]]; then
+        ODOO_ADMIN_PASSWORD="$(python3 -c 'import secrets,string;print("".join(secrets.choice(string.ascii_letters+string.digits) for _ in range(20)))')"
+        export ODOO_ADMIN_PASSWORD
+        generated=1
+    fi
+    if [[ -n "${ODOO_ADMIN_PASSWORD:-}" ]]; then
+        set_admin_password
+        if verify_admin_password; then
+            log "=================================================================="
+            log " ADMIN LOGIN VERIFIED — user 'admin' authenticates successfully."
+            if [[ "$generated" == "1" ]]; then
+                log "   GENERATED PASSWORD (shown ONCE — store it now):"
+                log "     login:    admin"
+                log "     password: ${ODOO_ADMIN_PASSWORD}"
+            fi
+            log "   No email confirmation is required for the root admin."
+            log "   NUDGE: change this password from Settings > Users after"
+            log "   first login, and enable 2FA for production."
+            log "=================================================================="
+        else
+            log "!! ================================================================"
+            log "!! ADMIN PASSWORD VERIFICATION FAILED — the password was written"
+            log "!! but 'admin' did NOT authenticate with it. Do not hand out this"
+            log "!! credential. Re-run with a fresh ODOO_ADMIN_PASSWORD, or reset"
+            log "!! via: odoo shell -> env.ref('base.user_admin').password = '...'"
+            log "!! ================================================================"
+        fi
+    else
+        log "=================================================================="
+        log " ADMIN NUDGE: no ODOO_ADMIN_PASSWORD was set — the root admin is"
+        log "   login: admin / password: admin  (Odoo's -i base default)."
+        log "   CHANGE IT IMMEDIATELY, or redeploy with ODOO_ADMIN_PASSWORD=<pw>"
+        log "   (or ODOO_ADMIN_PASSWORD=generate to mint + verify one for you)."
+        log "=================================================================="
+    fi
+}
+
+# Set to 1 when the DB is uninitialized and no setup was requested — the
+# serve path then presents the graceful onboarding page instead of booting
+# Odoo into a broken no-schema state. ODOO_ONBOARDING=0 restores the old
+# start-anyway behaviour.
+ONBOARDING_NEEDED=0
 
 maybe_setup_database() {
     if db_is_initialized; then
@@ -160,6 +234,13 @@ maybe_setup_database() {
         log "Database '${SETUP_DB}' is NOT initialized and ODOO_DB_SETUP is unset."
         log "  -> Set ODOO_DB_SETUP=1 (and optionally ODOO_POPULATE_TEST_DATA=1),"
         log "     then redeploy, to create the schema automatically on first boot."
+        # Onboarding only when NO setup path was requested at all: a legacy
+        # deployment bootstrapping via ODOO_INIT_MODULES (codex P2 on #3) has
+        # its --init/--stop-after-init argv built downstream and must run it,
+        # not sit on the onboarding page.
+        if [[ -z "${ODOO_INIT_MODULES:-}" ]]; then
+            ONBOARDING_NEEDED=1
+        fi
         return 0
     fi
 
@@ -182,10 +263,73 @@ maybe_setup_database() {
         --db_user "$PGUSER" --db_password "$PGPASSWORD" \
         -i "$modules" "${demo[@]}" --stop-after-init
 
-    if [[ -n "${ODOO_ADMIN_PASSWORD:-}" ]]; then
-        set_admin_password
-    fi
+    finalize_admin_credentials
     log "First-boot setup complete for '${SETUP_DB}'."
+}
+
+# Graceful onboarding: the DB is reachable but has no Odoo schema and setup
+# was not requested. Booting Odoo here yields broken pages (list_db=False
+# hides the DB manager), so instead serve a tiny static onboarding page on
+# 0.0.0.0:$PORT that answers 200 on EVERY path (Railway's /web/health check
+# stays green) and tells the operator exactly which variables to set. Runs
+# as PID 1 via exec; the next redeploy with ODOO_DB_SETUP=1 boots Odoo.
+serve_onboarding() {
+    local db_state="unreachable"
+    if PGPASSWORD="$PGPASSWORD" pg_isready -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" >/dev/null 2>&1; then
+        db_state="reachable, schema not initialized"
+    fi
+    log "Serving GRACEFUL ONBOARDING page on 0.0.0.0:${HTTP_PORT} (DB: ${db_state})."
+    log "  (Set ODOO_ONBOARDING=0 to boot Odoo anyway.)"
+    export ONBOARD_DB_STATE="$db_state" ONBOARD_HOST="$PGHOST" ONBOARD_DB="$SETUP_DB" HTTP_PORT
+    exec python3 - <<'PYEOF'
+import http.server
+import os
+
+STATE = os.environ.get("ONBOARD_DB_STATE", "unknown")
+HOST = os.environ.get("ONBOARD_HOST", "?")
+DB = os.environ.get("ONBOARD_DB", "?")
+PAGE = f"""<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Odoo — first-run setup</title>
+<style>body{{font-family:system-ui,sans-serif;max-width:44rem;margin:4rem auto;
+padding:0 1rem;line-height:1.5}}code{{background:#eee;padding:.1em .35em;
+border-radius:4px}}li{{margin:.4em 0}}.muted{{color:#666}}</style></head><body>
+<h1>Odoo is deployed &mdash; one step left</h1>
+<p>The container is healthy, but the database <code>{DB}</code> on
+<code>{HOST}</code> is <b>{STATE}</b>, so Odoo has no schema to serve yet.</p>
+<h2>Finish setup (Railway &rarr; Variables, then redeploy)</h2>
+<ol>
+<li><b>Set up the database:</b> <code>ODOO_DB_SETUP=1</code>
+ <span class="muted">(idempotent &mdash; skipped once the schema exists)</span></li>
+<li><b>Optional demo data</b> for a rich demo:
+ <code>ODOO_POPULATE_TEST_DATA=1</code></li>
+<li><b>Admin password:</b> <code>ODOO_ADMIN_PASSWORD=&lt;your pw&gt;</code>
+ or <code>ODOO_ADMIN_PASSWORD=generate</code>
+ <span class="muted">(minted, login-verified, shown once in the deploy
+ logs; no email confirmation needed for the root admin &mdash; change the
+ password after first login)</span></li>
+</ol>
+<p class="muted">Postgres is this image's system of record. (The Rust
+transcode's lance-graph V3 storage lane is a separate odoo-rs deployment,
+not this container.)</p>
+</body></html>"""
+
+
+class Onboarding(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):  # noqa: N802 (stdlib API name)
+        body = PAGE.encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, fmt, *args):
+        pass  # keep Railway logs quiet; health checks poll frequently
+
+
+port = int(os.environ.get("HTTP_PORT", "8069"))
+http.server.ThreadingHTTPServer(("0.0.0.0", port), Onboarding).serve_forever()
+PYEOF
 }
 
 # ---------------------------------------------------------------------------
@@ -240,6 +384,9 @@ case "${1:-odoo}" in
     odoo|odoo-bin)
         shift || true
         maybe_setup_database
+        if [[ "$ONBOARDING_NEEDED" == "1" ]] && [[ "${ODOO_ONBOARDING:-1}" != "0" ]]; then
+            serve_onboarding   # exec's; does not return
+        fi
         log "exec odoo-bin ${args[*]} $*"
         exec /opt/odoo/odoo-bin "${args[@]}" "$@"
         ;;
