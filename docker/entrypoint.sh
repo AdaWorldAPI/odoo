@@ -234,7 +234,13 @@ maybe_setup_database() {
         log "Database '${SETUP_DB}' is NOT initialized and ODOO_DB_SETUP is unset."
         log "  -> Set ODOO_DB_SETUP=1 (and optionally ODOO_POPULATE_TEST_DATA=1),"
         log "     then redeploy, to create the schema automatically on first boot."
-        ONBOARDING_NEEDED=1
+        # Onboarding only when NO setup path was requested at all: a legacy
+        # deployment bootstrapping via ODOO_INIT_MODULES (codex P2 on #3) has
+        # its --init/--stop-after-init argv built downstream and must run it,
+        # not sit on the onboarding page.
+        if [[ -z "${ODOO_INIT_MODULES:-}" ]]; then
+            ONBOARDING_NEEDED=1
+        fi
         return 0
     fi
 

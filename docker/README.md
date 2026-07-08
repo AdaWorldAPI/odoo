@@ -79,7 +79,9 @@ answers 200 on every path (Railway's `/web/health` check stays green), shows
 whether Postgres is reachable, and lists the exact three variables to set
 (`ODOO_DB_SETUP=1`, optional `ODOO_POPULATE_TEST_DATA=1`,
 `ODOO_ADMIN_PASSWORD=<pw>` or `=generate`) — then redeploy. `ODOO_ONBOARDING=0`
-restores the old boot-anyway behaviour.
+restores the old boot-anyway behaviour. A legacy deployment bootstrapping via
+`ODOO_INIT_MODULES` is exempt: its `--init … --stop-after-init` run proceeds
+as before, no onboarding interception.
 
 ### Admin credentials (verified, no email confirmation)
 
