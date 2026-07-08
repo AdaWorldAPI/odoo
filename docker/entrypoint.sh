@@ -10,11 +10,21 @@
 #   3. Wait for Postgres to be reachable before exec'ing Odoo (Railway plugins
 #      usually come up before the app, but this avoids race conditions on cold
 #      starts).
-#   4. exec into odoo-bin so it gets PID 1 and signals propagate cleanly.
+#   4. On first boot, optionally create + seed the database (Railway
+#      "Set up DB" + "Populate test data" — driven by service variables).
+#   5. exec into odoo-bin so it gets PID 1 and signals propagate cleanly.
 
 set -euo pipefail
 
 log() { printf '[entrypoint] %s\n' "$*" >&2; }
+
+# Truthy test for the Railway boolean "checkmark" variables (1/true/yes/on).
+is_truthy() {
+    case "$(printf '%s' "${1:-}" | tr '[:upper:]' '[:lower:]')" in
+        1|true|yes|on|y) return 0 ;;
+        *) return 1 ;;
+    esac
+}
 
 # ---------------------------------------------------------------------------
 # Parse $DATABASE_URL (postgresql://user:password@host:port/database?params)
@@ -82,6 +92,101 @@ wait_for_postgres() {
 }
 
 # ---------------------------------------------------------------------------
+# First-boot database setup — the Railway "Set up DB" + "Populate test data"
+# flow, driven entirely by service variables (a headless container has no
+# interactive prompt, so the variables ARE the checkboxes).
+#
+# On a fresh Postgres the target DB has no Odoo schema, and the DB-manager UI
+# is disabled (list_db=False), so /web/health answers 200 but nothing is
+# usable until the schema is installed. These helpers detect that state from
+# the PG connection already parsed out of $DATABASE_URL and, when the operator
+# opts in, run a one-shot `-i <modules> --stop-after-init` BEFORE the server
+# starts — optionally seeding Odoo's demo/test data.
+#
+#   ODOO_DB_SETUP=1            → "Set up DB": auto-init an empty DB on first boot
+#   ODOO_POPULATE_TEST_DATA=1  → "Populate test data": load Odoo demo data
+#   ODOO_SETUP_MODULES=a,b,c   → modules to install (default: base)
+#   ODOO_ADMIN_PASSWORD=...    → set the admin user's password after init
+#
+# Idempotent: once the schema exists, setup is skipped on every later boot, so
+# both variables can safely stay set. Detection = presence of Odoo's signature
+# table `ir_module_module` in the target DB.
+# ---------------------------------------------------------------------------
+
+# Target database for first-boot setup. Defaults to the DB in $DATABASE_URL
+# (the Railway plugin's own database), so Odoo initializes INTO the existing
+# DB and needs no CREATEDB privilege. Set ODOO_DATABASE / ODOO_DB_NAME to a
+# different name only if the PG role has CREATEDB.
+SETUP_DB="${ODOO_DATABASE:-${ODOO_DB_NAME:-$PGDATABASE}}"
+
+# Scalar psql query that never aborts the script on failure (set -e / pipefail
+# safe). $1 = database to connect to, $2 = SQL returning one value.
+psql_q() {
+    PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
+        -d "$1" -tAqc "$2" 2>/dev/null | tr -d '[:space:]' || true
+}
+
+db_exists() {
+    # pg_database is a shared catalog — read it from the always-present URL DB.
+    [[ "$(psql_q "$PGDATABASE" "SELECT 1 FROM pg_database WHERE datname='${SETUP_DB}'")" == "1" ]]
+}
+
+db_is_initialized() {
+    db_exists || return 1
+    # to_regclass returns NULL (empty) when the table is absent.
+    [[ -n "$(psql_q "$SETUP_DB" "SELECT to_regclass('public.ir_module_module')")" ]]
+}
+
+set_admin_password() {
+    log "Setting admin user password from ODOO_ADMIN_PASSWORD."
+    # env.ref('base.user_admin').password auto-hashes via the field setter.
+    /opt/odoo/odoo-bin shell \
+        --config "${ODOO_RC:-/etc/odoo/odoo.conf}" \
+        -d "$SETUP_DB" --db_host "$PGHOST" --db_port "$PGPORT" \
+        --db_user "$PGUSER" --db_password "$PGPASSWORD" --no-http <<'PYEOF'
+import os
+admin = env.ref('base.user_admin')
+admin.password = os.environ['ODOO_ADMIN_PASSWORD']
+env.cr.commit()
+PYEOF
+}
+
+maybe_setup_database() {
+    if db_is_initialized; then
+        log "Database '${SETUP_DB}' already initialized — skipping first-boot setup."
+        return 0
+    fi
+    if ! is_truthy "${ODOO_DB_SETUP:-}"; then
+        log "Database '${SETUP_DB}' is NOT initialized and ODOO_DB_SETUP is unset."
+        log "  -> Set ODOO_DB_SETUP=1 (and optionally ODOO_POPULATE_TEST_DATA=1),"
+        log "     then redeploy, to create the schema automatically on first boot."
+        return 0
+    fi
+
+    local modules="${ODOO_SETUP_MODULES:-${ODOO_INIT_MODULES:-base}}"
+    # Odoo 19: --without-demo stores into with_demo (inverted). False => demo ON.
+    local demo=("--without-demo=True")   # clean DB (production default)
+    if is_truthy "${ODOO_POPULATE_TEST_DATA:-}"; then
+        demo=("--without-demo=False")     # load Odoo demo / test data
+        log "First boot: initializing '${SETUP_DB}' with modules [${modules}] + demo/test data."
+    else
+        log "First boot: initializing '${SETUP_DB}' with modules [${modules}] (no demo data)."
+    fi
+
+    /opt/odoo/odoo-bin \
+        --config "${ODOO_RC:-/etc/odoo/odoo.conf}" \
+        -d "$SETUP_DB" \
+        --db_host "$PGHOST" --db_port "$PGPORT" \
+        --db_user "$PGUSER" --db_password "$PGPASSWORD" \
+        -i "$modules" "${demo[@]}" --stop-after-init
+
+    if [[ -n "${ODOO_ADMIN_PASSWORD:-}" ]]; then
+        set_admin_password
+    fi
+    log "First-boot setup complete for '${SETUP_DB}'."
+}
+
+# ---------------------------------------------------------------------------
 # HTTP port. Railway injects $PORT; Odoo's flag is --http-port.
 # ---------------------------------------------------------------------------
 HTTP_PORT="${PORT:-${ODOO_HTTP_PORT:-8069}}"
@@ -128,6 +233,7 @@ wait_for_postgres || true
 case "${1:-odoo}" in
     odoo|odoo-bin)
         shift || true
+        maybe_setup_database
         log "exec odoo-bin ${args[*]} $*"
         exec /opt/odoo/odoo-bin "${args[@]}" "$@"
         ;;

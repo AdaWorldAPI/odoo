@@ -22,29 +22,59 @@ an Odoo image that runs on [Railway](https://railway.com).
 3. Provision a **Volume** mounted at `/var/lib/odoo` so the filestore and
    sessions survive restarts. If you ship custom modules, mount a second
    volume at `/mnt/extra-addons`.
-4. Deploy. The container binds to `$PORT` automatically.
+4. In the Odoo service **Variables**, set **`ODOO_DB_SETUP=1`** to have the
+   first deploy create + initialize the database automatically. For a
+   demo/staging box, also set **`ODOO_POPULATE_TEST_DATA=1`** to seed Odoo's
+   test data. (Both are safe to leave on — they only act while the DB is
+   empty.)
+5. Deploy. The container binds to `$PORT` automatically, initializes the DB on
+   the first boot, and serves once `/web/health` is green.
 
 ## Environment variables
 
-| Variable                | Default       | Notes                                                              |
-| ----------------------- | ------------- | ------------------------------------------------------------------ |
-| `DATABASE_URL`          | _(required)_  | Set by the Railway Postgres plugin                                 |
-| `PORT`                  | `8069`        | Injected by Railway; the entrypoint forwards it to `--http-port`   |
-| `ODOO_DATABASE`         | from URL      | Pin a single database name (recommended for production)            |
-| `ODOO_INIT_MODULES`     | _(unset)_     | Comma-separated; installs and stops (use for first-boot bootstrap) |
-| `ODOO_UPDATE_MODULES`   | _(unset)_     | Comma-separated; runs `-u` on boot                                 |
-| `POSTGRES_WAIT_ATTEMPTS`| `30`          | Times to retry `pg_isready` before giving up                       |
-| `POSTGRES_WAIT_DELAY`   | `2` seconds   | Delay between retries                                              |
+The entrypoint reads the Railway Postgres URL (host, port, user, **password**,
+db name) out of `DATABASE_URL` automatically — you never hand-wire `PG*`. The
+first-boot behaviour is controlled by the two "checkbox" variables at the top
+of the table (a headless container has no interactive prompt, so setting the
+variable **is** ticking the box).
 
-## Initial database bootstrap
+| Variable                  | Default      | Notes                                                                          |
+| ------------------------- | ------------ | ------------------------------------------------------------------------------ |
+| `ODOO_DB_SETUP`           | _(unset)_    | **"Set up DB"** — set to `1` to auto-create + initialize an empty DB on first boot. Idempotent: skipped once the schema exists. |
+| `ODOO_POPULATE_TEST_DATA` | _(unset)_    | **"Populate test data"** — set to `1` to load Odoo's demo/test data during that first-boot init. Ignored if the DB is already initialized. |
+| `DATABASE_URL`            | _(required)_ | Set by the Railway Postgres plugin. Parsed for host/port/user/password/db.     |
+| `PORT`                    | `8069`       | Injected by Railway; the entrypoint forwards it to `--http-port`.              |
+| `ODOO_DATABASE`           | from URL     | Target/pinned database name. Defaults to the DB in `DATABASE_URL` (so init needs no `CREATEDB`); set a different name only if the PG role has `CREATEDB`. |
+| `ODOO_SETUP_MODULES`      | `base`       | Comma-separated modules to install during first-boot setup.                    |
+| `ODOO_ADMIN_PASSWORD`     | _(unset)_    | If set, the admin user's password is set to this value right after init.       |
+| `ODOO_UPDATE_MODULES`     | _(unset)_    | Comma-separated; runs `-u` on boot (schema upgrades on an existing DB).        |
+| `ODOO_INIT_MODULES`       | _(unset)_    | Legacy manual bootstrap (`--init … --stop-after-init` on every boot). Prefer `ODOO_DB_SETUP`. |
+| `POSTGRES_WAIT_ATTEMPTS`  | `30`         | Times to retry `pg_isready` before giving up.                                  |
+| `POSTGRES_WAIT_DELAY`     | `2` seconds  | Delay between retries.                                                          |
 
-The first time you deploy, Odoo has no database yet. Two options:
+## Initial database bootstrap (automatic)
 
-- **Easy:** open the container shell from Railway and run
-  `odoo -d <name> -i base --stop-after-init`, then redeploy.
-- **Hands-off:** set `ODOO_INIT_MODULES=base` (and `ODOO_DATABASE=<name>`)
-  for the first deploy, watch the logs, then unset the variable so
-  subsequent boots don't try to reinstall.
+On first boot the entrypoint detects whether the target database has an Odoo
+schema (presence of the `ir_module_module` table). If it does **not**:
+
+- with **`ODOO_DB_SETUP=1`** it runs `-i base --stop-after-init` against the DB
+  parsed from `DATABASE_URL`, then starts the server — one deploy, no shell
+  step, nothing to unset afterwards;
+- add **`ODOO_POPULATE_TEST_DATA=1`** to seed Odoo's demo/test data in the same
+  pass (equivalent to `--without-demo=False`); omit it for a clean production DB;
+- optionally set **`ODOO_ADMIN_PASSWORD`** to fix the admin login in the same
+  step, and **`ODOO_SETUP_MODULES=base,sale,account,…`** to install more than
+  `base`.
+
+Because detection is idempotent, you can leave `ODOO_DB_SETUP=1` (and, for a
+staging/demo environment, `ODOO_POPULATE_TEST_DATA=1`) set permanently — later
+boots see the schema and skip straight to serving. If the DB is uninitialized
+and `ODOO_DB_SETUP` is **not** set, the container still starts (so `/web/health`
+stays green) and logs the exact variables to set, then redeploy.
+
+> Legacy path: `ODOO_INIT_MODULES` still works (manual `--stop-after-init` on
+> every boot, then unset), but `ODOO_DB_SETUP` supersedes it for the hands-off
+> flow.
 
 ## Local build / smoke test
 
