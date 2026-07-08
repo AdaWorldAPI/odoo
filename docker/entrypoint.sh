@@ -163,7 +163,9 @@ maybe_setup_database() {
         return 0
     fi
 
-    local modules="${ODOO_SETUP_MODULES:-${ODOO_INIT_MODULES:-base}}"
+    # Decoupled from the legacy ODOO_INIT_MODULES on purpose (codex P2): mixing
+    # them would let the legacy --init/--stop-after-init serve-arg fire too.
+    local modules="${ODOO_SETUP_MODULES:-base}"
     # Odoo 19: --without-demo stores into with_demo (inverted). False => demo ON.
     local demo=("--without-demo=True")   # clean DB (production default)
     if is_truthy "${ODOO_POPULATE_TEST_DATA:-}"; then
@@ -213,8 +215,12 @@ if [[ -n "${ODOO_DATABASE:-${PGDATABASE:-}}" && "${PGDATABASE}" != "postgres" ]]
     args+=("--database" "${ODOO_DATABASE:-$PGDATABASE}")
 fi
 
-# Comma-separated module list to install on first boot, if requested.
-if [[ -n "${ODOO_INIT_MODULES:-}" ]]; then
+# Legacy first-boot bootstrap (comma-separated module list). SKIPPED when
+# ODOO_DB_SETUP drives setup — that path owns first-boot and must NOT inject
+# --stop-after-init into the serve argv, or the container would init and exit
+# instead of serving (codex P2). So the two variables can be left set together:
+# ODOO_DB_SETUP wins, ODOO_INIT_MODULES is the standalone legacy path.
+if [[ -n "${ODOO_INIT_MODULES:-}" ]] && ! is_truthy "${ODOO_DB_SETUP:-}"; then
     args+=("--init" "$ODOO_INIT_MODULES" "--stop-after-init")
 fi
 

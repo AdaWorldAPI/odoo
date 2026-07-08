@@ -74,7 +74,11 @@ stays green) and logs the exact variables to set, then redeploy.
 
 > Legacy path: `ODOO_INIT_MODULES` still works (manual `--stop-after-init` on
 > every boot, then unset), but `ODOO_DB_SETUP` supersedes it for the hands-off
-> flow.
+> flow. If **both** are set, `ODOO_DB_SETUP` wins and the legacy
+> `--stop-after-init` injection is suppressed — so migrating from the legacy
+> path by adding `ODOO_DB_SETUP=1` is safe and you can leave both variables in
+> place. `ODOO_SETUP_MODULES` is independent of `ODOO_INIT_MODULES` (it does not
+> inherit it).
 
 ## Local build / smoke test
 
