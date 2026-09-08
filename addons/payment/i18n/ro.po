@@ -8,18 +8,18 @@
 # Foldi Robert <foldirobert@nexterp.ro>, 2022
 # Martin Trigaux, 2022
 # Cozmin Candea <office@terrabit.ro>, 2023
-# Dorin Hongu <dhongu@gmail.com>, 2023, 2025.
+# Dorin Hongu <dhongu@gmail.com>, 2023, 2025, 2026.
 # Fenyedi Levente, 2023
-# "Tiffany Chang (tic)" <tic@odoo.com>, 2025.
-# Ciocoiu Beatrice-Flavia <ciocoiuflavia008@gmail.com>, 2025.
-# Alin Ilie <alin.ilie@logit-solutions.com>, 2025.
+# "Tiffany Chang (tic)" <tic@odoo.com>, 2025, 2026.
+# Ciocoiu Beatrice-Flavia <ciocoiuflavia008@gmail.com>, 2025, 2026.
+# Alin Ilie <alin.ilie@logit-solutions.com>, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-15 17:36+0000\n"
-"PO-Revision-Date: 2025-12-09 14:05+0000\n"
-"Last-Translator: Alin Ilie <alin.ilie@logit-solutions.com>\n"
+"POT-Creation-Date: 2026-07-10 17:37+0000\n"
+"PO-Revision-Date: 2026-08-06 05:32+0000\n"
+"Last-Translator: Ciocoiu Beatrice-Flavia <ciocoiuflavia008@gmail.com>\n"
 "Language-Team: Romanian <https://translate.odoo.com/projects/odoo-19/payment/"
 "ro/>\n"
 "Language: ro\n"
@@ -28,7 +28,7 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 2026.6.1\n"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.availability_report_records
@@ -75,11 +75,10 @@ msgid ""
 "transactions you intend to capture can only be captured in full. Handle the "
 "transactions individually to capture a partial amount.\"/>"
 msgstr ""
-"<i class=\"fa fa-info-circle oe_inline\" "
-"invisible=\"support_partial_capture != 'full_only'\" title=\"Unele dintre "
-"tranzacțiile pe care intenționați să le capturați pot fi capturate doar în "
-"totalitate. Gestionați tranzacțiile individual pentru a captura o sumă "
-"parțială.\"/>"
+"<i class=\"fa fa-info-circle oe_inline\" invisible=\"support_partial_capture "
+"!= 'full_only'\" title=\"Unele dintre tranzacțiile pe care intenționați să "
+"le capturați pot fi capturate doar în totalitate. Gestionați tranzacțiile "
+"individual pentru a captura o sumă parțială.\"/>"
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.token_form
@@ -184,8 +183,8 @@ msgid ""
 "provider configuration if\n"
 "                    the capture is still pending after a few minutes."
 msgstr ""
-"<strong>Atenție!</strong> Există o captură parțială în așteptare. Vă rugăm "
-"să                     așteptați un moment pentru a fi procesată. Verificați "
+"<strong>Atenție!</strong> Există o captură parțială în așteptare. Vă rugăm să"
+"                     așteptați un moment pentru a fi procesată. Verificați "
 "configurația furnizorului de plată dacă"
 
 #. module: payment
@@ -204,10 +203,10 @@ msgid ""
 "em> button is not supported.\n"
 "                        Please use the <em>Duplicate</em> action instead."
 msgstr ""
-"<strong>Atenție</strong> Crearea unui furnizor de plată din butonul "
-"<em>CREARE</em> nu este acceptată.\n"
-"                        Vă rugăm să folosiți în schimb acțiunea "
-"<em>Duplicare</em>."
+"<strong>Atenție</strong> Crearea unui furnizor de plată din butonul <em>"
+"CREARE</em> nu este acceptată.\n"
+"                        Vă rugăm să folosiți în schimb acțiunea <em>"
+"Duplicare</em>."
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.pay
@@ -216,9 +215,9 @@ msgid ""
 "                                    correct partner before making this "
 "payment."
 msgstr ""
-"<strong>Atenție</strong> Asigurați-vă că sunteți autentificat ca "
-"partenerul                                     corect înainte de a efectua "
-"această plată."
+"<strong>Atenție</strong> Asigurați-vă că sunteți autentificat ca partenerul"
+"                                     corect înainte de a efectua această "
+"plată."
 
 #. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.pay
@@ -1027,11 +1026,6 @@ msgid "EPS"
 msgstr "EPS"
 
 #. module: payment
-#: model:payment.method,name:payment.payment_method_easypaisa
-msgid "EasyPaisa"
-msgstr "EasyPaisa"
-
-#. module: payment
 #: model:payment.method,name:payment.payment_method_elo
 msgid "Elo"
 msgstr "Elo"
@@ -1329,11 +1323,6 @@ msgstr "Iyzico"
 #: model:payment.method,name:payment.payment_method_jcb
 msgid "JCB"
 msgstr "JCB"
-
-#. module: payment
-#: model:payment.method,name:payment.payment_method_jazzcash
-msgid "JazzCash"
-msgstr "JazzCash"
 
 #. module: payment
 #: model:payment.method,name:payment.payment_method_jeniuspay
@@ -1872,6 +1861,11 @@ msgid "PaySafeCard"
 msgstr "PaySafeCard"
 
 #. module: payment
+#: model:payment.provider,name:payment.payment_provider_payu
+msgid "PayU"
+msgstr ""
+
+#. module: payment
 #: model_terms:ir.ui.view,arch_db:payment.pay
 msgid "Payment"
 msgstr "Plată"
@@ -2084,8 +2078,8 @@ msgstr "Pix"
 #: code:addons/payment/models/payment_method.py:0
 msgid "Please make sure that %(payment_method)s is supported by %(provider)s."
 msgstr ""
-"Vă rugăm să vă asigurați că %(payment_method)s este acceptată de %"
-"(provider)s."
+"Vă rugăm să vă asigurați că %(payment_method)s este acceptată de %(provider)"
+"s."
 
 #. module: payment
 #. odoo-python
@@ -3311,6 +3305,7 @@ msgstr ""
 #: model_terms:payment.provider,auth_msg:payment.payment_provider_nuvei
 #: model_terms:payment.provider,auth_msg:payment.payment_provider_paymob
 #: model_terms:payment.provider,auth_msg:payment.payment_provider_paypal
+#: model_terms:payment.provider,auth_msg:payment.payment_provider_payu
 #: model_terms:payment.provider,auth_msg:payment.payment_provider_razorpay
 #: model_terms:payment.provider,auth_msg:payment.payment_provider_redsys
 #: model_terms:payment.provider,auth_msg:payment.payment_provider_sepa_direct_debit
@@ -3340,6 +3335,7 @@ msgstr "Plata dvs. a fost autorizată."
 #: model_terms:payment.provider,cancel_msg:payment.payment_provider_nuvei
 #: model_terms:payment.provider,cancel_msg:payment.payment_provider_paymob
 #: model_terms:payment.provider,cancel_msg:payment.payment_provider_paypal
+#: model_terms:payment.provider,cancel_msg:payment.payment_provider_payu
 #: model_terms:payment.provider,cancel_msg:payment.payment_provider_razorpay
 #: model_terms:payment.provider,cancel_msg:payment.payment_provider_redsys
 #: model_terms:payment.provider,cancel_msg:payment.payment_provider_sepa_direct_debit
@@ -3369,6 +3365,7 @@ msgstr "Plata dvs. a fost anulată."
 #: model_terms:payment.provider,pending_msg:payment.payment_provider_nuvei
 #: model_terms:payment.provider,pending_msg:payment.payment_provider_paymob
 #: model_terms:payment.provider,pending_msg:payment.payment_provider_paypal
+#: model_terms:payment.provider,pending_msg:payment.payment_provider_payu
 #: model_terms:payment.provider,pending_msg:payment.payment_provider_razorpay
 #: model_terms:payment.provider,pending_msg:payment.payment_provider_redsys
 #: model_terms:payment.provider,pending_msg:payment.payment_provider_sepa_direct_debit
@@ -3397,6 +3394,7 @@ msgstr "Plata dvs. a fost procesată, dar așteaptă aprobarea."
 #: model_terms:payment.provider,done_msg:payment.payment_provider_nuvei
 #: model_terms:payment.provider,done_msg:payment.payment_provider_paymob
 #: model_terms:payment.provider,done_msg:payment.payment_provider_paypal
+#: model_terms:payment.provider,done_msg:payment.payment_provider_payu
 #: model_terms:payment.provider,done_msg:payment.payment_provider_razorpay
 #: model_terms:payment.provider,done_msg:payment.payment_provider_redsys
 #: model_terms:payment.provider,done_msg:payment.payment_provider_sepa_direct_debit
@@ -3563,6 +3561,12 @@ msgstr "tokenizarea nu este acceptată"
 #: code:addons/payment/const.py:0
 msgid "tokenization without payment no supported"
 msgstr "tokenizarea fără plată nu este acceptată"
+
+#~ msgid "EasyPaisa"
+#~ msgstr "EasyPaisa"
+
+#~ msgid "JazzCash"
+#~ msgstr "JazzCash"
 
 #~ msgid " Data Fetched"
 #~ msgstr "Date preluate"

@@ -84,7 +84,7 @@ test("should add opacity to custom background colors but not to theme colors", a
 
     await contains(".o_color_button[data-color='o-color-1']").click(); // Select a theme color
     await waitFor(".o-we-toolbar");
-    expect(getContent(el)).toBe(`<p><font style="" class="bg-o-color-1">[test]</font></p>`);
+    expect(getContent(el)).toBe(`<p><font class="bg-o-color-1">[test]</font></p>`);
     // Verify computed background color has no opacity.
     const backgroundColor = getComputedStyle(el.querySelector("p font")).backgroundColor;
     expect(backgroundColor).toBe("rgb(113, 75, 103)");
@@ -517,6 +517,22 @@ test("selected background color is shown in the toolbar and update when clicking
     expect("i.fa-paint-brush").toHaveStyle({ borderBottomColor: "rgb(255, 0, 255)" });
 });
 
+test.tags("desktop");
+test("colorpicker should stay open when hovering colors in an empty unbreakable node", async () => {
+    const { el } = await setupEditor(`<p>a</p><div class="oe_unbreakable">[<br></div><p>]b</p>`);
+    await expectElementCount(".o-we-toolbar", 1);
+    await click(".o-we-toolbar .o-select-color-foreground");
+    await waitFor(".o_font_color_selector");
+    await hover(queryOne("button[data-color='o-color-1']"));
+    // Allow the debounced toolbar update triggered by selectionchange.
+    await advanceTime(400);
+    expect(".o-we-toolbar").toHaveCount(1);
+    expect(".o_font_color_selector").toHaveCount(1);
+    expect(getContent(el)).toBe(
+        `<p>a</p><div class="oe_unbreakable">[<font class="text-o-color-1"><br></font></div><p>]b</p>`
+    );
+});
+
 test("clicking on button color parent does not crash", async () => {
     const { el } = await setupEditor("<p>[test]</p>");
 
@@ -724,7 +740,7 @@ test("custom tab color navigation using keys", async () => {
         queryFirst('.o_font_color_selector button[data-color="black"]') // Should do nothing
     );
     await press("Enter");
-    expect(getContent(el)).toBe(`<p><font style="" class="text-black">[test]</font></p>`);
+    expect(getContent(el)).toBe(`<p><font class="text-black">[test]</font></p>`);
 });
 
 describe.tags("desktop");

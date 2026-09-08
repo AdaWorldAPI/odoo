@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server saas~18.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-12 17:36+0000\n"
-"PO-Revision-Date: 2026-06-06 13:37+0000\n"
+"POT-Creation-Date: 2026-07-17 17:37+0000\n"
+"PO-Revision-Date: 2026-08-07 07:55+0000\n"
 "Last-Translator: \"Marta (wacm)\" <wacm@odoo.com>\n"
 "Language-Team: Polish <https://translate.odoo.com/projects/odoo-19/"
 "account_edi_ubl_cii/pl/>\n"
@@ -40,14 +40,19 @@ msgid "(Un)Group lines by tax"
 msgstr "(Od)grupuj pozycje wg. podatku"
 
 #. module: account_edi_ubl_cii
-#: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.report_invoice_document
-msgid "<span class=\"text-muted\">FROM</span>"
-msgstr "<span class=\"text-muted\">OD</span>"
-
-#. module: account_edi_ubl_cii
-#: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.report_invoice_document
-msgid "<span class=\"text-muted\">TO</span>"
-msgstr "<span class=\"text-muted\">DO</span>"
+#: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.layout_invoices_generated_by_odoo
+msgid ""
+"<span style=\"font-size: 16px; font-weight: bold; color: #ffffff; display: "
+"inline-block; vertical-align: middle; text-transform: uppercase; margin: 0px "
+"8px; letter-spacing: 0.5px;\">\n"
+"                        Preview\n"
+"                    </span>"
+msgstr ""
+"<span style=\"font-size: 16px; font-weight: bold; color: #ffffff; display: "
+"inline-block; vertical-align: middle; text-transform: uppercase; margin: 0px "
+"8px; letter-spacing: 0.5px;\">\n"
+"                        Podgląd\n"
+"                    </span>"
 
 #. module: account_edi_ubl_cii
 #: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.account_invoice_pdfa_3_facturx_metadata
@@ -59,6 +64,7 @@ msgstr "A"
 #: code:addons/account_edi_ubl_cii/models/account_edi_ubl_pint_eu.py:0
 msgid "A buyer reference or purchase order reference must be provided."
 msgstr ""
+"Musi zostać podana referencja kupującego lub referencja zamówienia zakupu."
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -106,7 +112,7 @@ msgstr "Albański VAT"
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9922
 msgid "Andorra VAT"
-msgstr "Andora VAT"
+msgstr "Andorski VAT"
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -173,7 +179,7 @@ msgstr "Belgijski rejestr przedsiębiorstw"
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9925
 msgid "Belgian VAT"
-msgstr "Belgia VAT"
+msgstr "Belgijski VAT"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9924
@@ -183,7 +189,7 @@ msgstr "Bośnia i Hercegowina VAT"
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9926
 msgid "Bulgaria VAT"
-msgstr "Bułgaria VAT"
+msgstr "Bułgarski VAT"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9913
@@ -194,8 +200,7 @@ msgstr "Sieć rejestrów przedsiębiorstw"
 #. odoo-python
 #: code:addons/account_edi_ubl_cii/models/account_move.py:0
 msgid "Cannot decode origin file, try by importing it again"
-msgstr ""
-"Nie można zdekodować pliku źródłowego, spróbuj zaimportować go ponownie"
+msgstr "Nie można zdekodować pliku źródłowego, spróbuj zaimportować go ponownie"
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -264,6 +269,8 @@ msgid ""
 "Could not retrieve a partner corresponding to '%s' with the same VAT. A new "
 "partner was created."
 msgstr ""
+"Nie udało się znaleźć partnera odpowiadającego '%s' z tym samym numerem VAT. "
+"Utworzono nowego partnera."
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -283,8 +290,8 @@ msgid ""
 "Could not retrieve currency: %s. Did you enable the multicurrency option and "
 "activate the currency?"
 msgstr ""
-"Nie można pobrać waluty: %s. Czy włączyłeś opcję wielowalutowości i "
-"aktywowałeś walutę?"
+"Nie można pobrać waluty: %s. Czy włączyłeś opcję wielu walut i aktywowałeś "
+"walutę?"
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -293,8 +300,8 @@ msgid ""
 "Could not retrieve partner with details: Name: %(name)s, Vat: %(vat)s, "
 "Phone: %(phone)s, Email: %(email)s"
 msgstr ""
-"Nie można było pobrać partnera ze szczegółami: Nazwa: %(name)s, NIP: %"
-"(vat)s, Telefon: %(phone)s, Email: %(email)s"
+"Nie można było pobrać partnera ze szczegółami: Nazwa: %(name)s, NIP: %(vat)"
+"s, Telefon: %(phone)s, E-mail: %(email)s"
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -326,12 +333,12 @@ msgstr "Utwórz klienta"
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9934
 msgid "Croatia VAT"
-msgstr "Chorwacja VAT"
+msgstr "Chorwacki VAT"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9928
 msgid "Cyprus VAT"
-msgstr "Cypr VAT"
+msgstr "Cypryjski VAT"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9929
@@ -569,7 +576,7 @@ msgstr "Francja SIRET"
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9957
 msgid "France VAT"
-msgstr "Francja VAT"
+msgstr "Francuski VAT"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__account_tax__ubl_cii_tax_category_code__g
@@ -585,13 +592,13 @@ msgstr "Klucze identyfikacyjne GS1"
 #. odoo-python
 #: code:addons/account_edi_ubl_cii/models/account_edi_ubl.py:0
 msgid "General discount"
-msgstr ""
+msgstr "Ogólna zniżka"
 
 #. module: account_edi_ubl_cii
 #. odoo-python
 #: code:addons/account_edi_ubl_cii/models/account_edi_ubl.py:0
 msgid "General upsell"
-msgstr ""
+msgstr "Ogólna sprzedaż dodatkowa"
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -622,12 +629,12 @@ msgstr "Niemcy Leitweg-ID"
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9930
 msgid "Germany VAT"
-msgstr "Niemcy VAT"
+msgstr "Niemiecki VAT"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9933
 msgid "Greece VAT"
-msgstr "Grecja VAT"
+msgstr "Grecki VAT"
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -638,7 +645,7 @@ msgstr "Pozycje pogrupowane wg. podatku"
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9910
 msgid "Hungary VAT"
-msgstr "Węgry VAT"
+msgstr "Węgierski VAT"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields,field_description:account_edi_ubl_cii.field_account_edi_common__id
@@ -705,7 +712,7 @@ msgstr "Raport faktur wygenerowany przez Odoo"
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9935
 msgid "Ireland VAT"
-msgstr "Irlandia VAT"
+msgstr "Irlandski VAT"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields,field_description:account_edi_ubl_cii.field_res_partner__is_peppol_edi_format
@@ -768,7 +775,7 @@ msgstr "Łotwa Zunifikowany numer rejestracyjny"
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9939
 msgid "Latvia VAT"
-msgstr "Łotwa VAT"
+msgstr "Łotewski VAT"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__0199
@@ -904,8 +911,7 @@ msgstr "Wypełnij VAT lub adres Peppol partnera."
 msgid ""
 "Please fill in your company's VAT or Peppol Address to generate a complete "
 "XML file."
-msgstr ""
-"Wypełnij swój VAT lub adres Peppol, aby wygenerować kompletny plik XML."
+msgstr "Wypełnij swój VAT lub adres Peppol, aby wygenerować kompletny plik XML."
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -919,7 +925,7 @@ msgstr ""
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9945
 msgid "Poland VAT"
-msgstr "Polska VAT"
+msgstr "Polski VAT"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9946
@@ -930,6 +936,22 @@ msgstr "Portugalia VAT"
 #: model:ir.model,name:account_edi_ubl_cii.model_ir_actions_report
 msgid "Report Action"
 msgstr "Zgłoś akcję"
+
+#. module: account_edi_ubl_cii
+#. odoo-python
+#: code:addons/account_edi_ubl_cii/models/account_edi_common.py:0
+msgid ""
+"Reverse charge: In the absence of a written objection within one month of "
+"receipt of the invoice, the customer is deemed to acknowledge that they are "
+"a taxable person required to file periodic returns. If this condition is not "
+"met, the customer will be liable for the payment of the tax, interest, and "
+"penalties due in relation to this condition."
+msgstr ""
+"Odwrotne obciążenie: W przypadku braku pisemnego sprzeciwu w ciągu miesiąca "
+"od otrzymania faktury uznaje się, że klient potwierdza, iż jest podatnikiem "
+"zobowiązanym do składania okresowych deklaracji podatkowych. Jeśli warunek "
+"ten nie zostanie spełniony, klient będzie zobowiązany do zapłaty podatku, "
+"odsetek i kar należnych w związku z tym warunkiem."
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9947
@@ -1042,7 +1064,7 @@ msgstr "Podatek"
 #. odoo-python
 #: code:addons/account_edi_ubl_cii/models/account_edi_common.py:0
 msgid "Tax '%(tax_name)s' is invalid: %(error_message)s"
-msgstr "Podatek '%(tax_name)s' jest błędny: %(error_message)s"
+msgstr "Podatek '%(tax_name)s' jest nieprawidłowy: %(error_message)s"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields,field_description:account_edi_ubl_cii.field_account_tax__ubl_cii_tax_category_code
@@ -1055,6 +1077,7 @@ msgid "Tax Exemption Reason Code"
 msgstr "Kod powodu zwolnienia podatkowego"
 
 #. module: account_edi_ubl_cii
+#: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.layout_invoices_generated_by_odoo
 #: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.report_invoice_document
 msgid "Tax ID"
 msgstr "NIP"
@@ -1087,7 +1110,15 @@ msgid ""
 "digit."
 msgstr ""
 "Punkt końcowy Peppol (%s) jest nieprawidłowy. Powinien zawierać jedynie "
-"litery i cyfrę."
+"litery i cyfry."
+
+#. module: account_edi_ubl_cii
+#. odoo-python
+#: code:addons/account_edi_ubl_cii/models/res_partner.py:0
+msgid "The Peppol endpoint is not valid. A valid email is required"
+msgstr ""
+"Punkt końcowy Peppol jest nieprawidłowy. Wymagany jest prawidłowy adres e-"
+"mail"
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -1113,6 +1144,19 @@ msgid ""
 "The Peppol endpoint is not valid. The expected format is: 73282932000074"
 msgstr ""
 "Punkt końcowy Peppol jest nieprawidłowy. Oczekiwany format to: 73282932000074"
+
+#. module: account_edi_ubl_cii
+#. odoo-python
+#: code:addons/account_edi_ubl_cii/models/account_edi_ubl.py:0
+msgid ""
+"The Unit of Measure '%(uom)s' (from unit code '%(code)s') was ignored on the "
+"line for product '%(product)s' because it is not compatible with the "
+"product's Unit of Measure '%(product_uom)s'. The UoM was left empty."
+msgstr ""
+"Jednostka miary „%(uom)s” (z kodu jednostki „%(code)s”) została zignorowana "
+"w wierszu dotyczącym produktu „%(product)s”, ponieważ nie jest zgodna z "
+"jednostką miary produktu „%(product_uom)s”. Pole jednostki miary "
+"pozostawiono puste."
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields,help:account_edi_ubl_cii.field_account_tax__ubl_cii_tax_category_code
@@ -1200,6 +1244,17 @@ msgstr ""
 "jest naliczany VAT, używane na potrzeby elektronicznego fakturowania."
 
 #. module: account_edi_ubl_cii
+#: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.layout_invoices_generated_by_odoo
+msgid ""
+"This is a visual representation of the xml content.<br/>\n"
+"                    <strong style=\"color: #495057;\">It is not an official "
+"document.</strong>"
+msgstr ""
+"Jest to wizualna reprezentacja treści xml.<br/>\n"
+"                    <strong style=\"color: #495057;\">Nie jest to dokument "
+"oficjalny.</strong>"
+
+#. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9952
 msgid "Turkey VAT"
 msgstr "Turcja VAT"
@@ -1227,17 +1282,17 @@ msgstr "UBL BIS Billing 3.0.12"
 #. module: account_edi_ubl_cii
 #: model:ir.model,name:account_edi_ubl_cii.model_account_edi_ubl_cen_en16931
 msgid "UBL CEN-EN16931"
-msgstr ""
+msgstr "UBL CEN-EN16931"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model,name:account_edi_ubl_cii.model_account_edi_ubl_pint
 msgid "UBL PINT"
-msgstr ""
+msgstr "UBL PINT"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model,name:account_edi_ubl_cii.model_account_edi_ubl_pint_eu
 msgid "UBL PINT-EU Layer"
-msgstr ""
+msgstr "Warstwa UBL PINT-EU"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__0193
@@ -1280,7 +1335,7 @@ msgid ""
 "known as 'Endpoint ID'."
 msgstr ""
 "Unikalny identyfikator używany przez BIS Billing 3.0 i jego pochodne, znany "
-"również jako „Endpoint ID”."
+"również jako \"ID punktu końcowego\" (Endpoint ID)."
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9932
@@ -1296,8 +1351,8 @@ msgstr "Nieznany partner"
 #. module: account_edi_ubl_cii
 #. odoo-python
 #: code:addons/account_edi_ubl_cii/wizard/account_move_send_wizard.py:0
-msgid "Unspported file type via %s"
-msgstr "Nieobsługiwany typ pliku poprzez %s"
+msgid "Unsupported file type via %s"
+msgstr "Nieobsługiwany typ pliku przez %s"
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -1472,8 +1527,8 @@ msgid ""
 "VATEX-EU-135-1 - Exempt based on article 135, section 1 of Council Directive "
 "2006/112/EC"
 msgstr ""
-"VATEX-EU-135-1 – Zwolnienie na podstawie art. 135 ust. 1 dyrektywy Rady "
-"2006/112/WE"
+"VATEX-EU-135-1 – Zwolnienie na podstawie art. 135 ust. 1 dyrektywy Rady 2006/"
+"112/WE"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__account_tax__ubl_cii_tax_exemption_reason_code__vatex-eu-143
@@ -2063,11 +2118,6 @@ msgid "Vatican VAT"
 msgstr "Watykan VAT"
 
 #. module: account_edi_ubl_cii
-#: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.report_invoice_document
-msgid "Vendor Bill"
-msgstr "Rachunek dostawcy"
-
-#. module: account_edi_ubl_cii
 #. odoo-python
 #: code:addons/account_edi_ubl_cii/models/account_move_send.py:0
 msgid "View Partner(s)"
@@ -2108,9 +2158,9 @@ msgid ""
 "Invoice line (BG-25) shall be categorized with an Invoiced item VAT category "
 "code (BT-151)."
 msgstr ""
-"Należy uwzględnić co najmniej jeden podatek w każdej pozycji faktury. [BR-"
-"CO-04]-Każda pozycja faktury (BG-25) powinna być skategoryzowana za pomocą "
-"kodu kategorii VAT pozycji fakturowanej (BT-151)."
+"Należy uwzględnić co najmniej jeden podatek w każdej pozycji faktury. [BR-CO-"
+"04]-Każda pozycja faktury (BG-25) powinna być skategoryzowana za pomocą kodu "
+"kategorii VAT pozycji fakturowanej (BT-151)."
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__account_tax__ubl_cii_tax_category_code__z
@@ -2121,7 +2171,7 @@ msgstr "Z - Towary zwolnione z VAT"
 #: model:ir.model.fields,field_description:account_edi_ubl_cii.field_res_partner__invoice_edi_format
 #: model:ir.model.fields,field_description:account_edi_ubl_cii.field_res_users__invoice_edi_format
 msgid "eInvoice format"
-msgstr "format eFaktury"
+msgstr "Format eFaktury"
 
 #. module: account_edi_ubl_cii
 #: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.account_invoice_pdfa_3_facturx_metadata
@@ -2137,6 +2187,18 @@ msgstr "fx"
 #: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.account_invoice_pdfa_3_facturx_metadata
 msgid "urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#"
 msgstr "urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#"
+
+#~ msgid "Unspported file type via %s"
+#~ msgstr "Nieobsługiwany typ pliku poprzez %s"
+
+#~ msgid "<span class=\"text-muted\">FROM</span>"
+#~ msgstr "<span class=\"text-muted\">OD</span>"
+
+#~ msgid "<span class=\"text-muted\">TO</span>"
+#~ msgstr "<span class=\"text-muted\">DO</span>"
+
+#~ msgid "Vendor Bill"
+#~ msgstr "Rachunek dostawcy"
 
 #~ msgid ""
 #~ "%s should have a KVK or OIN number set in Company ID field or as Peppol e-"

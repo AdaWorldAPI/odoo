@@ -14,7 +14,7 @@ class PosOrderLine(models.Model):
         help="The reward associated with this line.", index='btree_not_null')
     coupon_id = fields.Many2one(
         'loyalty.card', "Coupon", ondelete='restrict',
-        help="The coupon used to claim that reward.")
+        help="The coupon used to claim that reward.", index='btree_not_null')
     reward_identifier_code = fields.Char(help="""
         Technical field used to link multiple reward lines from the same reward together.
     """)
@@ -33,3 +33,6 @@ class PosOrderLine(models.Model):
         if self.is_reward_line:
             return abs(self.price_subtotal_incl)
         return super()._get_discount_amount_for_report()
+
+    def isRefund(self):
+        return super().isRefund() and not self.is_reward_line

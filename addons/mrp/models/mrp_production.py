@@ -1215,7 +1215,11 @@ class MrpProduction(models.Model):
     def action_update_bom(self):
         for production in self:
             if production.bom_id:
+                was_planned = production.is_planned
                 production._link_bom(production.bom_id)
+                # the workorders are recreated unplanned, plan them back
+                if was_planned:
+                    production._plan_workorders(replan=True)
         self.is_outdated_bom = False
 
     def _get_bom_values(self, ratio=1):
@@ -1418,12 +1422,19 @@ class MrpProduction(models.Model):
 
             new_qty = move.product_uom.round((self.qty_producing - self.qty_produced) * move.unit_factor)
             if move.has_tracking != 'none':
-                qty_waiting = 0
+                relevant_orig_ids = set()
+                qty_available = 0
                 for move_orig in move.move_orig_ids:
-                    if move_orig.state not in ('draft', 'done', 'cancel'):
-                        qty_waiting += move_orig.product_uom._compute_quantity(move_orig.quantity, move.product_uom)
-                if not move.product_uom.is_zero(qty_waiting):
-                    new_qty = min(new_qty, move.product_uom_qty - qty_waiting)
+                    if move_orig.state not in ('draft', 'cancel'):
+                        relevant_orig_ids.add(move_orig.id)
+                    if move_orig.state == 'done':
+                        qty_available += move_orig.product_uom._compute_quantity(move_orig.quantity, move.product_uom)
+                qty_taken = 0
+                for move_sibling in move.move_orig_ids.move_dest_ids - move:
+                    if move_sibling.state == 'done':
+                        qty_taken += move_sibling.product_uom._compute_quantity(move_sibling.quantity, move.product_uom)
+                if relevant_orig_ids and move.product_uom.compare(qty_available, qty_taken) >= 0:
+                    new_qty = min(new_qty, qty_available - qty_taken)
             move._set_quantity_done(new_qty)
             if (not move.manual_consumption or pick_manual_consumption_moves) \
                     and move.quantity \
@@ -1669,17 +1680,18 @@ class MrpProduction(models.Model):
 
         if self.allow_workorder_dependencies:
             for workorder in self.workorder_ids.sorted(workorder_order):
-                workorder.blocked_by_workorder_ids = [Command.link(workorder_per_operation[operation_id].id)
+                commands = [Command.link(workorder_per_operation[operation_id].id)
                                                       for operation_id in
                                                       workorder.operation_id.blocked_by_operation_ids
                                                       if operation_id in workorder_per_operation]
+                workorder.blocked_by_workorder_ids = [Command.clear()] + commands
                 if not workorder.needed_by_workorder_ids:
                     last_workorder_per_bom[workorder.operation_id.bom_id] = workorder
         else:
             previous_workorder = False
             for workorder in self.workorder_ids.sorted(workorder_order):
                 if previous_workorder:
-                    workorder.blocked_by_workorder_ids = [Command.link(previous_workorder.id)]
+                    workorder.blocked_by_workorder_ids = [Command.clear(), Command.link(previous_workorder.id)]
                 previous_workorder = workorder
                 last_workorder_per_bom[workorder.operation_id.bom_id] = workorder
         for move in (self.move_raw_ids | self.move_finished_ids):
@@ -1893,7 +1905,7 @@ class MrpProduction(models.Model):
         return True
 
     def _post_inventory(self, cancel_backorder=False):
-        moves_to_do, moves_not_to_do, moves_to_cancel = set(), set(), set()
+        moves_to_do, moves_not_to_do, moves_to_cancel = OrderedSet(), OrderedSet(), OrderedSet()
         for move in self.move_raw_ids:
             if move.state == 'done':
                 moves_not_to_do.add(move.id)
@@ -1916,7 +1928,11 @@ class MrpProduction(models.Model):
             for move in finish_moves:
                 if move.has_tracking != 'none' and not move.lot_ids:
                     move.lot_ids = order.lot_producing_ids.ids
-                move.quantity = order.product_uom_id.round(order.qty_producing - order.qty_produced, rounding_method='HALF-UP')
+                    if move.has_tracking == 'lot' and order.lot_producing_ids:
+                        lines_without_lot = move.move_line_ids.filtered(lambda ml: not ml.lot_id)
+                        lines_without_lot.lot_id = order.lot_producing_ids[:1]
+                # Distribute the produced qty across the finished moves (there can be several, exemple: after a split/merge)
+                move.quantity = order.product_uom_id.round((order.qty_producing - order.qty_produced) * move.unit_factor, rounding_method='HALF-UP')
                 extra_vals = order._prepare_finished_extra_vals()
                 if extra_vals:
                     move.move_line_ids.write(extra_vals)
@@ -2340,6 +2356,9 @@ class MrpProduction(models.Model):
         productions_auto = self.env['mrp.production'].browse(production_auto_ids)
         for production in productions_auto:
             production._set_quantities()
+        productions_auto.move_raw_ids.filtered(
+            lambda m: not m.manual_consumption and not m.picked and m.product_uom.compare(m.quantity, m.product_uom_qty) == 0
+        ).picked = True
 
         self.move_raw_ids.filtered(lambda m: m.manual_consumption and not m.picked).picked = True
 
@@ -2385,7 +2404,7 @@ class MrpProduction(models.Model):
         return True
 
     def do_unreserve(self):
-        (self.move_finished_ids | self.move_raw_ids).filtered(lambda x: x.state not in ('done', 'cancel'))._do_unreserve()
+        (self.move_finished_ids | self.move_raw_ids).filtered(lambda m: m.state not in ('done', 'cancel') and not m.byproduct_id)._do_unreserve()
 
     def button_scrap(self):
         self.ensure_one()
@@ -2626,6 +2645,7 @@ class MrpProduction(models.Model):
                 self.write({'product_qty': product_qty, 'product_uom_id': uom.id})
             return
 
+        # TODO: remove in master
         def operation_key_values(record):
             return tuple(record[key] for key in ('company_id', 'name', 'workcenter_id'))
 
@@ -2645,24 +2665,16 @@ class MrpProduction(models.Model):
         bom_byproducts_by_id = {byproduct.id: byproduct for byproduct in bom.byproduct_ids.filtered(filter_by_attributes)}
         operations_by_id = {operation.id: operation for operation in bom.operation_ids.filtered(filter_by_attributes)}
 
+        workorders_to_unlink_ids = set()
         # Compares the BoM's operations to the MO's workorders.
         for workorder in self.workorder_ids:
-            operation = operations_by_id.pop(workorder.operation_id.id, False)
-            if not operation:
-                for operation_id in operations_by_id:
-                    _operation = operations_by_id[operation_id]
-                    if operation_key_values(_operation) == operation_key_values(workorder):
-                        operation = operations_by_id.pop(operation_id)
-                        break
-            if operation and workorder.operation_id != operation:
-                workorder.operation_id = operation
-            elif operation and workorder.operation_id == operation:
-                if workorder.workcenter_id != operation.workcenter_id:
-                    workorder.workcenter_id = operation.workcenter_id
-                if workorder.name != operation.name:
-                    workorder.name = operation.name
-            elif workorder.operation_id and workorder.operation_id not in operations_by_id:
-                workorders_to_unlink |= workorder
+            if workorder.state in ['progress', 'done', 'cancel']:
+                # Do not recreate the associate operation
+                operations_by_id.pop(workorder.operation_id.id, False)
+            else:
+                workorders_to_unlink_ids.add(workorder.id)
+        # Unlink first since linking the new workorders to the MO might replan them based on the still planned obsolete ones.
+        self.env['mrp.workorder'].browse(workorders_to_unlink_ids).unlink()
         # Creates a workorder for each remaining operation.
         workorders_values = []
         for operation in operations_by_id.values():
@@ -2755,7 +2767,6 @@ class MrpProduction(models.Model):
             moves_to_unlink.product_uom_qty = 0
         moves_to_unlink._action_cancel()
         moves_to_unlink.unlink()
-        workorders_to_unlink.unlink()
         self.bom_id = bom
 
     def _get_quantity_to_backorder(self):

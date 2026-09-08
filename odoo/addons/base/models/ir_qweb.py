@@ -461,6 +461,7 @@ _SAFE_QWEB_OPCODES = _EXPR_OPCODES.union(to_opcodes([
     # 3.14 c.f. safe_eval
     'LOAD_FAST_BORROW', 'LOAD_FAST_BORROW_LOAD_FAST_BORROW',
     'POP_ITER', 'LOAD_COMMON_CONSTANT', 'NOT_TAKEN',
+    'JUMP_BACKWARD_NO_INTERRUPT',
 ])) - _BLACKLIST
 
 
@@ -623,7 +624,8 @@ class QwebContent:
     @property
     def irQweb(self):
         irQweb = self.__irQweb
-        if threading.current_thread().dbname != irQweb.env.cr.dbname:
+        thread_dbname = getattr(threading.current_thread(), 'dbname', None)
+        if thread_dbname and thread_dbname != irQweb.env.cr.dbname:
             return None
         return irQweb
 

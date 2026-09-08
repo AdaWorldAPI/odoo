@@ -418,7 +418,15 @@ class Base(models.AbstractModel):
         aggregates = list(aggregates)
         if '__count' not in aggregates:  # Used for computing length of sublevel groups
             aggregates.append('__count')
-        domain = Domain(domain).optimize(self)
+
+        # If the domain contains a condition on the active field, we need to disable
+        # the active test to ensure that we can read all records, including inactive ones.
+        # Because optimizing the domain may remove the condition on the active field, and
+        # only active records will get returned in the default case
+        domain = Domain(domain)
+        if any(cond.field_expr == self._active_name for cond in domain.iter_conditions()):
+            domain &= Domain(self._active_name, 'in', [True, False])
+        domain = domain.optimize(self)
 
         # dict to help creating order compatible with _read_group and for search
         dict_order: dict[str, str] = {}  # {fname_and_property: "<direction> <nulls>"}
@@ -1962,6 +1970,19 @@ class Base(models.AbstractModel):
 
             return { 'values': field_range, }
 
+    @api.model
+    def onchange_batch(self, values_list: list[dict], field_names: list[str], fields_spec: dict) -> list[dict]:
+        """
+        Apply onchange to a batch of new records.
+        This method only supports new records, so ``self`` must be empty.
+        """
+        assert not self, "self must be empty"
+
+        return [
+            self.onchange(values, field_names, fields_spec)
+            for values in values_list
+        ]
+
     def onchange(self, values: dict, field_names: list[str], fields_spec: dict):
         """
         Perform an onchange on the given fields, and return the result.
@@ -2149,8 +2170,10 @@ class Base(models.AbstractModel):
         # process names in order
         while todo:
             # apply field-specific onchange methods
+            visited_onchanges = set()
             for field_name in todo:
-                record._apply_onchange_methods(field_name, result)
+                record._apply_onchange_methods(field_name, result, visited_onchanges)
+                visited_onchanges.update(self._onchange_methods.get(field_name, ()))
                 done.add(field_name)
 
             if not env.context.get('recursive_onchanges', True):

@@ -21,10 +21,13 @@ class TestItEdiImport(TestItEdi):
     """ Main test class for the l10n_it_edi vendor bills XML import"""
 
     fake_test_content = """<?xml version="1.0" encoding="UTF-8"?>
-        <p:FatturaElettronica versione="FPR12" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-        xmlns:p="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2 http://www.fatturapa.gov.it/export/fatturazione/sdi/fatturapa/v1.2/Schema_del_file_xml_FatturaPA_versione_1.2.xsd">
+        <p:FatturaElettronica
+            xmlns:ds="___ignore___"
+            xmlns:p="___ignore___"
+            xmlns:xsi="___ignore___"
+            xsi:schemaLocation="___ignore___"
+            versione="FPR12"
+        >
         <FatturaElettronicaHeader>
           <DatiTrasmissione>
             <IdTrasmittente>
@@ -113,6 +116,54 @@ class TestItEdiImport(TestItEdi):
                 },
             ],
         }], applied_xml)
+
+    def test_receive_vendor_bill_applies_fiscal_position(self):
+        """ The fiscal position set on the bill remaps the taxes decoded from
+            the XML, matching what a manual line entry produces.
+        """
+        company = self.company
+        fiscal_position = self.env['account.fiscal.position'].with_company(company).create({
+            'name': 'Remap 22% purchase',
+        })
+        # The tax the importer decodes from a 22% line, before any mapping. The
+        # search is the same one _l10n_it_edi_search_tax_for_import runs.
+        source_tax = self.env['account.tax'].search([
+            *self.env['account.tax']._check_company_domain(company),
+            ('amount_type', '=', 'percent'),
+            ('amount', '=', 22.0),
+            ('type_tax_use', '=', 'purchase'),
+            ('l10n_it_exempt_reason', '=', False),
+        ]).filtered(
+            lambda tax: all(rl.factor_percent >= 0 for rl in tax.invoice_repartition_line_ids)
+        )[0]
+        # A distinct rate so the importer's search can never select it directly:
+        # it can only land on the line through the fiscal position mapping.
+        mapped_tax = self.env['account.tax'].with_company(company).create({
+            'name': '10% mapped by fiscal position',
+            'amount': 10.0,
+            'amount_type': 'percent',
+            'type_tax_use': 'purchase',
+            'fiscal_position_ids': [Command.set(fiscal_position.ids)],
+            'original_tax_ids': [Command.set(source_tax.ids)],
+        })
+        self.env['res.partner'].with_company(company).create({
+            'name': 'SELLER FP SRL',
+            'vat': 'IT12345670017',
+            'l10n_it_codice_fiscale': '12345670017',
+            'country_id': self.env.ref('base.it').id,
+            'is_company': True,
+            'property_account_position_id': fiscal_position.id,
+        })
+
+        invoice = self._assert_import_invoice('IT01234567890_FPMAP.xml', [{
+            'move_type': 'in_invoice',
+            'amount_untaxed': 100.0,
+            'invoice_line_ids': [{
+                'price_unit': 100.0,
+                'tax_ids': mapped_tax.ids,
+            }],
+        }])
+        self.assertEqual(invoice.fiscal_position_id, fiscal_position)
 
     def test_receive_vendor_bill_sconto_maggiorazione(self):
         """ Test a sample e-invoice file with
@@ -958,12 +1009,12 @@ class TestItEdiImport(TestItEdi):
     def test_import_pension_fund_specific_natura(self):
         """ Ensure that the pension fund tax is only applied to lines matching the VAT rate and the exemption reason (Natura) """
 
-        self.env = self.env['base'].with_company(self.company_data_2['company']).env
         pension_tax = self.env['account.tax'].search([
             ('amount', '=', 4.0),
             ('type_tax_use', '=', 'purchase'),
+            *self.env['account.tax']._check_company_domain(self.company),
+            ('l10n_it_pension_fund_type', '=', 'TC22'),
         ], limit=1)
-        pension_tax.write({'l10n_it_exempt_reason': 'N2.1'})
 
         applied_xml = """
             <xpath expr="//FatturaElettronicaBody/DatiBeniServizi" position="replace">
@@ -1008,7 +1059,7 @@ class TestItEdiImport(TestItEdi):
             </xpath>
         """
 
-        invoices = self._assert_import_invoice('IT00470550013_pfun3.xml', [{
+        invoice = self._assert_import_invoice('IT00470550013_pfun3.xml', [{
             'move_type': 'in_invoice',
             'amount_untaxed': 752.00,
             'amount_tax': 30.00,
@@ -1017,7 +1068,10 @@ class TestItEdiImport(TestItEdi):
                 {'quantity': 1.0, 'price_unit': 2.00},
             ],
         }], applied_xml)
-        line_1 = invoices.invoice_line_ids[0]
-        line_2 = invoices.invoice_line_ids[1]
-        self.assertIn(pension_tax.id, line_1.tax_ids.ids)
-        self.assertNotIn(pension_tax.id, line_2.tax_ids.ids)
+        self.assertEqual(
+            [line.tax_ids for line in invoice.invoice_line_ids],
+            [
+                self.vat_0_N2_1_purchase | pension_tax,
+                self.vat_0_N1_purchase,
+            ]
+        )

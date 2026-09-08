@@ -272,6 +272,27 @@ class HrLeave(models.Model):
                 leave.request_hour_from = hour_from
                 leave.request_hour_to = hour_to
 
+    @api.onchange('request_date_from', 'request_date_to')
+    def _onchange_request_dates(self):
+        for leave in self:
+            if not (leave.request_unit_hours and leave.employee_id and leave.request_date_from and leave.request_date_to):
+                continue
+
+            should_update_hours = not (leave.request_hour_from and leave.request_hour_to)
+            if not should_update_hours and leave._origin and leave._origin.request_date_from and leave._origin.request_date_to:
+                origin_hour_from, origin_hour_to = leave._origin._get_hour_from_to(
+                    leave._origin.request_date_from, leave._origin.request_date_to)
+                should_update_hours = (
+                    float_compare(leave.request_hour_from, origin_hour_from, precision_digits=2) == 0
+                    and float_compare(leave.request_hour_to, origin_hour_to, precision_digits=2) == 0
+                )
+            elif not should_update_hours and not leave._origin:
+                should_update_hours = True
+
+            if should_update_hours:
+                leave.request_hour_from, leave.request_hour_to = leave._get_hour_from_to(
+                    leave.request_date_from, leave.request_date_to)
+
     @api.depends('employee_id', 'leave_type_request_unit', 'request_date_from', 'request_date_to',
             'request_hour_from', 'request_hour_to', 'request_date_from_period', 'request_date_to_period', 'state')
     def _compute_dashboard_warning_message(self):
@@ -642,6 +663,8 @@ Versions:
                 days = hours / (today_hours or HOURS_PER_DAY)
             if leave.leave_type_request_unit == 'day' and check_leave_type:
                 days = ceil(days)
+            elif leave.request_unit_half and calendar.duration_based:
+                days = float_round(days, precision_rounding=0.5)
             result[leave.id] = (days, hours)
         return result
 
@@ -785,7 +808,9 @@ Versions:
                         raise ValidationError(_("You do not have any allocation for this time off type.\n"
                                                 "Please request an allocation before submitting your time off request."))
                     if leave_data[employee] and leave_data[employee][0][1]['virtual_remaining_leaves'] < -max_excess:
-                        raise ValidationError(_("There is no valid allocation to cover that request."))
+                        raise ValidationError(_(
+                            "%(name)s does not have a valid allocation for the leave type %(leave_type)s to cover that request.",
+                            name=employee.name, leave_type=leave_type.name))
                 continue
 
             previous_leave_data = leave_type.with_context(
@@ -800,7 +825,9 @@ Versions:
                 if not previous_emp_data and not emp_data:
                     continue
                 if previous_emp_data != emp_data and len(emp_data) >= len(previous_emp_data):
-                    raise ValidationError(_("There is no valid allocation to cover that request."))
+                    raise ValidationError(_(
+                        "%(name)s does not have a valid allocation for the leave type %(leave_type)s to cover that request.",
+                        name=employee.name, leave_type=leave_type.name))
         is_leave_user = self.env.user.has_group('hr_holidays.group_hr_holidays_user')
         if not is_leave_user and any(leave.has_mandatory_day for leave in self):
             raise ValidationError(_('You are not allowed to request time off on a Mandatory Day'))
@@ -896,6 +923,9 @@ Versions:
         if any(not vals.get('employee_id') for vals in vals_list):
             raise UserError(_("There is no employee set on the time off. Please make sure you're logged in the correct company."))
         holidays = super(HrLeave, self.with_context(mail_create_nosubscribe=True)).create(vals_list)
+        # A base.automation during create can flush duration before dates are set (storing 0);
+        # recompute now that create returned and date_from/date_to are correct.
+        holidays._compute_duration()
         holidays._check_validity()
         self.env['hr.leave.allocation'].invalidate_model(['leaves_taken', 'max_leaves'])  # missing dependency on compute
 

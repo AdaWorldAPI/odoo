@@ -31,7 +31,7 @@ export class PaymentStripe extends PaymentInterface {
             return data.secret;
         } catch (error) {
             const { message } = error.data || error;
-            this._showError(message, "Fetch Token");
+            this._showError(message, _t("Fetch Token"));
             this.terminal = false;
         }
     }
@@ -90,6 +90,8 @@ export class PaymentStripe extends PaymentInterface {
 
     async connectReader() {
         const line = this.pos.getOrder().getSelectedPaymentline();
+        this.pos.discoveredReaders = "[]";
+        await this.discoverReaders();
         const discoveredReaders = JSON.parse(this.pos.discoveredReaders);
         for (const selectedReader of discoveredReaders) {
             if (selectedReader.serial_number == this.payment_method_id.stripe_serial_number) {
@@ -232,7 +234,6 @@ export class PaymentStripe extends PaymentInterface {
                 onFetchConnectionToken: this.stripeFetchConnectionToken.bind(this),
                 onUnexpectedReaderDisconnect: this.stripeUnexpectedDisconnect.bind(this),
             });
-            this.discoverReaders();
             return true;
         } catch (error) {
             this._showError(_t("Failed to load resource: net::ERR_INTERNET_DISCONNECTED."), error);
@@ -288,7 +289,7 @@ export class PaymentStripe extends PaymentInterface {
             return data;
         } catch (error) {
             const { message } = error.data || error;
-            this._showError(message, "Capture Payment");
+            this._showError(message, _t("Capture Payment"));
             return false;
         }
     }
@@ -305,7 +306,7 @@ export class PaymentStripe extends PaymentInterface {
             return data.client_secret;
         } catch (error) {
             const { message } = error.data || error;
-            this._showError(message, "Fetch Secret");
+            this._showError(message, _t("Fetch Secret"));
             return false;
         }
     }

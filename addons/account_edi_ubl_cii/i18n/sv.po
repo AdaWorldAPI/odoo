@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server saas~18.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-12 17:36+0000\n"
-"PO-Revision-Date: 2026-06-11 12:01+0000\n"
+"POT-Creation-Date: 2026-07-17 17:37+0000\n"
+"PO-Revision-Date: 2026-08-05 11:10+0000\n"
 "Last-Translator: Hanna Kharraziha <hakha@odoo.com>\n"
 "Language-Team: Swedish <https://translate.odoo.com/projects/odoo-19/"
 "account_edi_ubl_cii/sv/>\n"
@@ -41,14 +41,19 @@ msgid "(Un)Group lines by tax"
 msgstr "Avgruppera rader efter skatt"
 
 #. module: account_edi_ubl_cii
-#: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.report_invoice_document
-msgid "<span class=\"text-muted\">FROM</span>"
-msgstr "<span class=\"text-muted\">FRÅN</span>"
-
-#. module: account_edi_ubl_cii
-#: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.report_invoice_document
-msgid "<span class=\"text-muted\">TO</span>"
-msgstr "<span class=\"text-muted\">TILL</span>"
+#: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.layout_invoices_generated_by_odoo
+msgid ""
+"<span style=\"font-size: 16px; font-weight: bold; color: #ffffff; display: "
+"inline-block; vertical-align: middle; text-transform: uppercase; margin: 0px "
+"8px; letter-spacing: 0.5px;\">\n"
+"                        Preview\n"
+"                    </span>"
+msgstr ""
+"<span style=\"font-size: 16px; font-weight: bold; color: #ffffff; display: "
+"inline-block; vertical-align: middle; text-transform: uppercase; margin: 0px "
+"8px; letter-spacing: 0.5px;\">\n"
+"                        Förhandsvisning\n"
+"                    </span>"
 
 #. module: account_edi_ubl_cii
 #: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.account_invoice_pdfa_3_facturx_metadata
@@ -59,7 +64,7 @@ msgstr "A"
 #. odoo-python
 #: code:addons/account_edi_ubl_cii/models/account_edi_ubl_pint_eu.py:0
 msgid "A buyer reference or purchase order reference must be provided."
-msgstr ""
+msgstr "Ett referensnummer till en köpare eller en inköpsorder måste anges."
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -263,6 +268,8 @@ msgid ""
 "Could not retrieve a partner corresponding to '%s' with the same VAT. A new "
 "partner was created."
 msgstr ""
+"Kunde inte hitta en partner som motsvarar '%s' med samma "
+"momsregistreringsnummer. En ny partner har skapats."
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -934,6 +941,22 @@ msgid "Report Action"
 msgstr "Rapporteringsåtgärd"
 
 #. module: account_edi_ubl_cii
+#. odoo-python
+#: code:addons/account_edi_ubl_cii/models/account_edi_common.py:0
+msgid ""
+"Reverse charge: In the absence of a written objection within one month of "
+"receipt of the invoice, the customer is deemed to acknowledge that they are "
+"a taxable person required to file periodic returns. If this condition is not "
+"met, the customer will be liable for the payment of the tax, interest, and "
+"penalties due in relation to this condition."
+msgstr ""
+"Omvänd betalningsskyldighet: I avsaknad av skriftliga invändningar inom en "
+"månad efter att fakturan tagits emot, så anses kunden ha godkänt att de är "
+"en skatteskyldig person som är skyldig att deklarera. Om gällande villkor "
+"inte möts, så bär kunden ansvaret för betalning av alla relaterade skatter, "
+"räntor och avgifter."
+
+#. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9947
 msgid "Romania VAT"
 msgstr "Moms Rumänien"
@@ -1057,6 +1080,7 @@ msgid "Tax Exemption Reason Code"
 msgstr "Kod som anger anledning för skattebefrielse"
 
 #. module: account_edi_ubl_cii
+#: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.layout_invoices_generated_by_odoo
 #: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.report_invoice_document
 msgid "Tax ID"
 msgstr "Skattenummer"
@@ -1094,6 +1118,12 @@ msgstr ""
 #. module: account_edi_ubl_cii
 #. odoo-python
 #: code:addons/account_edi_ubl_cii/models/res_partner.py:0
+msgid "The Peppol endpoint is not valid. A valid email is required"
+msgstr "Peppol-destinationen är inte giltig. En giltig e-postadress krävs"
+
+#. module: account_edi_ubl_cii
+#. odoo-python
+#: code:addons/account_edi_ubl_cii/models/res_partner.py:0
 msgid ""
 "The Peppol endpoint is not valid. It should contain exactly 10 digits "
 "(Company Registry number).The expected format is: 1234567890"
@@ -1116,6 +1146,18 @@ msgid ""
 msgstr ""
 "Peppol-destinationen är inte giltig. Det förväntade formatet är: "
 "73282932000074"
+
+#. module: account_edi_ubl_cii
+#. odoo-python
+#: code:addons/account_edi_ubl_cii/models/account_edi_ubl.py:0
+msgid ""
+"The Unit of Measure '%(uom)s' (from unit code '%(code)s') was ignored on the "
+"line for product '%(product)s' because it is not compatible with the "
+"product's Unit of Measure '%(product_uom)s'. The UoM was left empty."
+msgstr ""
+"Måttenheten '%(uom)s' (från enhetskoden '%(code)s') ignorerades på "
+"produktraden för '%(product)s' eftersom den inte är kompatibel med "
+"produktens måttenhet '%(product_uom)s'. Måttenheten lämnades tom."
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields,help:account_edi_ubl_cii.field_account_tax__ubl_cii_tax_category_code
@@ -1203,6 +1245,17 @@ msgstr ""
 "moms debiteras, används vid digital fakturering."
 
 #. module: account_edi_ubl_cii
+#: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.layout_invoices_generated_by_odoo
+msgid ""
+"This is a visual representation of the xml content.<br/>\n"
+"                    <strong style=\"color: #495057;\">It is not an official "
+"document.</strong>"
+msgstr ""
+"Detta är en visuell representation av XML-innehållet.<br/>\n"
+"                    <strong style=\"color: #495057;\">Det är inte ett "
+"officiellt dokument.</strong>"
+
+#. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__9952
 msgid "Turkey VAT"
 msgstr "Moms Turkiet"
@@ -1230,17 +1283,17 @@ msgstr "UBL BIS Billing 3.0.12"
 #. module: account_edi_ubl_cii
 #: model:ir.model,name:account_edi_ubl_cii.model_account_edi_ubl_cen_en16931
 msgid "UBL CEN-EN16931"
-msgstr ""
+msgstr "UBL CEN-EN16931"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model,name:account_edi_ubl_cii.model_account_edi_ubl_pint
 msgid "UBL PINT"
-msgstr ""
+msgstr "UBL PINT"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model,name:account_edi_ubl_cii.model_account_edi_ubl_pint_eu
 msgid "UBL PINT-EU Layer"
-msgstr ""
+msgstr "UBL PINT-EU-nivå"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__res_partner__peppol_eas__0193
@@ -1299,8 +1352,8 @@ msgstr "Okänd partner"
 #. module: account_edi_ubl_cii
 #. odoo-python
 #: code:addons/account_edi_ubl_cii/wizard/account_move_send_wizard.py:0
-msgid "Unspported file type via %s"
-msgstr "Filtyper som ej stöds via %s"
+msgid "Unsupported file type via %s"
+msgstr "Filtypen stöds inte via %s"
 
 #. module: account_edi_ubl_cii
 #. odoo-python
@@ -1313,8 +1366,8 @@ msgstr "Exkl. moms"
 msgid ""
 "VATEX-EU-132 - Exempt based on article 132 of Council Directive 2006/112/EC"
 msgstr ""
-"VATEX-EU-132 - Undantag i enlighet med artikel 132 ur rådets direktiv "
-"2006/112/EG"
+"VATEX-EU-132 - Undantag i enlighet med artikel 132 ur rådets direktiv 2006/"
+"112/EG"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__account_tax__ubl_cii_tax_exemption_reason_code__vatex-eu-132-1a
@@ -1483,8 +1536,8 @@ msgstr ""
 msgid ""
 "VATEX-EU-143 - Exempt based on article 143 of Council Directive 2006/112/EC"
 msgstr ""
-"VATEX-EU-143 - Undantag i enlighet med artikel 143 ur rådets direktiv "
-"2006/112/EG"
+"VATEX-EU-143 - Undantag i enlighet med artikel 143 ur rådets direktiv 2006/"
+"112/EG"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__account_tax__ubl_cii_tax_exemption_reason_code__vatex-eu-143-1a
@@ -1608,8 +1661,8 @@ msgstr ""
 msgid ""
 "VATEX-EU-144 - Exempt based on article 144 of Council Directive 2006/112/EC"
 msgstr ""
-"VATEX-EU-144 - Undantag i enlighet med artikel 144 ur Rådets Direktiv "
-"2006/112/EC"
+"VATEX-EU-144 - Undantag i enlighet med artikel 144 ur Rådets Direktiv 2006/"
+"112/EC"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__account_tax__ubl_cii_tax_exemption_reason_code__vatex-eu-146-1e
@@ -1625,8 +1678,8 @@ msgstr ""
 msgid ""
 "VATEX-EU-148 - Exempt based on article 148 of Council Directive 2006/112/EC"
 msgstr ""
-"VATEX-EU-148 - Undantag i enlighet med artikel 148 ur rådets direktiv "
-"2006/112/EG"
+"VATEX-EU-148 - Undantag i enlighet med artikel 148 ur rådets direktiv 2006/"
+"112/EG"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__account_tax__ubl_cii_tax_exemption_reason_code__vatex-eu-148-a
@@ -1696,8 +1749,8 @@ msgstr ""
 msgid ""
 "VATEX-EU-151 - Exempt based on article 151 of Council Directive 2006/112/EC"
 msgstr ""
-"VATEX-EU-151 - Undantag i enlighet med artikel 151 ur rådets direktiv "
-"2006/112/EG"
+"VATEX-EU-151 - Undantag i enlighet med artikel 151 ur rådets direktiv 2006/"
+"112/EG"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__account_tax__ubl_cii_tax_exemption_reason_code__vatex-eu-151-1a
@@ -1758,24 +1811,24 @@ msgstr ""
 msgid ""
 "VATEX-EU-153 - Exempt based on article 153 of Council Directive 2006/112/EC"
 msgstr ""
-"VATEX-EU-153 - Undantag i enlighet med artikel 153 ur Rådets Direktiv "
-"2006/112/EC"
+"VATEX-EU-153 - Undantag i enlighet med artikel 153 ur Rådets Direktiv 2006/"
+"112/EC"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__account_tax__ubl_cii_tax_exemption_reason_code__vatex-eu-159
 msgid ""
 "VATEX-EU-159 - Exempt based on article 159 of Council Directive 2006/112/EC"
 msgstr ""
-"VATEX-EU-159 - Undantag i enlighet med artikel 159 ur rådets direktiv "
-"2006/112/EC"
+"VATEX-EU-159 - Undantag i enlighet med artikel 159 ur rådets direktiv 2006/"
+"112/EC"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__account_tax__ubl_cii_tax_exemption_reason_code__vatex-eu-309
 msgid ""
 "VATEX-EU-309 - Exempt based on article 309 of Council Directive 2006/112/EC"
 msgstr ""
-"VATEX-EU-309 - Undantag i enlighet med artikel 309 ur rådets direktiv "
-"2006/112/EG"
+"VATEX-EU-309 - Undantag i enlighet med artikel 309 ur rådets direktiv 2006/"
+"112/EG"
 
 #. module: account_edi_ubl_cii
 #: model:ir.model.fields.selection,name:account_edi_ubl_cii.selection__account_tax__ubl_cii_tax_exemption_reason_code__vatex-eu-79-c
@@ -2066,11 +2119,6 @@ msgid "Vatican VAT"
 msgstr "Moms Vatikanstaten"
 
 #. module: account_edi_ubl_cii
-#: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.report_invoice_document
-msgid "Vendor Bill"
-msgstr "Leverantörsfaktura"
-
-#. module: account_edi_ubl_cii
 #. odoo-python
 #: code:addons/account_edi_ubl_cii/models/account_move_send.py:0
 msgid "View Partner(s)"
@@ -2140,6 +2188,18 @@ msgstr "fx"
 #: model_terms:ir.ui.view,arch_db:account_edi_ubl_cii.account_invoice_pdfa_3_facturx_metadata
 msgid "urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#"
 msgstr "urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#"
+
+#~ msgid "Unspported file type via %s"
+#~ msgstr "Filtyper som ej stöds via %s"
+
+#~ msgid "<span class=\"text-muted\">FROM</span>"
+#~ msgstr "<span class=\"text-muted\">FRÅN</span>"
+
+#~ msgid "<span class=\"text-muted\">TO</span>"
+#~ msgstr "<span class=\"text-muted\">TILL</span>"
+
+#~ msgid "Vendor Bill"
+#~ msgstr "Leverantörsfaktura"
 
 #~ msgid ""
 #~ "%s should have a KVK or OIN number set in Company ID field or as Peppol e-"

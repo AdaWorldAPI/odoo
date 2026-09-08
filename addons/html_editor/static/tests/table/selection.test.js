@@ -13,9 +13,10 @@ import {
     click,
     keyDown,
     keyUp,
+    manuallyDispatchProgrammaticEvent,
     press,
     queryAll,
-    manuallyDispatchProgrammaticEvent,
+    waitFor,
 } from "@odoo/hoot-dom";
 import { animationFrame, tick } from "@odoo/hoot-mock";
 import { nodeSize } from "@html_editor/utils/position";
@@ -908,7 +909,7 @@ describe("select columns on cross over", () => {
     describe("reset size", () => {
         test("should remove any height or width of the table and bring it back to it original form", async () => {
             await testEditor({
-                contentBefore: `<table class="table table-bordered o_table" style="height: 980.5px; width: 736px;"><tbody>
+                contentBefore: `<table class="table table-bordered o_table"><tbody style="height: 980.5px; width: 736px;">
                                     <tr style="height: 306.5px;">
                                         <td style="width: 356px;"><p>[]<br></p></td>
                                         <td style="width: 108.5px;"><p><br></p></td>
@@ -954,7 +955,7 @@ describe("select columns on cross over", () => {
 
         test("should remove any height or width of the table without loosing the style of the element inside it.", async () => {
             await testEditor({
-                contentBefore: `<table class="table table-bordered o_table" style="width: 472.182px; height: 465.403px;"><tbody>
+                contentBefore: `<table class="table table-bordered o_table"><tbody style="width: 472.182px; height: 465.403px;">
                                     <tr style="height: 104.872px;">
                                         <td style="width: 191.273px;"><h1>[]TESTTEXT</h1></td>
                                         <td style="width: 154.009px;"><p><br></p></td>
@@ -1020,7 +1021,7 @@ describe("select columns on cross over", () => {
 
         test("should remove any height or width of the table without removig the style of the table.", async () => {
             await testEditor({
-                contentBefore: `<table class="table table-bordered o_table" style="height: 594.5px; width: 807px;"><tbody>
+                contentBefore: `<table class="table table-bordered o_table"><tbody style="height: 594.5px; width: 807px;">
                                     <tr style="height: 229.5px;">
                                         <td style="background-color: rgb(206, 231, 247); color: rgb(0, 0, 255); width: 500px;"><p>[]<br></p></td>
                                         <td style="background-color: rgb(206, 231, 247); color: rgb(0, 0, 255); width: 119.328px;"><p><br></p></td>
@@ -2238,6 +2239,7 @@ describe("deselecting table", () => {
 
         press(["Shift", "ArrowUp"]);
         await animationFrame();
+        await waitFor("table:not(.o_selected_table)");
 
         expectContentToBe(
             el,

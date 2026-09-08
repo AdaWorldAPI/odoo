@@ -431,6 +431,92 @@ class TestProcurement(TestMrpCommon):
         self.assertRecordValues(child_mo_stick, [{'product_id': self.product_4.id, 'product_uom_qty': 3}])
         self.assertRecordValues(grand_child_mo_stick, [{'product_id': self.product_4.id, 'product_uom_qty': 5}])
 
+    def test_concurrent_mtso_manufacture(self):
+        """
+        Tests that the appropriate amount of MO's are generated to satisfy MTSO manufactured
+        products using a common component.
+
+        Have 4 MTSO manufacture product productB, productC, productD, COMP:
+        1 x productB:
+            - 1 x ProductC:
+                - 1 x COMP
+            - 1 x ProductD:
+                - 1 x COMP
+        Put 3 units of COMP in stock and manufacture 2 X ProductB requiring 4 x COMP.
+        Check that a single MO is generated to fulfil 1 unit of COMP.
+        """
+        route_mto = self.warehouse_1.mto_pull_id.route_id
+        route_mto.active = True
+        route_mto.rule_ids.procure_method = "mts_else_mto"
+        mtso_products = self.productB | self.productC | self.productD | self.product_4
+        mtso_products.write({
+            'route_ids': [Command.link(route_mto.id)],
+        })
+        component = self.product_4
+        self.env['mrp.bom'].create([
+            {
+                'product_id': self.productB.id,
+                'product_tmpl_id': self.productB.product_tmpl_id.id,
+                'product_qty': 1.0,
+                'bom_line_ids': [
+                    Command.create({
+                        'product_id': self.productC.id,
+                        'product_qty': 1,
+                    }),
+                    Command.create({
+                        'product_id': self.productD.id,
+                        'product_qty': 1,
+                    }),
+                ],
+            },
+            {
+                'product_id': self.productC.id,
+                'product_tmpl_id': self.productC.product_tmpl_id.id,
+                'product_qty': 1.0,
+                'bom_line_ids': [
+                    Command.create({
+                        'product_id': component.id,
+                        'product_qty': 1,
+                    }),
+                ],
+            },
+            {
+                'product_id': self.productD.id,
+                'product_tmpl_id': self.productD.product_tmpl_id.id,
+                'product_qty': 1.0,
+                'bom_line_ids': [
+                    Command.create({
+                        'product_id': component.id,
+                        'product_qty': 1,
+                    }),
+                ],
+            },
+            {
+                'product_id': component.id,
+                'product_tmpl_id': component.product_tmpl_id.id,
+                'product_qty': 1.0,
+            },
+        ])
+        self.env['stock.quant']._update_available_quantity(component, self.warehouse_1.lot_stock_id, 3)
+        mo = self.env['mrp.production'].create({
+            'product_id': self.productB.id,
+            'product_qty': 2,
+            'location_src_id': self.warehouse_1.lot_stock_id.id,
+        })
+        self.assertEqual(component.free_qty, 3)
+        mo.action_confirm()
+
+        self.assertEqual(component.free_qty, 0)
+        child_mo_C, child_mo_D = mo._get_children()
+        self.assertRecordValues(child_mo_C | child_mo_D, [
+            {'product_id': self.productC.id, 'product_uom_qty': 2.0},
+            {'product_id': self.productD.id, 'product_uom_qty': 2.0},
+        ])
+        self.assertFalse(child_mo_C._get_children())
+        self.assertRecordValues(child_mo_D._get_children(), [
+            {'product_id': component.id, 'product_uom_qty': 1.0},
+        ])
+
     def test_mtso_with_empty_bom(self):
         """Test to ensure that a Manufacturing Order is created in 'draft' state
         via MTSO route when BoM has no components or operations.
@@ -1453,3 +1539,68 @@ class TestProcurement(TestMrpCommon):
         self.assertRecordValues(target_moves, [
             {'quantity': 2.0}, {'quantity': 2.0}, {'quantity': 3.0}
         ])
+
+    def test_split_sn_mo_with_mto_component(self):
+        """
+        Check that generating a serial on a split MO with an MTO child MO does not raise a negative reservation error.
+        """
+        mto_route = self.warehouse_1.mto_pull_id.route_id
+        mto_route.action_unarchive()
+        final_product, super_component, basic_component = self.env['product.product'].create([
+            {'name': 'Final Product', 'is_storable': True, 'tracking': 'serial'},
+            {'name': 'Super Component', 'is_storable': True, 'tracking': 'serial', 'route_ids': [Command.set(mto_route.ids)]},
+            {'name': 'Basic Component', 'is_storable': True},
+        ])
+        self.env['mrp.bom'].create([
+            {
+                'product_tmpl_id': final_product.product_tmpl_id.id,
+                'product_qty': 1.0,
+                'bom_line_ids': [Command.create({'product_id': super_component.id, 'product_qty': 1})],
+            },
+            {
+                'product_tmpl_id': super_component.product_tmpl_id.id,
+                'product_qty': 1.0,
+                'bom_line_ids': [Command.create({'product_id': basic_component.id, 'product_qty': 1})],
+            },
+        ])
+        mo = self.env['mrp.production'].create({
+            'product_id': final_product.id,
+            'product_qty': 4.0,
+        })
+        mo.action_confirm()
+
+        # Split the child MO in 3 and validate the first one
+        child_mo = mo._get_children()
+        wizard = Form.from_action(self.env, child_mo.action_split())
+        wizard.max_batch_size = 1
+        wizard.save().action_split()
+        child_mos = child_mo.production_group_id.production_ids
+        self.assertEqual(len(child_mos), 4)
+        child_mos[-1].action_generate_serial()
+        child_mos[-1].button_mark_done()
+        self.assertEqual(child_mos[-1].state, 'done')
+
+        # Split the main MO in 3 and validate the first one
+        wizard = Form.from_action(self.env, mo.action_split())
+        wizard.max_batch_size = 1
+        wizard.save().action_split()
+        mos = mo.production_group_id.production_ids
+        self.assertEqual(len(mos), 4)
+        mos[0].action_generate_serial()
+        mos[0].button_mark_done()
+        self.assertEqual(mos[0].state, 'done')
+        self.assertEqual(mos.move_raw_ids.lot_ids, child_mos[-1].lot_producing_ids)
+
+        # Generate 3 serials but produce only 2 Super Component
+        child_mos[0].action_generate_serial()
+        child_mos[1].action_generate_serial()
+        child_mos[2].action_generate_serial()
+        child_mos[1:3].button_mark_done()
+        self.assertEqual(child_mos[1].state, 'done')
+        self.assertEqual(child_mos[2].state, 'done')
+        mos[1].action_generate_serial()
+        mos[1].button_mark_done()
+        self.assertEqual(mos[1].state, 'done')
+        self.assertEqual(mos[1].move_raw_ids.lot_ids, child_mos[1].lot_producing_ids)
+        self.assertEqual(mos[2].state, 'confirmed')
+        self.assertEqual(mos[2].move_raw_ids.lot_ids, child_mos[2].lot_producing_ids)

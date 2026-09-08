@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-25 18:37+0000\n"
-"PO-Revision-Date: 2026-06-08 11:10+0000\n"
+"POT-Creation-Date: 2026-07-10 17:38+0000\n"
+"PO-Revision-Date: 2026-08-14 07:18+0000\n"
 "Last-Translator: Bone NI <bounkirdni@gmail.com>\n"
 "Language-Team: Lao <https://translate.odoo.com/projects/odoo-19/"
 "website_sale_stock/lo/>\n"
@@ -144,7 +144,7 @@ msgstr "ອີເມລບໍ່ຖືກຕ້ອງ"
 
 #. module: website_sale_stock
 #. odoo-javascript
-#: code:addons/website_sale_stock/static/src/xml/website_sale_stock_product_availability.xml:0
+#: code:addons/website_sale_stock/static/src/interactions/website_sale.js:0
 msgid "Invalid email"
 msgstr "ອີເມລບໍ່ຖືກຕ້ອງ"
 
@@ -181,6 +181,12 @@ msgstr "ສິນຄ້າໝົດສາງ"
 #: model:ir.model.fields,field_description:website_sale_stock.field_product_template__out_of_stock_message
 msgid "Out-of-Stock Message"
 msgstr "ຂໍ້ຄວາມເມື່ອສິນຄ້າໝົດສາງ"
+
+#. module: website_sale_stock
+#. odoo-python
+#: code:addons/website_sale_stock/controllers/main.py:0
+msgid "Please sign in to proceed."
+msgstr "ກະລຸນາເຂົ້າສູ່ລະບົບເພື່ອດຳເນີນການຕໍ່."
 
 #. module: website_sale_stock
 #. odoo-python
@@ -263,8 +269,8 @@ msgstr "ສະແດງຈຳນວນທີ່ມີ"
 #. odoo-python
 #: code:addons/website_sale_stock/models/sale_order.py:0
 msgid ""
-"Some products became unavailable and your cart has been updated. We're sorry"
-" for the inconvenience."
+"Some products became unavailable and your cart has been updated. We're sorry "
+"for the inconvenience."
 msgstr ""
 "ສິນຄ້າບາງລາຍການບໍ່ມີແລ້ວ ແລະ ກະຕ່າຂອງທ່ານໄດ້ຖືກອັບເດດ. ພວກເຮົາຂໍອະໄພໃນຄວາມບໍ່ສະດວກ."
 
@@ -278,6 +284,12 @@ msgstr "ສິນຄ້າຕໍ່ໄປນີ້ມີພ້ອມສົ່ງ
 #: code:addons/website_sale_stock/models/product_product.py:0
 msgid "The product '%(product_name)s' is now available"
 msgstr "ສິນຄ້າ '%(product_name)s' ມີພ້ອມສົ່ງແລ້ວ"
+
+#. module: website_sale_stock
+#. odoo-python
+#: code:addons/website_sale_stock/controllers/main.py:0
+msgid "This product is not eligible for stock notifications."
+msgstr "ສິນຄ້ານີ້ບໍ່ມີສິດຮັບການແຈ້ງເຕືອນສິນຄ້າໃນສາງ."
 
 #. module: website_sale_stock
 #: model:ir.model,name:website_sale_stock.model_stock_picking
@@ -327,8 +339,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/website_sale_stock/models/sale_order.py:0
 msgid ""
-"You ask for %(desired_qty)s products but only %(available_qty)s is "
-"available."
+"You ask for %(desired_qty)s products but only %(available_qty)s is available."
 msgstr ""
 "ທ່ານຕ້ອງການ %(desired_qty)s ລາຍການ ແຕ່ມີພຽງ %(available_qty)s ເທົ່ານັ້ນທີ່ມີ."
 

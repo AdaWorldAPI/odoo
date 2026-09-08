@@ -10,18 +10,18 @@
 # Martin Trigaux, 2023
 # Camille Dantinne <cmd@odoo.com>, 2023
 # Pedro M. Baeza <pedro.baeza@tecnativa.com>, 2023
-# "Dylan Kiss (dyki)" <dyki@odoo.com>, 2025.
+# "Dylan Kiss (dyki)" <dyki@odoo.com>, 2025, 2026.
 # "Tiffany Chang (tic)" <tic@odoo.com>, 2025.
-# "Malaz Siddig Elsayed Abuidris (msea)" <msea@odoo.com>, 2025.
-# Weblate <noreply-mt-weblate@weblate.org>, 2025.
+# "Malaz Siddig Elsayed Abuidris (msea)" <msea@odoo.com>, 2025, 2026.
+# Weblate <noreply-mt-weblate@weblate.org>, 2025, 2026.
 # "Noemi Pla Garcia (nopl)" <nopl@odoo.com>, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-01 17:35+0000\n"
-"PO-Revision-Date: 2026-06-10 09:31+0000\n"
-"Last-Translator: \"Noemi Pla Garcia (nopl)\" <nopl@odoo.com>\n"
+"POT-Creation-Date: 2026-06-19 17:35+0000\n"
+"PO-Revision-Date: 2026-08-06 14:57+0000\n"
+"Last-Translator: \"Malaz Siddig Elsayed Abuidris (msea)\" <msea@odoo.com>\n"
 "Language-Team: Spanish <https://translate.odoo.com/projects/odoo-19/"
 "mass_mailing/es/>\n"
 "Language: es\n"
@@ -87,8 +87,8 @@ msgid ""
 "\"This company transformed our business. Their solutions are innovative and "
 "reliable\""
 msgstr ""
-"«Esta empresa transformó la nuestra. Sus soluciones son innovadoras y "
-"fiables»"
+"«Esta empresa transformó la nuestra. Sus soluciones son innovadoras y fiables"
+"»"
 
 #. module: mass_mailing
 #: model_terms:ir.ui.view,arch_db:mass_mailing.s_reviews_wall
@@ -382,8 +382,7 @@ msgstr "<font class=\"text-o-color-1\">26 de septiembre 2022 - 13:30</font>"
 #: model_terms:ir.ui.view,arch_db:mass_mailing.s_text_highlight
 msgid ""
 "<font class=\"text-white\">Put the focus on what you have to say!</font>"
-msgstr ""
-"<font class=\"text-white\">¡Céntrate en lo que tienes que decir!</font>"
+msgstr "<font class=\"text-white\">¡Céntrate en lo que tienes que decir!</font>"
 
 #. module: mass_mailing
 #: model_terms:ir.ui.view,arch_db:mass_mailing.s_content_card_5
@@ -492,8 +491,8 @@ msgid ""
 "<font style=\"color:white;\"><span class=\"h3-fs\">A color block</span></"
 "font>"
 msgstr ""
-"<font style=\"color:white;\"><span class=\"h3-fs\">Un bloque de color</"
-"span></font>"
+"<font style=\"color:white;\"><span class=\"h3-fs\">Un bloque de color</span>"
+"</font>"
 
 #. module: mass_mailing
 #: model_terms:ir.ui.view,arch_db:mass_mailing.s_color_blocks_2
@@ -2112,6 +2111,21 @@ msgid "Cancelled"
 msgstr "Cancelado"
 
 #. module: mass_mailing
+#. odoo-python
+#: code:addons/mass_mailing/models/ir_mail_server.py:0
+msgid ""
+"Cannot set an owner on '%(server)s': it is configured as the dedicated Email "
+"Marketing server."
+msgstr ""
+
+#. module: mass_mailing
+#. odoo-python
+#: code:addons/mass_mailing/models/ir_mail_server.py:0
+msgid ""
+"Cannot set an owner on '%(server)s': it is used by mailing '%(mailing)s'."
+msgstr ""
+
+#. module: mass_mailing
 #: model:ir.model.fields,help:mass_mailing.field_mailing_mailing_test__email_to
 msgid "Carriage-return-separated list of email addresses."
 msgstr "Lista de direcciones de correo electrónico separadas por CR."
@@ -2753,8 +2767,8 @@ msgstr "Descubre todas las características"
 msgid ""
 "Discover more <span class=\"fa fa-long-arrow-right align-middle ms-1\"/>"
 msgstr ""
-"Obtén más información <span class=\"fa fa-long-arrow-right align-middle "
-"ms-1\"/>"
+"Obtén más información <span class=\"fa fa-long-arrow-right align-middle ms-"
+"1\"/>"
 
 #. module: mass_mailing
 #: model_terms:ir.ui.view,arch_db:mass_mailing.s_content_card_4
@@ -3550,7 +3564,7 @@ msgstr ""
 #: code:addons/mass_mailing/static/src/builder/options/masonry_block_template_option.xml:0
 #: model_terms:ir.ui.view,arch_db:mass_mailing.email_designer_snippets
 msgid "Images"
-msgstr "Imagenes"
+msgstr "Imágenes"
 
 #. module: mass_mailing
 #: model_terms:ir.ui.view,arch_db:mass_mailing.mailing_contact_import_view_form
@@ -4389,8 +4403,8 @@ msgid ""
 "\">Customer Service</span>"
 msgstr ""
 "Michael Fletcher<br/>\n"
-"                   <span style=\"font-size: 12px; font-weight: bolder;"
-"\">Servicio al cliente</span>"
+"                   <span style=\"font-size: 12px; font-weight: bolder;\">"
+"Servicio al cliente</span>"
 
 #. module: mass_mailing
 #: model:ir.model.fields.selection,name:mass_mailing.selection__mailing_trace__failure_type__mail_email_missing
@@ -5423,8 +5437,8 @@ msgid ""
 "Savor our fresh, local cuisine with a modern twist.<br/>Deliciously crafted "
 "for every taste!"
 msgstr ""
-"Disfrute de nuestra oferta gastronómica fresca y local con un toque moderno."
-"<br/> ¡Preparamos nuestros platos pensando en todos los gustos!"
+"Disfrute de nuestra oferta gastronómica fresca y local con un toque "
+"moderno.<br/> ¡Preparamos nuestros platos pensando en todos los gustos!"
 
 #. module: mass_mailing
 #: model_terms:ir.ui.view,arch_db:mass_mailing.s_features_column
@@ -6488,8 +6502,8 @@ msgid ""
 "                    From here, you'll be able to overview the rate of "
 "replies, clicks, bounces..."
 msgstr ""
-"Utilice este menú para llevar seguimiento de los resultados de sus correos."
-"<br>\n"
+"Utilice este menú para llevar seguimiento de los resultados de sus "
+"correos.<br>\n"
 "                    Desde aquí podrá consultar la tasa de respuestas, clics, "
 "rebote..."
 
@@ -6727,8 +6741,7 @@ msgstr "Ya no forma parte de nuestra lista de correo."
 #. odoo-python
 #: code:addons/mass_mailing/controllers/main.py:0
 msgid "You are no longer part of our services and will not be contacted again."
-msgstr ""
-"Ya no forma parte de nuestros servicios y no lo volveremos a contactar."
+msgstr "Ya no forma parte de nuestros servicios y no lo volveremos a contactar."
 
 #. module: mass_mailing
 #. odoo-python

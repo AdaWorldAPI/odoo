@@ -28,22 +28,33 @@ class AccountMoveSend(models.AbstractModel):
             default_sending_methods.add('peppol')
         return default_sending_methods
 
+    @api.model
+    def _generate_and_send_invoices(self, moves, from_cron=False, allow_raising=True, allow_fallback_pdf=False, **custom_settings):
+        for partner, company in moves.grouped(lambda m: (m.commercial_partner_id, m.company_id)):
+            if partner.with_company(company).peppol_verification_state != 'valid' and self._is_applicable_to_company('peppol', company):
+                partner.button_account_peppol_check_partner_endpoint(company=company)
+
+        return super()._generate_and_send_invoices(moves, from_cron, allow_raising, allow_fallback_pdf, **custom_settings)
+
     # -------------------------------------------------------------------------
     # ALERTS
     # -------------------------------------------------------------------------
 
     def _get_peppol_what_is_peppol_alert(self, moves, moves_data, relevant_moves):
         any_moves_french = bool(relevant_moves.company_id.filtered(lambda c: c._peppol_is_french_company()))
+        install_pdp_action = False  # Only set if we should install the PDP module
         if any_moves_french:
+            pdp_info = self.env['res.config.settings']._get_pdp_module_info()
             name = self.env._("Why should I use French E-Invoicing ?")
-            action_text = self.env._("France - E-Invoicing (Approved Platform)")
+            action_text = pdp_info['module_name']
+            if not pdp_info['is_installed']:
+                install_pdp_action = pdp_info['action']
         else:
             name = self.env._("Why should I use PEPPOL ?")
             action_text = self.env._("Why should you use it ?")
 
-        pdp_module = self.env['ir.module.module'].sudo()._get('l10n_fr_pdp')
-        if any_moves_french and pdp_module and pdp_module.state != 'installed':
-            action = pdp_module._get_records_action()
+        if install_pdp_action:
+            action = install_pdp_action
         else:
             action = {
                 'name': name,
@@ -210,6 +221,20 @@ class AccountMoveSend(models.AbstractModel):
             invoice_edi_format = move_data.get('invoice_edi_format') or partner._get_peppol_edi_format()
             if partner.peppol_verification_state == 'not_verified':
                 partner.button_account_peppol_check_partner_endpoint(company=move.company_id)
+            if partner.peppol_verification_state != 'valid' and partner.peppol_endpoint and partner.peppol_eas in ('0208', '9925'):
+                # only for BE participants
+                inverse_eas = '9925' if partner.peppol_eas == '0208' else '0208'
+                inverse_endpoint = f'BE{partner.peppol_endpoint}' if partner.peppol_eas == '0208' else partner.peppol_endpoint[2:]
+                if (
+                    not partner._build_error_peppol_endpoint(inverse_eas, inverse_endpoint)
+                    and partner._get_peppol_verification_state(inverse_endpoint, inverse_eas, invoice_edi_format) == 'valid'
+                ):
+                    partner.write({
+                        'peppol_eas': inverse_eas,
+                        'peppol_endpoint': inverse_endpoint,
+                    })
+                    partner.button_account_peppol_check_partner_endpoint(company=move.company_id)
+
             return all([
                 partner.country_code in PEPPOL_LIST,
                 self._is_applicable_to_company(method, move.company_id),
@@ -290,7 +315,7 @@ class AccountMoveSend(models.AbstractModel):
             else:
                 # the response only contains message uuids,
                 # so we have to rely on the order to connect peppol messages to account.move
-                attachments_linked_message = _("The invoice has been sent to the Peppol Access Point. The following attachments were sent with the XML:")
+                attachments_linked_message = self._get_peppol_attachments_linked_message(edi_user)
                 attachments_not_linked_message = _("Some attachments could not be sent with the XML:")
                 for message, (invoice, invoice_data) in zip(response['messages'], invoices_data_peppol.items()):
                     invoice.peppol_message_uuid = message['message_uuid']
@@ -328,6 +353,9 @@ class AccountMoveSend(models.AbstractModel):
                             'res_id': new_message.id,
                         })
                 self.env.ref('account_peppol.ir_cron_peppol_get_message_status')._trigger(at=fields.Datetime.now() + timedelta(minutes=5))
+
+    def _get_peppol_attachments_linked_message(self, edi_user):
+        return _("The invoice has been sent to the Peppol Access Point. The following attachments were sent with the XML:")
 
     def action_what_is_peppol_activate(self, moves):
         companies = moves.company_id

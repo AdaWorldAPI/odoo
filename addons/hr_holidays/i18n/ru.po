@@ -3,15 +3,15 @@
 # * hr_holidays
 #
 # Translators:
-# "Dylan Kiss (dyki)" <dyki@odoo.com>, 2025.
-# Weblate <noreply-mt-weblate@weblate.org>, 2025.
+# "Dylan Kiss (dyki)" <dyki@odoo.com>, 2025, 2026.
+# Weblate <noreply-mt-weblate@weblate.org>, 2025, 2026.
 # "Anastasiia Koroleva (koan)" <koan@odoo.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-24 17:35+0000\n"
-"PO-Revision-Date: 2026-06-10 16:30+0000\n"
+"POT-Creation-Date: 2026-07-17 17:37+0000\n"
+"PO-Revision-Date: 2026-08-10 11:13+0000\n"
 "Last-Translator: \"Anastasiia Koroleva (koan)\" <koan@odoo.com>\n"
 "Language-Team: Russian <https://translate.odoo.com/projects/odoo-19/"
 "hr_holidays/ru/>\n"
@@ -170,6 +170,16 @@ msgstr "%(name)s (%(time)g осталось из %(maximum)g часов)"
 #. module: hr_holidays
 #. odoo-python
 #: code:addons/hr_holidays/models/hr_leave.py:0
+msgid ""
+"%(name)s does not have a valid allocation for the leave type %(leave_type)s "
+"to cover that request."
+msgstr ""
+"У сотрудника %(name)s нет действительного распределения для типа отпуска «%"
+"(leave_type)s», чтобы удовлетворить этот запрос."
+
+#. module: hr_holidays
+#. odoo-python
+#: code:addons/hr_holidays/models/hr_leave.py:0
 msgid "%(name)s: %(duration)s"
 msgstr "%(name)s: %(duration)s"
 
@@ -244,26 +254,6 @@ msgstr "сводка за этот период"
 
 #. module: hr_holidays
 #. odoo-javascript
-#: code:addons/hr_holidays/static/src/components/accrual_level/accrual_levels.xml:0
-msgid "(s)"
-msgstr ""
-
-#. module: hr_holidays
-#. odoo-javascript
-#: code:addons/hr_holidays/static/src/components/accrual_level/accrual_levels.xml:0
-msgid ""
-"(s)\n"
-"                                    and a balance cap is set to"
-msgstr ""
-
-#. module: hr_holidays
-#. odoo-javascript
-#: code:addons/hr_holidays/static/src/components/accrual_level/accrual_levels.xml:0
-msgid "(s)."
-msgstr ""
-
-#. module: hr_holidays
-#. odoo-javascript
 #: code:addons/hr_holidays/static/src/dashboard/time_off_card.xml:0
 msgid "(valid until"
 msgstr "(действует до"
@@ -283,7 +273,7 @@ msgstr "– «%(version)s» с %(start_date)s по %(end_date)s"
 #. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_accrual_plan_view_form
 msgid ": the"
-msgstr ""
+msgstr ":"
 
 #. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_leave_allocation_view_form
@@ -1441,6 +1431,11 @@ msgid "Color"
 msgstr "Цвет"
 
 #. module: hr_holidays
+#: model:ir.model,name:hr_holidays.model_res_company
+msgid "Companies"
+msgstr "Компании"
+
+#. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave__company_id
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_accrual_plan__company_id
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_allocation__employee_company_id
@@ -1827,6 +1822,7 @@ msgstr "Отменить"
 #: model:ir.model.fields,field_description:hr_holidays.field_mail_activity_type__display_name
 #: model:ir.model.fields,field_description:hr_holidays.field_mail_message_subtype__display_name
 #: model:ir.model.fields,field_description:hr_holidays.field_report_hr_holidays_report_holidayssummary__display_name
+#: model:ir.model.fields,field_description:hr_holidays.field_res_company__display_name
 #: model:ir.model.fields,field_description:hr_holidays.field_res_partner__display_name
 #: model:ir.model.fields,field_description:hr_holidays.field_res_users__display_name
 #: model:ir.model.fields,field_description:hr_holidays.field_resource_calendar__display_name
@@ -1890,8 +1886,8 @@ msgid ""
 "this leave."
 msgstr ""
 "В связи с изменениями в глобальных настройках отпусков, по данной заявке "
-"недостаточно доступных распределений, и она была переведена в статус "
-"«Отклонено». Пожалуйста, проверьте заявку."
+"недостаточно доступных распределений, и она была переведена в статус «"
+"Отклонено». Пожалуйста, проверьте заявку."
 
 #. module: hr_holidays
 #. odoo-python
@@ -2386,6 +2382,7 @@ msgstr "Отображение значков часов"
 #: model:ir.model.fields,field_description:hr_holidays.field_mail_activity_type__id
 #: model:ir.model.fields,field_description:hr_holidays.field_mail_message_subtype__id
 #: model:ir.model.fields,field_description:hr_holidays.field_report_hr_holidays_report_holidayssummary__id
+#: model:ir.model.fields,field_description:hr_holidays.field_res_company__id
 #: model:ir.model.fields,field_description:hr_holidays.field_res_partner__id
 #: model:ir.model.fields,field_description:hr_holidays.field_res_users__id
 #: model:ir.model.fields,field_description:hr_holidays.field_resource_calendar__id
@@ -3764,8 +3761,7 @@ msgstr "Последовательность"
 #. module: hr_holidays
 #: model:ir.model.fields,help:hr_holidays.field_hr_leave_accrual_level__sequence
 msgid "Sequence is generated automatically by start time delta."
-msgstr ""
-"Последовательность формируется автоматически по дельте времени запуска."
+msgstr "Последовательность формируется автоматически по дельте времени запуска."
 
 #. module: hr_holidays
 #: model:ir.model.fields,help:hr_holidays.field_hr_leave_accrual_level__postpone_max_days
@@ -4059,6 +4055,16 @@ msgstr ""
 "Выбранный здесь цвет будет использоваться на всех экранах с типом \"Отгул\"."
 
 #. module: hr_holidays
+#. odoo-python
+#: code:addons/hr_holidays/models/res_company.py:0
+msgid ""
+"The company country cannot be changed while time off leaves or allocations "
+"with the country exist."
+msgstr ""
+"Нельзя изменить страну компании, пока существуют отпуска или распределения, "
+"привязанные к этой стране."
+
+#. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_accrual_level_view_form
 msgid "The days carried over will be effective for"
 msgstr "Перенесенные дни будут действительны в течение"
@@ -4190,13 +4196,6 @@ msgid ""
 "the correct company."
 msgstr ""
 "В отгулах не указан сотрудник. Убедитесь, что вы вошли в нужную компанию."
-
-#. module: hr_holidays
-#. odoo-python
-#: code:addons/hr_holidays/models/hr_leave.py:0
-msgid "There is no valid allocation to cover that request."
-msgstr ""
-"Для удовлетворения этого запроса не существует действующих ассигнований."
 
 #. module: hr_holidays
 #. odoo-python
@@ -5045,8 +5044,7 @@ msgstr ""
 #: model:ir.model.fields,help:hr_holidays.field_hr_leave_accrual_level__accrual_validity_count
 msgid ""
 "You can define a period of time where the days carried over will be available"
-msgstr ""
-"Можно задать период, в течение которого перенесенные дни будут доступны"
+msgstr "Можно задать период, в течение которого перенесенные дни будут доступны"
 
 #. module: hr_holidays
 #: model:ir.model.fields,help:hr_holidays.field_hr_leave_accrual_level__carryover_options
@@ -5344,6 +5342,12 @@ msgstr "дата выделения дней"
 #. module: hr_holidays
 #. odoo-javascript
 #: code:addons/hr_holidays/static/src/components/accrual_level/accrual_levels.xml:0
+msgid "and a balance cap is set to"
+msgstr "а максимальный остаток ограничен"
+
+#. module: hr_holidays
+#. odoo-javascript
+#: code:addons/hr_holidays/static/src/components/accrual_level/accrual_levels.xml:0
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_accrual_level_view_form
 msgid "and the"
 msgstr "and the"
@@ -5380,6 +5384,12 @@ msgstr "нажмите здесь"
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_leave_report_calendar_view_form
 msgid "dates"
 msgstr "даты"
+
+#. module: hr_holidays
+#. odoo-javascript
+#: code:addons/hr_holidays/static/src/components/accrual_level/accrual_levels.js:0
+msgid "day(s)"
+msgstr "дней"
 
 #. module: hr_holidays
 #. odoo-javascript
@@ -5467,6 +5477,12 @@ msgstr "с даты начала выделения"
 
 #. module: hr_holidays
 #. odoo-javascript
+#: code:addons/hr_holidays/static/src/components/accrual_level/accrual_levels.js:0
+msgid "hour(s)"
+msgstr "ч."
+
+#. module: hr_holidays
+#. odoo-javascript
 #. odoo-python
 #: code:addons/hr_holidays/models/hr_leave.py:0
 #: code:addons/hr_holidays/models/hr_leave_allocation.py:0
@@ -5489,6 +5505,12 @@ msgid ""
 msgstr ""
 "Отпуска типа «Отработанное время» всегда должны учитываться при расчёте "
 "коэффициента начисления."
+
+#. module: hr_holidays
+#. odoo-javascript
+#: code:addons/hr_holidays/static/src/components/accrual_level/accrual_levels.js:0
+msgid "month(s)"
+msgstr "мес."
 
 #. module: hr_holidays
 #. odoo-javascript
@@ -5615,6 +5637,16 @@ msgstr "действителен до"
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_leave_report_calendar_view_search
 msgid "validate"
 msgstr "подтвердить"
+
+#. module: hr_holidays
+#. odoo-javascript
+#: code:addons/hr_holidays/static/src/components/accrual_level/accrual_levels.js:0
+msgid "year(s)"
+msgstr "г."
+
+#~ msgid "There is no valid allocation to cover that request."
+#~ msgstr ""
+#~ "Для удовлетворения этого запроса не существует действующих ассигнований."
 
 #~ msgid ""
 #~ "Changing the contract on this employee changes their working schedule in "
@@ -6505,9 +6537,6 @@ msgstr "подтвердить"
 
 #~ msgid "day of the month"
 #~ msgstr "день месяца"
-
-#~ msgid "day(s)"
-#~ msgstr "дней"
 
 #~ msgid "days of the months"
 #~ msgstr "дни месяцев"

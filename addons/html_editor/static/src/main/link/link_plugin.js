@@ -20,7 +20,7 @@ import { memoize } from "@web/core/utils/functions";
 import { withSequence } from "@html_editor/utils/resource";
 import { isBlock, closestBlock } from "@html_editor/utils/blocks";
 import { isHtmlContentSupported } from "@html_editor/core/selection_plugin";
-import { isBrowserFirefox } from "@web/core/browser/feature_detection";
+import { isBrowserFirefox, isBrowserSafari } from "@web/core/browser/feature_detection";
 
 /** @typedef {import("@odoo/owl").Component} Component */
 /** @typedef {import("plugins").CSSSelector} CSSSelector */
@@ -334,6 +334,11 @@ export class LinkPlugin extends Plugin {
             if (linkEl) {
                 if (ev.ctrlKey || ev.metaKey) {
                     window.open(linkEl.href, "_blank");
+                } else if (!linkEl.isContentEditable) {
+                    this.dependencies.selection.setSelection({
+                        anchorNode: linkEl,
+                        anchorOffset: 0,
+                    });
                 }
                 ev.preventDefault();
             }
@@ -486,15 +491,17 @@ export class LinkPlugin extends Plugin {
     openLinkTools(linkElement, type) {
         this.currentOverlay.close();
         this.LinkPopoverState.editing = false;
-        if (!this.isLinkAllowedOnSelection()) {
+        let selection = this.dependencies.selection.getEditableSelection();
+        const commonAncestor = closestElement(selection.commonAncestorContainer);
+        const isNonEditableLink =
+            commonAncestor.nodeName === "A" && !commonAncestor.isContentEditable;
+        if (!this.isLinkAllowedOnSelection() && !isNonEditableLink) {
             return this.services.notification.add(
                 _t("Unable to create a link on the current selection."),
                 { type: "danger" }
             );
         }
-        let selection = this.dependencies.selection.getEditableSelection();
         let cursorsToRestore = this.dependencies.selection.preserveSelection();
-        const commonAncestor = closestElement(selection.commonAncestorContainer);
         linkElement = linkElement || findInSelection(selection, "a");
         this.type = type;
         if (
@@ -662,7 +669,9 @@ export class LinkPlugin extends Plugin {
             getAttachmentMetadata: this.getAttachmentMetadata,
             recordInfo: this.config.getRecordInfo?.() || {},
             canEdit:
-                !this.linkInDocument || !this.linkInDocument.classList.contains("o_link_readonly"),
+                (!this.linkInDocument ||
+                    !this.linkInDocument.classList.contains("o_link_readonly")) &&
+                this.linkInDocument?.isContentEditable,
             canRemove:
                 this.linkInDocument &&
                 this.linkInDocument.parentElement.isContentEditable &&
@@ -680,7 +689,10 @@ export class LinkPlugin extends Plugin {
         const popover = this.getActivePopover(linkElement);
         if (popover) {
             this.currentOverlay = popover.overlay;
-            if (!linkElement.href) {
+            if (
+                !linkElement.href &&
+                (!this.linkInDocument || this.linkInDocument?.isContentEditable)
+            ) {
                 this.LinkPopoverState.editing = true;
             }
             this.currentOverlay.open({ props: popover.getProps(props) });
@@ -856,7 +868,7 @@ export class LinkPlugin extends Plugin {
             const isLinkEditable = this.getResource("is_link_editable_predicates").some((p) =>
                 p(closestLinkElement)
             );
-            if (closestLinkElement && closestLinkElement.isContentEditable) {
+            if (closestLinkElement) {
                 if (closestLinkElement !== this.linkInDocument || !this.currentOverlay.isOpen) {
                     this.openLinkTools(closestLinkElement);
                 }
@@ -1101,6 +1113,32 @@ export class LinkPlugin extends Plugin {
             (ev.inputType === "insertText" && ev.data === " ")
         ) {
             this.convertToLink = this.prepareConvertToLink();
+            if (this.convertToLink && ev.inputType === "insertText" && isBrowserSafari()) {
+                // The splitText calls in prepareConvertToLink leave Safari's
+                // native selection anchored on an empty text node, so letting
+                // the browser insert the space would put it in the wrong node
+                // and leave the selection with an out-of-range offset
+                // (IndexSizeError). Instead, take over: cancel the native
+                // insertion and perform the conversion, the space insertion
+                // and the selection placement ourselves.
+                ev.preventDefault();
+                // prepareConvertToLink left the selection collapsed on the
+                // text node following the future link.
+                const { anchorNode } = this.dependencies.selection.getEditableSelection();
+                // Use a non-breaking space: a regular space at the end of a
+                // block would be collapsed by the HTML whitespace rules.
+                anchorNode.textContent = "\u00a0" + anchorNode.textContent;
+                this.dependencies.selection.setSelection({
+                    anchorNode,
+                    anchorOffset: 1,
+                });
+                // Two steps, so that undo reverts the link conversion but
+                // keeps the typed space, as with the native insertion.
+                this.dependencies.history.addStep();
+                this.convertToLink();
+                this.dependencies.history.addStep();
+                delete this.convertToLink;
+            }
         }
     }
 
@@ -1213,7 +1251,9 @@ export class LinkPlugin extends Plugin {
             const textNodeSplitted = textSliced.split(/\s/);
             const potentialUrl = textNodeSplitted.pop();
             // In case of multiple matches, only the last one will be converted.
-            const match = [...potentialUrl.matchAll(new RegExp(URL_REGEX.source, URL_REGEX.flags + "g"))].pop();
+            const match = [
+                ...potentialUrl.matchAll(new RegExp(URL_REGEX.source, URL_REGEX.flags + "g")),
+            ].pop();
 
             if (match) {
                 const nodeForSelectionRestore = selection.anchorNode.splitText(
@@ -1234,6 +1274,16 @@ export class LinkPlugin extends Plugin {
                 // split the text node and replace the url text with the link
                 const textNodeToReplace = selection.anchorNode.splitText(startOffset);
                 textNodeToReplace.splitText(match[0].length);
+                // The splitText calls above leave Safari's native selection
+                // anchored on an empty text node with stale offsets. Anything
+                // reading the selection afterwards (e.g. splitBlock when
+                // converting through Enter) would then throw an
+                // IndexSizeError. Re-anchor the selection at the caret
+                // position, right after the future link.
+                this.dependencies.selection.setSelection(
+                    { anchorNode: nodeForSelectionRestore, anchorOffset: 0 },
+                    { normalize: false }
+                );
                 const link = this.createLink(url, text);
                 return () => {
                     textNodeToReplace.splitText(match[0].length); // this will keep the space (that will have been added in the meantime)

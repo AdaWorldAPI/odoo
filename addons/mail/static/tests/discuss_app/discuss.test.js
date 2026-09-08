@@ -2107,6 +2107,41 @@ test("Retry loading more messages on failed load more messages should load more 
     await contains(".o-mail-Message", { count: 90 });
 });
 
+test("Retry on failed initial load should load messages", async () => {
+    let messageFetchShouldFail = true;
+    const pyEnv = await startServer();
+    const channelId = pyEnv["discuss.channel"].create({
+        channel_type: "channel",
+        name: "General",
+    });
+    const messageIds = pyEnv["mail.message"].create(
+        [...Array(60).keys()].map(() => ({
+            body: "coucou",
+            model: "discuss.channel",
+            res_id: channelId,
+        }))
+    );
+    const [selfMember] = pyEnv["discuss.channel.member"].search_read([
+        ["partner_id", "=", serverState.partnerId],
+        ["channel_id", "=", channelId],
+    ]);
+    pyEnv["discuss.channel.member"].write([selfMember.id], {
+        new_message_separator: messageIds[29],
+    });
+    onRpcBefore("/discuss/channel/messages", () => {
+        if (messageFetchShouldFail) {
+            return Promise.reject();
+        }
+    });
+    await start();
+    await openDiscuss(channelId);
+    await contains("button", { text: "Click here to retry" });
+    messageFetchShouldFail = false;
+    await click("button", { text: "Click here to retry" });
+    await contains(".o-mail-Message", { count: 60 });
+    await contains(".o-mail-Thread-newMessage");
+});
+
 test("composer state: attachments save and restore", async () => {
     const pyEnv = await startServer();
     const [channelId] = pyEnv["discuss.channel"].create([{ name: "General" }, { name: "Special" }]);
@@ -2504,4 +2539,29 @@ test("do not show control panel without breadcrumbs", async () => {
     await openDiscuss();
     await contains(".o-mail-Discuss");
     await contains(".o_control_panel .breadcrumb", { text: serverState.partnerName });
+});
+
+test("leaveChannel closed the channel on RPC success with simulated SH websocket traffic", async () => {
+    const pyEnv = await startServer();
+    pyEnv["discuss.channel"].create({
+        name: "SH leaveChannel test",
+        channel_type: "channel",
+        channel_member_ids: [
+            Command.create({ partner_id: serverState.partnerId }),
+        ],
+    });
+    await start();
+    await openDiscuss();
+    // simulate websocket traffic failing to reach the browser 
+    onRpc("discuss.channel", "action_unfollow", () => {
+        asyncStep("action_unfollow_called");
+        return true; 
+    });
+    await contains(".o-mail-DiscussSidebarChannel:has(:text('SH leaveChannel test'))");
+    await click("[title='Channel Actions']");
+    await click(".o-dropdown-item:contains('Leave Channel')");
+    await click("button:contains(Leave Conversation)");
+    await waitForSteps(["action_unfollow_called"]);
+    // ensure the channel has been fully closed 
+    await contains(".o-mail-DiscussSidebarChannel", { count: 0, text: "SH leaveChannel test" });
 });

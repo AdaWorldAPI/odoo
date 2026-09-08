@@ -19,7 +19,7 @@ import { getOrigin } from "@web/core/utils/urls";
 import { setAttributes } from "@web/core/utils/xml";
 
 const urlRegexp =
-    /\b(?:https?:\/\/\d{1,3}(?:\.\d{1,3}){3}|(?:https?:\/\/|(?:www\.))[-a-z0-9@:%._+~#=\u00C0-\u024F\u1E00-\u1EFF]{1,256}\.[a-z]{2,13})\b(?:[-a-z0-9@:%_+~#?&[\]^|{}`\\'$//=\u00C0-\u024F\u1E00-\u1EFF]|[.]*[-a-z0-9@:%_+~#?&[\]^|{}`\\'$//=\u00C0-\u024F\u1E00-\u1EFF]|,(?!$| )|\.(?!$| |\.)|;(?!$| ))*/gi;
+    /\b(?:https?:\/\/\d{1,3}(?:\.\d{1,3}){3}|(?:https?:\/\/|(?:www\.))[-a-z0-9@:%._+~#=\u00C0-\u024F\u1E00-\u1EFF]{1,256}(?:\.{1})?(?:[a-z]{2,13}))\b(?:[-a-z0-9@:%_+~#?&[\]^|{}`\\'$//=\u00C0-\u024F\u1E00-\u1EFF]|[.]*[-a-z0-9@:%_+~#?&[\]^|{}`\\'$//=\u00C0-\u024F\u1E00-\u1EFF]|,(?!$| )|\.(?!$| |\.)|;(?!$| ))*/gi;
 const messageUrlRegExp = new RegExp(`^${escapeRegExp(getOrigin())}/mail/message/(\\d+)$`);
 
 /**
@@ -257,22 +257,25 @@ function generateMentionsLinks(
 ) {
     const mentions = [];
     for (const partner of partners) {
-        const placeholder = `@-mention-partner-${partner.id}`;
+        const placeholder = `@-mention-partner-${partner.id}!`;
         const text = `@${thread?.getPersonaName(partner) ?? partner.name}`;
         mentions.push({
             link: generatePartnerMentionElement(partner, thread),
             placeholder,
+            text,
         });
-        body = htmlReplace(body, text, placeholder);
     }
     for (const thread of threads) {
-        const placeholder = `#-mention-channel-${thread.id}`;
+        const placeholder = `#-mention-channel-${thread.id}!`;
         const text = `#${thread.fullNameWithParent}`;
         mentions.push({
             link: generateThreadMentionElement(thread),
             placeholder,
+            text,
         });
-        body = htmlReplace(body, text, placeholder);
+    }
+    for (const mention of mentions.sort((m1, m2) => m2.text.length - m1.text.length)) {
+        body = htmlReplace(body, mention.text, mention.placeholder);
     }
     for (const special of specialMentions) {
         const text = `@${special}`;

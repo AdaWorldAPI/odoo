@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-29 17:35+0000\n"
-"PO-Revision-Date: 2026-06-06 16:53+0000\n"
+"POT-Creation-Date: 2026-07-31 17:36+0000\n"
+"PO-Revision-Date: 2026-08-14 07:18+0000\n"
 "Last-Translator: Bone NI <bounkirdni@gmail.com>\n"
 "Language-Team: Lao <https://translate.odoo.com/projects/odoo-19/website/lo/>"
 "\n"
@@ -3050,8 +3050,8 @@ msgstr "ຮູບພາບແບບພັບໄດ້"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.res_config_settings_view_form
-msgid "Accounts are usable across all your multiple websites"
-msgstr "ບັນຊີສາມາດໃຊ້ໄດ້ໃນທຸກເວັບໄຊທ໌ຂອງທ່ານ"
+msgid "Accounts created on this website are usable across all other websites"
+msgstr "ບັນຊີທີ່ສ້າງຂຶ້ນໃນເວັບໄຊນີ້ສາມາດນຳໃຊ້ໄດ້ໃນທຸກເວັບໄຊອື່ນໆ"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.new_page_template_landing_2_s_three_columns
@@ -13782,6 +13782,7 @@ msgstr "ແຜນລາຄາ"
 #. module: website
 #. odoo-javascript
 #: code:addons/website/static/src/builder/plugins/options/header/header_font_option.xml:0
+#: code:addons/website/static/src/builder/plugins/theme/theme_colors_option.xml:0
 msgid "Primary"
 msgstr "ຫຼັກ"
 
@@ -14979,6 +14980,7 @@ msgstr "ປຸ່ມຕົວເລືອກເລີ່ມຕົ້ນທີສ
 #. module: website
 #. odoo-javascript
 #: code:addons/website/static/src/builder/plugins/options/header/header_font_option.xml:0
+#: code:addons/website/static/src/builder/plugins/theme/theme_colors_option.xml:0
 msgid "Secondary"
 msgstr "ສຳຮອງ"
 
@@ -20632,3 +20634,6 @@ msgstr "✽ ພິຊຊ້າ"
 #: model_terms:ir.ui.view,arch_db:website.s_key_benefits
 msgid "✽  What We Offer"
 msgstr "✽ ສິ່ງທີ່ພວກເຮົາສະເໜີ"
+
+#~ msgid "Accounts are usable across all your multiple websites"
+#~ msgstr "ບັນຊີສາມາດໃຊ້ໄດ້ໃນທຸກເວັບໄຊທ໌ຂອງທ່ານ"

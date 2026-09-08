@@ -3,15 +3,15 @@
 # * spreadsheet
 #
 # Translators:
-# "Dylan Kiss (dyki)" <dyki@odoo.com>, 2025.
-# Weblate <noreply-mt-weblate@weblate.org>, 2025.
+# "Dylan Kiss (dyki)" <dyki@odoo.com>, 2025, 2026.
+# Weblate <noreply-mt-weblate@weblate.org>, 2025, 2026.
 # "Anastasiia Koroleva (koan)" <koan@odoo.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-24 17:37+0000\n"
-"PO-Revision-Date: 2026-06-06 12:07+0000\n"
+"POT-Creation-Date: 2026-06-19 17:36+0000\n"
+"PO-Revision-Date: 2026-08-10 11:04+0000\n"
 "Last-Translator: \"Anastasiia Koroleva (koan)\" <koan@odoo.com>\n"
 "Language-Team: Russian <https://translate.odoo.com/projects/odoo-19/"
 "spreadsheet/ru/>\n"
@@ -1224,8 +1224,7 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 msgid "Annual yield of a security paying periodic interest."
-msgstr ""
-"Годовая доходность ценной бумаги, выплачивающей периодические проценты."
+msgstr "Годовая доходность ценной бумаги, выплачивающей периодические проценты."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -3160,7 +3159,7 @@ msgstr "Отложить обновления"
 #. odoo-javascript
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.xml:0
 msgid "Degree"
-msgstr "Градус"
+msgstr "Образование"
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -6114,8 +6113,7 @@ msgstr "В оценке DGET найдено более одного совпад
 #. odoo-javascript
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 msgid "More values to be appended using delimiter."
-msgstr ""
-"Дополнительные значения, которые будут добавлены с помощью разделителя."
+msgstr "Дополнительные значения, которые будут добавлены с помощью разделителя."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -7309,6 +7307,12 @@ msgstr "Возвращает текущее значение фильтра эл
 
 #. module: spreadsheet
 #. odoo-javascript
+#: code:addons/spreadsheet/static/src/pivot/pivot_functions.js:0
+msgid "Return the label of the current value of a spreadsheet filter."
+msgstr "Вернуть метку текущего значения фильтра электронной таблицы."
+
+#. module: spreadsheet
+#. odoo-javascript
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 msgid "Return unique columns"
 msgstr "Возвращать уникальные столбцы"
@@ -7345,8 +7349,7 @@ msgstr "Возвращает сетку случайных чисел от 0 в�
 #. odoo-javascript
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 msgid "Returns a n x n unit matrix, where n is the input dimension."
-msgstr ""
-"Возвращает единичную матрицу n x n, где n - размерность входных данных."
+msgstr "Возвращает единичную матрицу n x n, где n - размерность входных данных."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -7464,8 +7467,7 @@ msgstr "Возвращает формат верхней левой ячейки
 #. odoo-javascript
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 msgid "Returns the interest paid at a particular period of an investment."
-msgstr ""
-"Возвращает проценты, выплаченные за определенный период инвестирования."
+msgstr "Возвращает проценты, выплаченные за определенный период инвестирования."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -9439,8 +9441,7 @@ msgstr "Ожидаемая годовая доходность ценной бу
 #. odoo-javascript
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 msgid "The exponent (%s) must be an integer when the base is negative."
-msgstr ""
-"Экспонента (%s) должна быть целым числом, если основание отрицательное."
+msgstr "Экспонента (%s) должна быть целым числом, если основание отрицательное."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -10853,8 +10854,7 @@ msgstr "Ценовое предложение дается в виде деся�
 #. odoo-javascript
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 msgid "The price quotation given using fractional decimal conventions."
-msgstr ""
-"Ценовое предложение указано с использованием дробных десятичных дробей."
+msgstr "Ценовое предложение указано с использованием дробных десятичных дробей."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -11445,8 +11445,8 @@ msgid ""
 "containing a DATE, a function returning a DATE type, or a number."
 msgstr ""
 "Дата начала, которая будет учитываться при вычислении. Должна быть ссылкой "
-"на ячейку (которая содержит дату), функцией (возвращающей значение типа "
-"«Дата») или числом."
+"на ячейку (которая содержит дату), функцией (возвращающей значение типа «Дата"
+"») или числом."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -11456,8 +11456,8 @@ msgid ""
 "containing a date, a function returning a date type, or a number."
 msgstr ""
 "Дата начала, которая будет учитываться при вычислении. Должна быть ссылкой "
-"на ячейку (которая содержит дату), функцией (возвращающей значение типа "
-"«Дата») или числом."
+"на ячейку (которая содержит дату), функцией (возвращающей значение типа «Дата"
+"») или числом."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -12195,8 +12195,7 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 msgid "The value to return if value itself is not an error."
-msgstr ""
-"Значение, которое возвращается, если само значение не является ошибкой."
+msgstr "Значение, которое возвращается, если само значение не является ошибкой."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -12359,8 +12358,7 @@ msgstr ""
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 msgid ""
 "The weekend (%s) must be a string or a number in the range 1-7 or 11-17."
-msgstr ""
-"Выходные (%s) должны быть строкой или числом в диапазоне 1-7 или 11-17."
+msgstr "Выходные (%s) должны быть строкой или числом в диапазоне 1-7 или 11-17."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -14070,8 +14068,8 @@ msgstr "символ"
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 msgid "the numeric value in start_unit to convert to end_unit"
 msgstr ""
-"числовое значение в единице «start_unit», которое нужно преобразовать в "
-"«end_unit»"
+"числовое значение в единице «start_unit», которое нужно преобразовать в «"
+"end_unit»"
 
 #. module: spreadsheet
 #. odoo-javascript
