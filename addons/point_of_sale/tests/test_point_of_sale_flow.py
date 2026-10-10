@@ -1706,6 +1706,112 @@ class TestPointOfSaleFlow(CommonPosTest):
             "stock moves have zero valuation",
         )
 
+    def test_no_serial_total_cost_fallback_to_standard_price(self):
+        self.pos_config_usd.open_ui()
+        current_session = self.pos_config_usd.current_session_id
+        stock_location = self.company_data['default_warehouse'].lot_stock_id
+
+        categ = self.env['product.category'].create({
+            'name': 'FIFO Serial Category',
+            'property_cost_method': 'fifo',
+            'property_valuation': 'real_time',
+        })
+        # needed in the order so total quantity is not 0 and backorder is created
+        available_product = self.env['product.product'].create({
+            'name': 'Available Product',
+            'categ_id': categ.id,
+            'lst_price': 5,
+            'standard_price': 2,
+            'is_storable': True,
+        })
+        self.env['stock.quant']._update_available_quantity(available_product, stock_location, 5)
+        serial_product = self.env['product.product'].create({
+            'name': 'Out of Stock Serial Product',
+            'categ_id': categ.id,
+            'lst_price': 15,
+            'standard_price': 10,
+            'is_storable': True,
+            'tracking': 'serial',
+        })
+
+        order_data = {
+            'company_id': self.env.company.id,
+            'session_id': current_session.id,
+            'partner_id': self.partner.id,
+            'lines': [Command.create({
+                'name': "OL/0001",
+                'product_id': available_product.id,
+                'price_unit': 5,
+                'discount': 0,
+                'qty': 1,
+                'tax_ids': [Command.clear()],
+                'price_subtotal': 5,
+                'price_subtotal_incl': 5,
+            }), Command.create({
+                'name': "OL/0002",
+                'product_id': serial_product.id,
+                'price_unit': 15,
+                'discount': 0,
+                'qty': 1,
+                'pack_lot_ids': [],
+                'tax_ids': [Command.clear()],
+                'price_subtotal': 15,
+                'price_subtotal_incl': 15,
+            })],
+            'payment_ids': [Command.create({
+                'amount': 20,
+                'name': fields.Datetime.now(),
+                'payment_method_id': self.cash_payment_method.id,
+            })],
+            'amount_paid': 20.0,
+            'amount_total': 20.0,
+            'amount_tax': 0.0,
+            'amount_return': 0.0,
+            'last_order_preparation_change': '{}',
+        }
+        self.env['pos.order'].sync_from_ui([order_data])
+        order = current_session.order_ids[0]
+        serial_line = order.lines.filtered(lambda l: l.product_id == serial_product)
+
+        self.assertTrue(order.picking_ids.backorder_ids, "A backorder should have been created for the missing serial")
+        self.assertEqual(
+            serial_line.total_cost, 10,
+            "total_cost should equal qty * standard_price (1 * 10 = 10) when the serial "
+            "line has no valued stock move because it was sold out of stock",
+        )
+
+    def test_zero_cost_delivered_stock_not_overridden_by_standard_price(self):
+        categ = self.env['product.category'].create({
+            'name': 'FIFO Category',
+            'property_cost_method': 'fifo',
+            'property_valuation': 'real_time',
+        })
+        product = self.env['product.product'].create({
+            'name': 'Free Sample Product',
+            'categ_id': categ.id,
+            'standard_price': 10,
+            'is_storable': True,
+        })
+        self.env['stock.quant']._update_available_quantity(
+            product, self.company_data['default_warehouse'].lot_stock_id, 1)
+
+        order, _ = self.create_backend_pos_order({
+            'line_data': [{'product_id': product.id}],
+            'payment_data': [{'payment_method_id': self.cash_payment_method.id}],
+        })
+        out_move = order.picking_ids.move_ids
+        self.assertTrue(out_move._get_valued_qty(), "The move should have a real delivered quantity")
+        out_move.value = 0
+        order.lines.is_total_cost_computed = False
+        order.lines._compute_total_cost(out_move)
+
+        self.assertEqual(
+            order.lines.total_cost, 0,
+            "total_cost should stay 0 for a move that was actually delivered and genuinely "
+            "costs 0, even though the product's standard_price is non-zero: only moves with "
+            "no valued quantity at all should fall back to standard_price",
+        )
+
     def test_cancel_order_with_past_preset(self):
         # Test that cancelling an order with a past preset does not raise an error and does cancel the order.
         preset_takeaway = self.env['pos.preset'].create({
@@ -2832,6 +2938,51 @@ class TestPointOfSaleFlow(CommonPosTest):
         self.assertNotIn(item_future_start.id, loaded_ids,
             "item with date_start still in the future must not be fetched")
 
+    def test_incremental_load_attribute_values_of_old_attribute(self):
+        """Attribute values created after the last sync must be loaded even if
+        their attribute was not modified since (it is not part of the delta)."""
+        self.pos_config_usd.open_ui()
+        session = self.pos_config_usd.current_session_id
+        now = fields.Datetime.now()
+
+        attribute = self.env['product.attribute'].create({
+            'name': 'Vintage',
+            'create_variant': 'always',
+            'value_ids': [Command.create({'name': '2023'}), Command.create({'name': '2024'})],
+        })
+        # The attribute predates the last sync: backdate its write_date.
+        attribute.flush_model()
+        self.env.cr.execute(
+            "UPDATE product_attribute SET write_date = %s WHERE id = %s",
+            (now - timedelta(days=30), attribute.id),
+        )
+        attribute.invalidate_recordset(['write_date'])
+        last_server_date = fields.Datetime.to_string(now - timedelta(days=10))
+
+        # A configurable product created after the last sync, on that old attribute.
+        template = self.env['product.template'].create({
+            'name': 'Sèvre-et-Maine',
+            'available_in_pos': True,
+            'attribute_line_ids': [Command.create({
+                'attribute_id': attribute.id,
+                'value_ids': [Command.set(attribute.value_ids.ids)],
+            })],
+        })
+        ptavs = template.attribute_line_ids.product_template_value_ids
+        self.assertEqual(len(ptavs), 2)
+
+        data = session.with_context(pos_last_server_date=last_server_date).load_data([])
+        self.assertNotIn(attribute.id, {a['id'] for a in data['product.attribute']},
+            "unchanged attribute is not part of the incremental load")
+        self.assertTrue(set(template.attribute_line_ids.ids) <= {p['id'] for p in data['product.template.attribute.line']})
+        self.assertTrue(set(template.product_variant_ids.ids) <= {p['id'] for p in data['product.product']})
+        self.assertTrue(set(ptavs.ids) <= {v['id'] for v in data['product.template.attribute.value']},
+            "attribute values of the new line must be loaded even if their attribute is unchanged")
+
+        # A full load still returns them.
+        data = session.load_data([])
+        self.assertTrue(set(ptavs.ids) <= {v['id'] for v in data['product.template.attribute.value']})
+
     def test_sequence_dynamic_prefix_suffix(self):
         """Test that sequence_number is correctly extracted when sequence has dynamic prefix/suffix."""
         self.pos_config_usd.open_ui()
@@ -3182,3 +3333,116 @@ class TestPointOfSaleFlow(CommonPosTest):
         order = self.env['pos.order'].search([('session_id', '=', current_session_b.id)])
         self.assertEqual(len(order), 1)
         self.assertTrue(order.account_move)
+
+    def test_cash_in_out_has_no_partner(self):
+        """The cashier is not the counterpart of a cash move: it must not be set as
+        partner on the statement line nor on its journal items."""
+        self.pos_config_usd.open_ui()
+        session = self.pos_config_usd.current_session_id
+        session.set_opening_control(0, False)
+        session.try_cash_in_out('in', 10, 'Float', self.env.user.partner_id.id, {'translatedType': 'in'})
+
+        cash_move = session.statement_line_ids
+        self.assertFalse(cash_move.partner_id)
+        self.assertFalse(cash_move.move_id.line_ids.partner_id)
+        self.assertEqual(session.get_cash_in_out_list()[0]['cashier_name'], self.env.user.name)
+
+        session.delete_cash_in_out(cash_move.id, self.env.user.partner_id.id)
+        self.assertIn(f'{self.env.user.name}: 10.0', session.message_ids[0].body)
+
+    def test_close_session_cash_out_without_accounting_rights(self):
+        """A PoS manager without any accounting group cashes out, then closes
+        the session with the counted cash matching the expected cash: the
+        closed session must not record a cash difference.
+
+        Each RPC of the closing flow runs in its own transaction, so the cache
+        is cleared between the calls to reproduce the real flow.
+        """
+        pos_manager = self.env['res.users'].with_context(no_reset_password=True).create({
+            'name': 'PoS manager without accounting rights',
+            'login': 'pos_manager_no_accounting',
+            'group_ids': [Command.set([
+                self.env.ref('base.group_user').id,
+                self.env.ref('point_of_sale.group_pos_manager').id,
+            ])],
+        })
+        self.assertFalse(pos_manager.has_group('account.group_account_invoice'))
+        self.pos_config_usd.cash_control = True
+        self.pos_config_usd.with_user(pos_manager).open_ui()
+        session = self.pos_config_usd.current_session_id.with_user(pos_manager)
+        session.set_opening_control(0, False)
+
+        self.create_backend_pos_order({
+            'line_data': [{'product_id': self.ten_dollars_no_tax.product_variant_id.id}],
+            'payment_data': [{'payment_method_id': self.cash_payment_method.id, 'amount': 10}],
+        })
+        session.try_cash_in_out('out', 4, 'Bank deposit', False, {'translatedType': 'Cash out'})
+        self.env.invalidate_all()
+
+        expected_cash = session.get_closing_control_data()['default_cash_details']['amount']
+        self.assertEqual(expected_cash, 6)
+        self.env.invalidate_all()
+        self.assertEqual(session.post_closing_cash_details(expected_cash), {'successful': True})
+        self.env.invalidate_all()
+        session.update_closing_control_state_session(False)
+        self.assertEqual(session.cash_register_balance_end, 6)
+        self.assertEqual(session.cash_register_difference, 0)
+        closing_message = session.message_ids.filtered(lambda m: 'Closing difference' in (m.body or ''))
+        self.assertIn('Closing difference: $\xa00.00', closing_message.body.unescape())
+        self.env.invalidate_all()
+        self.assertEqual(session.close_session_from_ui(), {'successful': True})
+        self.env.invalidate_all()
+
+        self.assertEqual(session.state, 'closed')
+        self.assertEqual(session.cash_real_transaction, -4)
+        self.assertEqual(session.cash_register_balance_end, 6)
+        self.assertEqual(session.cash_register_difference, 0)
+        # cash out + cash payments of the session, no loss/profit line
+        self.assertRecordValues(session.sudo().statement_line_ids.sorted('id'), [
+            {'amount': -4},
+            {'amount': 10},
+        ])
+
+    def test_refund_of_a_global_discount(self):
+        """ The global discount line pins in 'extra_tax_data' base and tax amounts that cannot be
+        recomputed from its price. The UI does not refund that line, it applies the discount again
+        on the refund order, where the refunded lines are negative and the discount is therefore
+        positive. Those pinned amounts have to be booked as they are on both orders, otherwise an
+        order and its refund do not cancel each other in the closing entry of the session.
+        """
+        AccountTax = self.env['account.tax']
+        company = self.env.company
+        product = self.twenty_dollars_with_10_incl.product_variant_id
+
+        def discount_line(quantity):
+            """ The values the UI stores for a 25% global discount on 'quantity' x that product. """
+            base_lines = [AccountTax._prepare_base_line_for_taxes_computation(
+                None, product_id=product, tax_ids=product.taxes_id, price_unit=product.lst_price,
+                quantity=quantity, currency_id=company.currency_id, rate=1.0,
+            )]
+            AccountTax._add_tax_details_in_base_lines(base_lines, company)
+            AccountTax._round_base_lines_tax_details(base_lines, company)
+            line = AccountTax._prepare_global_discount_lines(base_lines, company, 'percent', 25.0)[0]
+            return {
+                'product_id': product.id,
+                'qty': line['quantity'],
+                'price_unit': company.currency_id.round(line['price_unit']),
+                'extra_tax_data': AccountTax._export_base_line_extra_tax_data(line),
+            }
+
+        self.pos_config_usd.open_ui()
+        for quantity in (1, -1):
+            self.create_backend_pos_order({
+                'order_data': {'is_refund': quantity < 0},
+                'line_data': [{'product_id': product.id, 'qty': quantity}, discount_line(quantity)],
+                'payment_data': [{'payment_method_id': self.cash_payment_method.id}],
+            })
+
+        session = self.pos_config_usd.current_session_id
+        session.post_closing_cash_details(sum(session.order_ids.payment_ids.mapped('amount')))
+        session.close_session_from_ui()
+        tax_lines = session.move_id.line_ids.filtered(lambda line: line.display_type == 'tax')
+        self.assertAlmostEqual(
+            sum(tax_lines.mapped('balance')), 0.0,
+            msg="The taxes of an order and of its refund should cancel each other.",
+        )

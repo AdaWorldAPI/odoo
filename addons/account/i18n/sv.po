@@ -42,7 +42,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-17 17:37+0000\n"
-"PO-Revision-Date: 2026-08-24 07:58+0000\n"
+"PO-Revision-Date: 2026-10-02 14:34+0000\n"
 "Last-Translator: Hanna Kharraziha <hakha@odoo.com>\n"
 "Language-Team: Swedish <https://translate.odoo.com/projects/odoo-19/account/"
 "sv/>\n"
@@ -51,7 +51,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.6.1\n"
+"X-Generator: Weblate 2026.8.1\n"
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_journal__type
@@ -1209,8 +1209,8 @@ msgid ""
 "<span class=\"figure-caption\">Never miss a deadline, with automated "
 "statements and alerts.</span>"
 msgstr ""
-"<span class=\"figure-caption\">Missa aldrig en tidsgräns med automatiserade "
-"kontoutdrag och varningar.</span>"
+"<span class=\"figure-caption\">Missa aldrig en deadline med automatiserade "
+"rapporter och påminnelser.</span>"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_move_form
@@ -1336,7 +1336,7 @@ msgid ""
 "                            </span>"
 msgstr ""
 "<span class=\"text-muted ms-2\">\n"
-"                                <i>, för att göra dem oföränderliga</i>\n"
+"                                <i>för att göra dem oföränderliga</i>\n"
 "                            </span>"
 
 #. module: account
@@ -1347,7 +1347,7 @@ msgid ""
 "                            </span>"
 msgstr ""
 "<span class=\"text-muted\">\n"
-"                                <i>Säkra verifikat till och med</i>\n"
+"                                <i>Säkra verifikationer till och med</i>\n"
 "                            </span>"
 
 #. module: account
@@ -2595,8 +2595,7 @@ msgstr ""
 #: code:addons/account/models/account_report.py:0
 msgid "A line cannot have both children and a groupby value (line '%s')."
 msgstr ""
-"En rad kan inte ha både underordnade rader och \"grupperaefter\" värden (rad "
-"’%s’)."
+"En rad kan inte ha både underordnade rader och \"groupby\"-värden (rad ’%s’)."
 
 #. module: account
 #. odoo-python
@@ -4239,7 +4238,7 @@ msgstr "Användningsområde"
 #: model_terms:ir.ui.view,arch_db:account.res_company_form_view_onboarding_sale_tax
 #: model_terms:ir.ui.view,arch_db:account.setup_financial_year_opening_form
 msgid "Apply"
-msgstr "Verkställ"
+msgstr "Bekräfta"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.res_config_settings_view_form
@@ -4393,7 +4392,7 @@ msgstr "Bilagor stöds ej"
 #: model:ir.actions.act_window,name:account.action_account_audit_trail_report
 #: model:ir.ui.menu,name:account.account_audit_trail_menu
 msgid "Audit Trail"
-msgstr "Verifieringskedja"
+msgstr "Revisionslogg"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_bank_statement_line__audit_trail_message_ids
@@ -4563,7 +4562,7 @@ msgstr "Tillgänglig betalningsmetod"
 #: model:ir.model.fields,field_description:account.field_account_payment__available_payment_method_line_ids
 #: model:ir.model.fields,field_description:account.field_account_payment_register__available_payment_method_line_ids
 msgid "Available Payment Method Line"
-msgstr "Rad för tillgängliga betalningsmetoder"
+msgstr "Tillgängliga betalningsmetoder"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_move_send_wizard__available_pdf_report_ids
@@ -6048,7 +6047,7 @@ msgstr "Tjänsteersättning till externa medarbetare och konsulter"
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_report__use_sections
 msgid "Composite Report"
-msgstr "Samlad rapport"
+msgstr "Samlingsrapport"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_report_expression__engine
@@ -6185,7 +6184,7 @@ msgstr "Innehåll"
 #. module: account
 #: model:ir.ui.menu,name:account.account_audit_control_menu
 msgid "Control"
-msgstr "Kontroll"
+msgstr "Kontroller"
 
 #. module: account
 #: model_terms:ir.actions.act_window,help:account.action_amounts_to_settle
@@ -6972,7 +6971,7 @@ msgstr "Kundfaktura"
 #: model_terms:ir.ui.view,arch_db:account.res_partner_view_search
 #: model_terms:ir.ui.view,arch_db:account.view_partner_property_form
 msgid "Customer Invoices"
-msgstr "Kunder"
+msgstr "Kundfakturor"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_res_config_settings__account_discount_expense_allocation_id
@@ -10098,7 +10097,9 @@ msgstr ""
 #: model:ir.model.fields,help:account.field_res_company__message_needaction
 #: model:ir.model.fields,help:account.field_res_partner_bank__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "Om ikryssad, så finns det nya meddelanden som kräver din uppmärksamhet."
+msgstr ""
+"Om rutan är markerad, så finns det nya meddelanden som kräver din "
+"uppmärksamhet."
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_account__message_has_error
@@ -10122,7 +10123,7 @@ msgstr "Om ikryssad, så finns det nya meddelanden som kräver din uppmärksamhe
 #: model:ir.model.fields,help:account.field_res_partner_bank__message_has_error
 #: model:ir.model.fields,help:account.field_res_partner_bank__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Om ikryssad, så finns det meddelanden med leveransfel."
+msgstr "Om rutan är markerad, så har vissa meddelanden leveransfel."
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_move_line__collapse_composition
@@ -11085,7 +11086,7 @@ msgstr "Faktura: Skickas"
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_invoice_report_search
 msgid "Invoiced"
-msgstr "Fakturerad"
+msgstr "Fakturerat"
 
 #. module: account
 #. odoo-python
@@ -11497,7 +11498,7 @@ msgstr "Verifikationer att hasha"
 #: model_terms:ir.ui.view,arch_db:account.view_move_line_payment_tree
 #: model_terms:ir.ui.view,arch_db:account.view_move_line_tree
 msgid "Journal Entry"
-msgstr "Verifikat"
+msgstr "Verifikation"
 
 #. module: account
 #. odoo-javascript
@@ -12239,7 +12240,7 @@ msgstr "Analyser"
 #: model:ir.model.fields.selection,name:account.selection__res_partner__invoice_sending_method__manual
 #: model_terms:ir.ui.view,arch_db:account.view_account_move_filter
 msgid "Manual"
-msgstr "Manuell"
+msgstr "Manuella"
 
 #. module: account
 #: model:account.payment.method,name:account.account_payment_method_manual_in
@@ -12552,7 +12553,7 @@ msgstr "Meddelande"
 #: model:ir.model.fields,field_description:account.field_res_company__message_has_error
 #: model:ir.model.fields,field_description:account.field_res_partner_bank__message_has_error
 msgid "Message Delivery error"
-msgstr "Leveransfel för meddelanden"
+msgstr "Leveransfel för meddelande"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_account__message_ids
@@ -15750,7 +15751,7 @@ msgstr "Återkallad den"
 #: model:ir.ui.menu,name:account.account_audit_menu
 #: model_terms:ir.ui.view,arch_db:account.view_move_line_tree
 msgid "Review"
-msgstr "Granskning"
+msgstr "Granskningar"
 
 #. module: account
 #: model:onboarding.onboarding.step,button_text:account.onboarding_onboarding_step_chart_of_accounts
@@ -15767,7 +15768,7 @@ msgstr "Visa kontoplan"
 #: code:addons/account/wizard/account_secure_entries_wizard.py:0
 #: model:ir.actions.server,name:account.accountant_confirm_entries_action
 msgid "Review Entries"
-msgstr "Granska verifikat"
+msgstr "Granska verifikationer"
 
 #. module: account
 #. odoo-python
@@ -15806,7 +15807,7 @@ msgstr "Rot"
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_report__root_report_id
 msgid "Root Report"
-msgstr "Ursprungsrapport"
+msgstr "Grundrapport"
 
 #. module: account
 #: model:ir.model.fields.selection,name:account.selection__res_company__tax_calculation_rounding_method__round_per_line
@@ -16140,7 +16141,7 @@ msgstr "Sektioner"
 #: model:ir.ui.menu,name:account.menu_action_secure_entries
 #: model_terms:ir.ui.view,arch_db:account.view_account_secure_entries_wizard
 msgid "Secure Entries"
-msgstr "Säkra verifikationer"
+msgstr "Lås verifikationer"
 
 #. module: account
 #: model:ir.actions.act_window,name:account.action_view_account_secure_entries_wizard
@@ -19282,7 +19283,7 @@ msgstr "Fakturan skickas i bakgrunden."
 #. module: account
 #: model_terms:ir.actions.act_window,help:account.action_account_audit_trail_report
 msgid "This is the Audit Trail Report"
-msgstr "Detta är rapporten om verifieringskedjor"
+msgstr "Det här är en revisionslogg."
 
 #. module: account
 #: model_terms:ir.actions.act_window,help:account.open_account_journal_dashboard_kanban

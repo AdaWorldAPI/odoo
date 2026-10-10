@@ -12,6 +12,7 @@ export class BaseProductAttribute extends Component {
         "customValue",
         "setCustomValue",
         "allSelectedValues",
+        "showExtraPrice",
     ];
 
     setup() {
@@ -92,6 +93,7 @@ export class ProductConfiguratorPopup extends Component {
         hideAlwaysVariants: { type: Boolean, optional: true },
         forceVariantValue: { type: Object, optional: true },
         line: { type: Object, optional: true },
+        comboItem: { type: Object, optional: true },
     };
 
     setup() {
@@ -100,7 +102,7 @@ export class ProductConfiguratorPopup extends Component {
             attributes:
                 this.props.line?.selectedAttributes ||
                 this.props.productTemplate.attribute_line_ids.reduce((acc, attribute) => {
-                    acc[attribute.attribute_id.id] = {
+                    acc[attribute.id] = {
                         selected: [],
                         custom_value: "",
                     };
@@ -119,7 +121,7 @@ export class ProductConfiguratorPopup extends Component {
 
     get selectedValues() {
         return this.props.productTemplate.attribute_line_ids
-            .map((attrLine) => this.state.attributes[attrLine.attribute_id.id]?.selected || [])
+            .map((attrLine) => this.state.attributes[attrLine.id]?.selected || [])
             .flat();
     }
 
@@ -154,7 +156,8 @@ export class ProductConfiguratorPopup extends Component {
                               (att) => att.attribute_line_id.id == value.attribute_line_id.id
                           )
                         : false;
-                    this.state.attributes[value.attribute_id.id].selected = forceVariant || value;
+                    this.state.attributes[value.attribute_line_id.id].selected =
+                        forceVariant || value;
                 });
                 break;
             }
@@ -192,25 +195,25 @@ export class ProductConfiguratorPopup extends Component {
 
     setSelected(attribute) {
         return (selected) => {
-            if (!this.state.attributes[attribute.attribute_id.id]) {
-                this.state.attributes[attribute.attribute_id.id] = {
+            if (!this.state.attributes[attribute.id]) {
+                this.state.attributes[attribute.id] = {
                     selected: {},
                     custom_value: "",
                 };
             }
-            this.state.attributes[attribute.attribute_id.id].selected = selected;
+            this.state.attributes[attribute.id].selected = selected;
         };
     }
 
     setCustomValue(attribute) {
         return (custom_value) => {
-            if (!this.state.attributes[attribute.attribute_id.id]) {
-                this.state.attributes[attribute.attribute_id.id] = {
+            if (!this.state.attributes[attribute.id]) {
+                this.state.attributes[attribute.id] = {
                     selected: {},
                     custom_value: "",
                 };
             }
-            this.state.attributes[attribute.attribute_id.id].custom_value = custom_value;
+            this.state.attributes[attribute.id].custom_value = custom_value;
         };
     }
 
@@ -277,6 +280,22 @@ export class ProductConfiguratorPopup extends Component {
         return this.selectedValues
             .filter((value) => value.attribute_id.create_variant === "no_variant")
             .reduce((acc, val) => acc + val.price_extra, 0);
+    }
+
+    get showExtraPrice() {
+        // Combo items add their extras on top of the combo price, always.
+        if (this.props.comboItem) {
+            return true;
+        }
+        // A fixed pricelist rule replaces the whole price of the product, attribute
+        // extra prices included, so those extras must not be advertised either.
+        const template = this.props.productTemplate;
+        const pricelist = this.pos.getOrder()?.pricelist_id;
+        const variant = this.product || false;
+        return (
+            template.getPrice(pricelist, 1, 1, false, variant) !==
+            template.getPrice(pricelist, 1, 0, false, variant)
+        );
     }
 
     confirm() {

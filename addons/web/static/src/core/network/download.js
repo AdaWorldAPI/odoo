@@ -1,6 +1,7 @@
 import { _t } from "@web/core/l10n/translation";
 import { makeErrorFromResponse, ConnectionLostError } from "@web/core/network/rpc";
 import { browser } from "@web/core/browser/browser";
+import { session } from "@web/session";
 
 /* eslint-disable */
 /**
@@ -316,21 +317,32 @@ function _download(data, filename, mimetype) {
 
     if (url && url.length < 2048) {
         // if no filename and no mime, assume a url was passed as the only argument
-        fileName = url.split("/").pop().split("?")[0];
         anchor.href = url; // assign href prop to temp anchor
-        if (anchor.href.indexOf(url) !== -1) {
-            // if the browser determines that it's a potentially valid url path:
-            return new Promise((resolve, reject) => {
-                let xhr = new browser.XMLHttpRequest();
-                xhr.open("GET", url, true);
-                configureBlobDownloadXHR(xhr, {
-                    onSuccess: resolve,
-                    onFailure: reject,
-                    url
-                });
-                xhr.send();
-            });
+        // When embedded on an external origin (browser.location.origin),
+        // use a direct download for url targeting the odoo instance
+        // (session.origin) to avoid triggering CORS
+        const targetOrigin = new URL(url, browser.location.origin).origin;
+        if (
+            targetOrigin &&
+            targetOrigin !== browser.location.origin &&
+            targetOrigin === session.origin
+        ) {
+            anchor.setAttribute("download", "");
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+            return true;
         }
+        return new Promise((resolve, reject) => {
+            let xhr = new browser.XMLHttpRequest();
+            xhr.open("GET", url, true);
+            configureBlobDownloadXHR(xhr, {
+                onSuccess: resolve,
+                onFailure: reject,
+                url
+            });
+            xhr.send();
+        });
     }
 
     //go ahead and download dataURLs right away

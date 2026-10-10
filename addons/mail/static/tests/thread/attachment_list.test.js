@@ -2,6 +2,7 @@ import {
     click,
     contains,
     defineMailModels,
+    inputFiles,
     onRpcBefore,
     openDiscuss,
     start,
@@ -11,7 +12,7 @@ import { describe, expect, test } from "@odoo/hoot";
 import { mockFetch, mockUserAgent } from "@odoo/hoot-mock";
 import { asyncStep, patchWithCleanup, waitForSteps } from "@web/../tests/web_test_helpers";
 
-import { download } from "@web/core/network/download";
+import { downloadFile } from "@web/core/network/download";
 import { getOrigin } from "@web/core/utils/urls";
 import { isMobileOS } from "@web/core/browser/feature_detection";
 
@@ -136,6 +137,35 @@ test("clicking on the delete attachment button multiple times should do the rpc 
     await click(".modal-footer .btn-primary");
     await click(".modal-footer .btn-primary");
     await click(".modal-footer .btn-primary");
+    await contains(".o-mail-Attachment-unlink", { count: 0 });
+    await waitForSteps(["attachment_unlink"]); // The unlink method must be called once
+});
+
+test("clicking on the delete attachment button multiple times in composer should do the rpc only once", async () => {
+    const pyEnv = await startServer();
+    const channelId = pyEnv["discuss.channel"].create({
+        channel_type: "channel",
+        name: "channel1",
+    });
+    const text = new File(["hello, world"], "text.txt", { type: "text/plain" });
+    let resolveDelete;
+    const deletePromise = new Promise((resolve) => {
+        resolveDelete = resolve;
+    });
+    onRpcBefore("/mail/attachment/delete", async () => {
+        expect.step("attachment_unlink");
+        await deletePromise;
+    });
+    await start();
+    await openDiscuss(channelId);
+    await inputFiles(".o-mail-Composer .o_input_file", [text]);
+    await contains(
+        ".o-mail-Composer-footer .o-mail-AttachmentList .o-mail-AttachmentContainer:not(.o-isUploading):contains(text.txt) .fa-check"
+    );
+    await click(".o-mail-Attachment-unlink");
+    await click(".o-mail-Attachment-unlink");
+    resolveDelete();
+    // Let the pending deletion settle, so any extra rpc has been registered.
     await contains(".o-mail-Attachment-unlink", { count: 0 });
     await waitForSteps(["attachment_unlink"]); // The unlink method must be called once
 });
@@ -462,9 +492,9 @@ test("download url of non-viewable binary file", async () => {
     await openDiscuss(channelId);
     await contains(".fa-download");
 
-    patchWithCleanup(download, {
-        _download: (options) => {
-            expect(options.url).toBe(`${getOrigin()}/web/content/${attachmentId}?filename=test.o&download=true`);
+    patchWithCleanup(downloadFile, {
+        _download: (data) => {
+            expect(data).toBe(`${getOrigin()}/web/content/${attachmentId}?filename=test.o&download=true`);
         },
     });
     await click(".fa-download");

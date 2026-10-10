@@ -548,6 +548,7 @@ class AccountEdiCii(models.AbstractModel):
     def _cii_get_buyer_trade_party_node(self, vals):
         customer = vals['customer']
         commercial_partner = customer.commercial_partner_id
+        name = customer.display_name if customer.name else commercial_partner.display_name
         scheme_id = None
         legal_organization_val = commercial_partner.company_registry
         if siret.is_valid(legal_organization_val):
@@ -555,11 +556,11 @@ class AccountEdiCii(models.AbstractModel):
             legal_organization_val = legal_organization_val[:9]
         return self._cii_get_partner_trade_party_node(vals, {
             'gln': False,
-            'name': customer.name,
+            'name': name,
             'partner_specified_legal_organization': legal_organization_val,
             'partner_specified_legal_organization_scheme': scheme_id,
             'contact_values': {
-                'name': customer.name,
+                'name': name,
                 'phone': customer.phone,
                 'email': customer.email,
             },
@@ -940,6 +941,11 @@ class AccountEdiCii(models.AbstractModel):
 
         if narration := ''.join(f'<p>{note}</p>' for note in notes):
             collected_values['to_write']['narration'] = narration
+
+    def _import_cii_invoice_add_payment_reference(self, collected_values):
+        tree = collected_values['tree']
+        if payment_reference := tree.findtext('.//{*}ApplicableHeaderTradeSettlement/{*}PaymentReference'):
+            collected_values['to_write']['payment_reference'] = payment_reference
 
     def _import_cii_invoice_add_customer_values(self, collected_values):
         customer_values = collected_values['customer_values'] = {}
@@ -1489,13 +1495,14 @@ class AccountEdiCii(models.AbstractModel):
 
         self._import_cii_invoice_add_partner_bank_values(collected_values)
 
-        # invoice ref / invoice_origin / date / date_due / delivery_date / narration
+        # invoice ref / invoice_origin / date / date_due / delivery_date / narration / payment_reference
         self._import_cii_invoice_add_ref(collected_values)
         self._import_cii_invoice_add_invoice_origin(collected_values)
         self._import_cii_invoice_add_issue_date(collected_values)
         self._import_cii_invoice_add_date_due(collected_values)
         self._import_cii_invoice_add_invoice_delivery_date(collected_values)
         self._import_cii_invoice_add_narration(collected_values)
+        self._import_cii_invoice_add_payment_reference(collected_values)
 
         # customer
         self._import_cii_invoice_add_customer_values(collected_values)

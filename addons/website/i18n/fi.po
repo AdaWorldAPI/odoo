@@ -44,7 +44,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-31 17:36+0000\n"
-"PO-Revision-Date: 2026-08-12 14:48+0000\n"
+"PO-Revision-Date: 2026-09-15 12:32+0000\n"
 "Last-Translator: Saara Hakanen <sahak@odoo.com>\n"
 "Language-Team: Finnish <https://translate.odoo.com/projects/odoo-19/website/"
 "fi/>\n"
@@ -53,7 +53,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.6.1\n"
+"X-Generator: Weblate 2026.8.1\n"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_quotes_carousel_compact
@@ -6386,7 +6386,7 @@ msgstr "Päivää"
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippets
 msgid "Debug"
-msgstr "Virheenkorjaus"
+msgstr "Viankorjaus"
 
 #. module: website
 #. odoo-javascript
@@ -13850,7 +13850,7 @@ msgstr "Plausible tunnistusavain"
 #. odoo-javascript
 #: code:addons/website/static/src/snippets/s_website_form/form.js:0
 msgid "Please fill in the form correctly."
-msgstr "Täytä lomakkeen vaaditut kentät."
+msgstr "Ole hyvä ja täytä lomake oikein."
 
 #. module: website
 #. odoo-javascript
@@ -20279,7 +20279,7 @@ msgstr "kehittää brändiä"
 #. odoo-javascript
 #: code:addons/website/static/src/components/website_loader/website_loader.js:0
 msgid "e-learning platform"
-msgstr "verkko-oppimisalusta"
+msgstr "verkko-oppimisen alusta"
 
 #. module: website
 #. odoo-javascript

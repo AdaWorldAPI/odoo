@@ -17,7 +17,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-24 14:12+0000\n"
-"PO-Revision-Date: 2026-08-10 11:34+0000\n"
+"PO-Revision-Date: 2026-09-22 09:16+0000\n"
 "Last-Translator: Bren Driesen <brdri@odoo.com>\n"
 "Language-Team: Dutch <https://translate.odoo.com/projects/odoo-19/base/nl/>\n"
 "Language: nl\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.6.1\n"
+"X-Generator: Weblate 2026.8.1\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_at_reports
@@ -1641,7 +1641,7 @@ msgid ""
 "==================\n"
 msgstr ""
 "\n"
-"Boekhouding importeren\n"
+"Importeren in Boekhouding\n"
 "==================\n"
 
 #. module: base
@@ -16734,7 +16734,8 @@ msgstr ""
 "                                            Wachtwoord wijzigen\n"
 "                                        </span>\n"
 "                                        <span class=\"text-muted\">\n"
-"                                            Update als het gelekt is.\n"
+"                                            Stel je wachtwoord opnieuw in "
+"als het gelekt is.\n"
 "                                        </span>"
 
 #. module: base
@@ -17753,7 +17754,7 @@ msgstr "Rekeningafschriftgegevens extraheren"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_bank_statement_import
 msgid "Account Bank Statement Import"
-msgstr "Importeren bankrenkeningnummers"
+msgstr "Bankrekeningafschriften importeren"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_accountant_batch_payment
@@ -17775,7 +17776,7 @@ msgstr "Account uittreksel"
 #: model:ir.module.module,shortdesc:base.module_account_fiscal_categories
 #: model:ir.module.module,summary:base.module_account_fiscal_categories
 msgid "Account Fiscal Report"
-msgstr "Boekhouding Verworpen uitgaven"
+msgstr "Fiscale rapportage"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_partner_bank__partner_id
@@ -17790,12 +17791,12 @@ msgstr "Naam rekeninghouder"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_invoice_extract
 msgid "Account Invoice Extract"
-msgstr "Factuur extraheren"
+msgstr "Boekhouding Factuurextractie"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_invoice_extract_purchase
 msgid "Account Invoice Extract Purchase"
-msgstr "Factuurextractie notificatie"
+msgstr "Boekhouding Factuurextractie Inkoop"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_partner_bank__acc_number
@@ -17825,7 +17826,7 @@ msgstr "Rekening Winbooks import"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_accountant_check_printing
 msgid "Account accountant check printing"
-msgstr "Boekhoudkundige check afdrukken"
+msgstr "Boekhouding cheque afdrukken"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_res_partner_bank__acc_holder_name
@@ -17833,8 +17834,8 @@ msgid ""
 "Account holder name, in case it is different than the name of the Account "
 "Holder"
 msgstr ""
-"Bankrekening naamhouder, indien de naam anders is dan de naam van de "
-"bankrekeninghouder"
+"Naam van de bankrekeninghouder, indien de naam anders is dan de naam op het "
+"contactrecord van de bankrekeninghouder"
 
 #. module: base
 #: model:ir.module.category,name:base.module_category_accounting
@@ -19406,7 +19407,8 @@ msgstr "Maakt het gebruik van afletteren met de functie batchbetaling mogelijk."
 #: model:ir.module.module,summary:base.module_account_accountant_check_printing
 msgid "Allows using Reconciliation with the account check printing."
 msgstr ""
-"Maakt het gebruik van afletteren mogelijk met de functie cheque afdrukken."
+"Maakt het gebruik van aflettering met de functie 'boekhouding cheque "
+"afdrukken' mogelijk."
 
 #. module: base
 #: model:ir.module.module,summary:base.module_website_delivery_sendcloud
@@ -21399,7 +21401,7 @@ msgstr "Beheer van activa"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_asset_fleet
 msgid "Assets/Fleet bridge"
-msgstr "Activa/wagenparkbrug"
+msgstr "Brugmodule Activa/Wagenpark"
 
 #. module: base
 #: model_terms:ir.actions.act_window,help:base.action_partner_category_form
@@ -22020,7 +22022,7 @@ msgstr "Avatax voor Voorraad"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_avatax_sale
 msgid "Avatax for SO"
-msgstr "Avatar voor SO"
+msgstr "Avatax voor verkooporders"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_avatax_geolocalize
@@ -27936,8 +27938,8 @@ msgid ""
 "Enable customers to pay invoices on the portal and post payments when "
 "transactions are processed."
 msgstr ""
-"Stel klanten in staat facturen op de portal te betalen en betalingen te "
-"boeken wanneer transacties worden verwerkt."
+"Laat klanten facturen betalen op het portaal en boek betalingen wanneer "
+"transacties worden verwerkt."
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.enable_profiling_wizard
@@ -30530,9 +30532,9 @@ msgid ""
 msgstr ""
 "Generieke wizard om rekeningafschriften te importeren.\n"
 "\n"
-"(Deze module bevat geen import formaten).\n"
+"(Deze module bevat geen importformaten).\n"
 "\n"
-"OFX en QIF imports zijn beschikbaar in de enterprise versie."
+"OFX- en QIF-imports zijn beschikbaar in de Enterprise-versie."
 
 #. module: base
 #: model:ir.module.module,summary:base.module_html_builder
@@ -39821,7 +39823,7 @@ msgid ""
 "Only the portal users can delete their accounts. The user(s) %s can not be "
 "deleted."
 msgstr ""
-"Alleen de portalgebruikers kunnen hun accounts verwijderen. De gebruiker(s) "
+"Alleen de portaalgebruikers kunnen hun accounts verwijderen. De gebruiker(s) "
 "%s kunnen niet worden verwijderd."
 
 #. module: base
@@ -42046,7 +42048,7 @@ msgstr "Portaal beoordeling"
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_users_search
 msgid "Portal Users"
-msgstr "Portalgebruikers"
+msgstr "Portaalgebruikers"
 
 #. module: base
 #: model:res.groups,comment:base.group_portal
@@ -44578,7 +44580,7 @@ msgstr "Verkoop"
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_partner_form
 msgid "Sales & Purchase"
-msgstr "Verkopen & Inkopen"
+msgstr "Verkoop & Inkoop"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_sale_project
@@ -48845,7 +48847,7 @@ msgid ""
 "account, later on, in master"
 msgstr ""
 "Deze module voegt het Global Location Number toe aan de partner. Het wordt "
-"gebruikt op leveringsadressen om voorraadlocaties te identificeren en is "
+"gebruikt op afleveradressen om voorraadlocaties te identificeren en is "
 "verplicht op UBL-/CII-e-facturen (maar niet alleen daar). De module is "
 "bedoeld om later te worden samengevoegd met boekhouding in master."
 

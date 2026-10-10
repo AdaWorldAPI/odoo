@@ -3,7 +3,8 @@ from unittest.mock import patch
 
 from lxml import etree
 
-from odoo import fields
+from odoo import Command, fields
+from odoo.exceptions import UserError
 from odoo.tests import Form, tagged
 from odoo.tools import file_open
 
@@ -271,6 +272,46 @@ class TestPdpReportsFlowLifecycle(TestL10nFrPdpCommon):
             'uuid': identifier,
             'flow_id': identifier,
         }
+
+    def _import_flow_10_response(self, flow, status_code, status_infos=None):
+        proxy_model = self.env.registry[self.proxy_user._name]
+        response_info = {
+            'process_condition_code': status_code,
+            'status_infos': status_infos or [],
+        }
+        with (
+            patch.object(proxy_model, '_peppol_get_decoded_document', return_value=b'<CDAR/>'),
+            patch.object(proxy_model, '_pdp_extract_response_info', return_value=response_info),
+        ):
+            self.proxy_user._pdp_import_flow_10_response(
+                f'RESPONSE-{status_code}-{flow.id}',
+                {'flow_id': f'PPF_{flow.pdp_flow_id}'},
+            )
+
+    def _create_rejected_flow(self):
+        """Create an initial reporting flow and simulate its rejection by the PPF."""
+        invoice = self._create_reporting_invoice(
+            partner=self.b2bi_customer,
+            invoice_date='2025-09-03',
+        )
+        flow = invoice.l10n_fr_pdp_last_flow_id
+        flow._build_payload()
+        original_payload = flow.payload_id
+        flow.write({
+            'pdp_flow_id': 'FLOW-REJECTED',
+            'sent_move_ids': [Command.set(invoice.ids)],
+            'state': 'sent',
+        })
+        self._import_flow_10_response(flow, '301')
+        flow.invalidate_recordset(['error_moves_count', 'move_ids', 'payload_id'])
+        return invoice, flow, original_payload
+
+    def _correct_rejected_invoice(self, invoice):
+        """Correct a rejected invoice through the regular draft and post workflow."""
+        invoice.button_draft()
+        invoice.invoice_line_ids.name = 'Corrected invoice line'
+        invoice.action_post()
+        self._refresh_pdp_fields(invoice)
 
     def _run_send_cron(self, date, identifier='FLOW-TEST-001'):
         with patch('odoo.fields.Date.today', return_value=fields.Date.to_date(date)):
@@ -543,6 +584,57 @@ class TestPdpReportsFlowLifecycle(TestL10nFrPdpCommon):
             'Tax Unsupported 21% tax is not supported by French e-reporting.',
             invoice._get_l10n_fr_pdp_errors(),
         )
+
+    def test_oss_b2c_transaction_excludes_foreign_vat(self):
+        """OSS VAT remains on the invoice but is not reported as French VAT."""
+        oss_tag = self.env.ref('l10n_eu_oss.tag_oss', raise_if_not_found=False)
+        if not oss_tag:
+            oss_tag = self.env['account.account.tag'].create({'name': 'OSS'})
+            self.env['ir.model.data'].create({
+                'module': 'l10n_eu_oss',
+                'name': 'tag_oss',
+                'model': 'account.account.tag',
+                'res_id': oss_tag.id,
+            })
+        # Reuse a fully configured cash-basis tax and only customize its OSS rate and tag.
+        oss_tax = self._get_tax_on_payment_20().copy({
+            'name': '21% BE VAT',
+            'amount': 21,
+        })
+        (oss_tax.invoice_repartition_line_ids | oss_tax.refund_repartition_line_ids).write({
+            'tag_ids': [Command.link(oss_tag.id)],
+        })
+        self.assertTrue(oss_tax._l10n_fr_pdp_is_oss())
+        oss_partner = self.env['res.partner'].create({
+            'name': 'OSS B2C Belgium',
+            'country_id': self.env.ref('base.be').id,
+        })
+
+        invoice = self._create_reporting_invoice(partner=oss_partner, tax_ids=oss_tax)
+
+        self.assertRecordValues(invoice, [{
+            'amount_untaxed': 100.0,
+            'amount_tax': 21.0,
+            'l10n_fr_pdp_has_error': False,
+            'l10n_fr_pdp_status': 'pending',
+        }])
+        transaction = self._build_flow_xml(invoice.l10n_fr_pdp_last_flow_id).find(
+            './TransactionsReport/Transactions'
+        )
+        self.assertEqual(transaction.findtext('CategoryCode'), 'TNT1')
+        self.assertEqual(float(transaction.findtext('TaxExclusiveAmount')), 100.0)
+        self.assertEqual(float(transaction.findtext('TaxTotal')), 0.0)
+        self.assertEqual(float(transaction.findtext('TaxSubtotal/TaxPercent')), 0.0)
+        self.assertEqual(float(transaction.findtext('TaxSubtotal/TaxableAmount')), 100.0)
+        self.assertEqual(float(transaction.findtext('TaxSubtotal/TaxTotal')), 0.0)
+
+        invalid_oss_tax = oss_tax.copy({'name': 'Invalid OSS tax', 'amount': 150})
+        self.assertTrue(invalid_oss_tax._l10n_fr_pdp_is_oss())
+        invalid_invoice = self._create_reporting_invoice(partner=oss_partner, tax_ids=invalid_oss_tax)
+        self.assertRecordValues(invalid_invoice, [{
+            'l10n_fr_pdp_has_error': True,
+            'l10n_fr_pdp_status': 'error',
+        }])
 
     def test_b2bi_invoice_creates_transaction_flow_payload(self):
         invoice = self._create_reporting_invoice(partner=self.b2bi_customer)
@@ -1181,6 +1273,144 @@ class TestPdpReportsFlowLifecycle(TestL10nFrPdpCommon):
         self.assertNotIn(flow, invalid_invoice.l10n_fr_pdp_sent_in_flow_ids)
         self.assertEqual(invalid_invoice.l10n_fr_pdp_status, 'error')
 
+    def test_flow_10_ppf_responses_update_flow(self):
+        """PPF responses must update the flow without replacing its outgoing payload."""
+        statuses = {
+            '300': ('completed', 'Deposited'),
+            '301': ('error', 'Rejected'),
+            '500': ('sent', 'Admissible'),
+            '501': ('error', 'Inadmissible'),
+            None: ('error', 'Unknown'),
+        }
+        for status_code, (expected_state, status_label) in statuses.items():
+            with self.subTest(status_code=status_code):
+                expected_status_code = status_code or False
+                displayed_status_code = status_code or 'unknown'
+                flow = self._create_sent_flow_for_scope(
+                    'transaction',
+                    'sale',
+                    '2025-09-03',
+                    f'Flow {status_code}',
+                )
+                flow.pdp_flow_id = f'FLOW-{status_code}'
+                payload = self.env['ir.attachment'].create({
+                    'name': flow._get_tracking_id() + '.xml',
+                    'raw': b'<Report/>',
+                    'res_model': flow._name,
+                    'res_id': flow.id,
+                    'type': 'binary',
+                    'mimetype': 'application/xml',
+                })
+                status_infos = [{
+                    'reason_code': 'G2.19',
+                    'reason': 'Invalid VAT identifier',
+                    'note': 'Additional information returned by the PPF',
+                }] if status_code == '301' else []
+
+                self._import_flow_10_response(flow, status_code, status_infos)
+                flow.invalidate_recordset(['payload_id'])
+
+                self.assertRecordValues(flow, [{
+                    'state': expected_state,
+                    'transport_status': expected_status_code,
+                    'transport_message': (
+                        '[G2.19] Invalid VAT identifier\nAdditional information returned by the PPF'
+                        if status_code == '301' else False
+                    ),
+                }])
+                self.assertEqual(flow.payload_id, payload)
+                self.assertTrue(self.env['ir.attachment'].search([
+                    ('res_model', '=', flow._name),
+                    ('res_id', '=', flow.id),
+                    ('name', '=', f'message.RESPONSE-{status_code}-{flow.id}.xml'),
+                ]))
+                self.assertIn(f'{status_label} ({displayed_status_code})', flow.message_ids[0].body)
+                if status_code == '301':
+                    self.assertIn('[G2.19] Invalid VAT identifier', flow.message_ids[0].body)
+                    self.assertIn('Additional information returned by the PPF', flow.message_ids[0].body)
+
+    def test_rejected_flow_cannot_be_rebuilt_manually(self):
+        """A rejected flow must preserve its outgoing payload until it is resent."""
+        _invoice, flow, original_payload = self._create_rejected_flow()
+
+        with self.assertRaisesRegex(UserError, "Rejected flows are rebuilt when resent"):
+            flow.action_build_payload_manual()
+        self.assertTrue(original_payload.exists())
+
+    def test_rejected_flow_keeps_moves_when_invoice_is_corrected(self):
+        """Correcting a rejected invoice must not create a rectificative flow."""
+        invoice, flow, _payload = self._create_rejected_flow()
+
+        self.assertEqual(flow.state, 'error')
+        self.assertEqual(flow._get_moves(), invoice)
+        self.assertEqual(flow.error_moves_count, 0)
+        self._correct_rejected_invoice(invoice)
+        flow.invalidate_recordset(['rectificative_flow_ids', 'sent_move_ids'])
+
+        self.assertEqual(invoice.l10n_fr_pdp_last_flow_id, flow)
+        self.assertEqual(flow.sent_move_ids, invoice)
+        self.assertFalse(flow.rectificative_flow_ids)
+
+    def test_rejected_flow_is_not_sent_by_cron(self):
+        """A rejected flow must wait for an explicit manual resend after correction."""
+        invoice, flow, _payload = self._create_rejected_flow()
+        self._correct_rejected_invoice(invoice)
+
+        with (
+            patch('odoo.fields.Date.today', return_value=fields.Date.to_date('2025-09-20')),
+            patch('odoo.addons.l10n_fr_pdp.models.pdp_flow.PdpFlow._send_to_proxy') as send_mock,
+        ):
+            self.env['l10n.fr.pdp.reports.flow']._cron_process_company(self.company)
+
+        send_mock.assert_not_called()
+        self.assertEqual(flow.state, 'error')
+        self.assertFalse(flow.rectificative_flow_ids)
+
+    def test_rejected_initial_flow_can_be_resent(self):
+        """Manual retries must remain initial reports with unique transmission IDs."""
+        invoice, flow, original_payload = self._create_rejected_flow()
+        original_tracking_id = original_payload.name.removesuffix('.xml')
+        self._correct_rejected_invoice(invoice)
+
+        with patch(
+            'odoo.addons.l10n_fr_pdp.models.pdp_flow.PdpFlow._send_to_proxy',
+            return_value=self._proxy_success_response('FLOW-RETRY'),
+        ):
+            flow.action_send_from_ui()
+
+        flow.invalidate_recordset(['payload_id'])
+        resent_payload = flow.payload_id
+        resent_xml = etree.fromstring(flow.payload_id.raw)
+        self.assertRecordValues(flow, [{
+            'state': 'sent',
+            'transport_status': False,
+            'transport_message': False,
+        }])
+        resent_tracking_id = resent_xml.findtext('./ReportDocument/Id')
+        self.assertNotEqual(resent_tracking_id, original_tracking_id)
+        self.assertIn('_1', resent_tracking_id)
+        self.assertNotEqual(flow.payload_id, original_payload)
+        self.assertTrue(original_payload.exists())
+        self.assertEqual(resent_xml.findtext('./ReportDocument/TypeCode'), 'IN')
+        self.assertEqual(resent_payload.name, resent_tracking_id + '.xml')
+
+        self._import_flow_10_response(flow, '301')
+        with patch(
+            'odoo.addons.l10n_fr_pdp.models.pdp_flow.PdpFlow._send_to_proxy',
+            return_value=self._proxy_success_response('FLOW-RETRY-2'),
+        ):
+            flow.action_send_from_ui()
+
+        flow.invalidate_recordset(['payload_id'])
+        second_resent_xml = etree.fromstring(flow.payload_id.raw)
+        second_resent_tracking_id = second_resent_xml.findtext('./ReportDocument/Id')
+        self.assertIn('_2', second_resent_tracking_id)
+        self.assertNotIn(second_resent_tracking_id, (original_tracking_id, resent_tracking_id))
+        self.assertTrue(original_payload.exists())
+        self.assertTrue(resent_payload.exists())
+        self.assertEqual(second_resent_xml.findtext('./ReportDocument/TypeCode'), 'IN')
+        self.assertEqual(flow.payload_id.name, second_resent_tracking_id + '.xml')
+
     def test_sent_flow_creates_rectificative_flow_when_new_invoice_added(self):
         first_invoice = self._create_reporting_invoice(
             partner=self.b2c_customer,
@@ -1208,6 +1438,109 @@ class TestPdpReportsFlowLifecycle(TestL10nFrPdpCommon):
         }])
         xml = self._build_flow_xml(rectificative_flow)
         self.assertEqual(xml.findtext('./ReportDocument/TypeCode'), 'RE')
+
+    def test_invoice_sent_by_pdp_is_removed_from_open_e_reporting_flow(self):
+        invoice = self._create_reporting_invoice(
+            partner=self.b2c_customer,
+            invoice_date='2025-09-03',
+        )
+        initial_flow = invoice.l10n_fr_pdp_last_flow_id
+
+        # A failed PDP attempt is not proof of e-invoicing, so the existing Flow 10 scope must stay.
+        invoice.peppol_move_state = 'error'
+        self.env.flush_all()
+        self.assertFalse(invoice.pdp_is_sent)
+        self.assertEqual(invoice.l10n_fr_pdp_flow_10_report_type, 'transaction')
+        self.assertIn(invoice, initial_flow._get_moves())
+
+        # A successful PDP send proves that this is an e-invoice, even though the missing VAT
+        # initially made it look B2C. The still-open report can simply forget the invoice.
+        invoice.peppol_move_state = 'done'
+        self.env.flush_all()
+        initial_flow.invalidate_recordset(['rectificative_flow_ids'])
+
+        self.assertTrue(invoice.pdp_is_sent)
+        self.assertFalse(invoice.l10n_fr_pdp_flow_10_report_type)
+        self.assertEqual(invoice.l10n_fr_pdp_status, 'out_of_scope')
+        self.assertNotIn(invoice, initial_flow._get_moves())
+        # Nothing reached the administration yet, so creating a corrective report would be wrong.
+        self.assertFalse(initial_flow.rectificative_flow_ids)
+
+    def test_invoice_sent_by_pdp_rectifies_sent_transaction_and_payment_flows(self):
+        invoice = self._create_reporting_invoice(
+            partner=self.b2c_customer,
+            amount=120.0,
+            invoice_date='2025-09-03',
+            tax_ids=self._get_tax_on_payment_20_tax_included(),
+        )
+        payment = self._register_payment(invoice, '2025-09-09')
+        payment_move = payment.move_id
+        transaction_flow = invoice.l10n_fr_pdp_last_flow_id
+        payment_flow = payment_move.l10n_fr_pdp_last_flow_id
+
+        self._run_send_cron('2025-09-20', identifier='TRANSACTION-BEFORE-PDP-SEND')
+        self._run_send_cron('2025-10-10', identifier='PAYMENT-BEFORE-PDP-SEND')
+        (transaction_flow | payment_flow).invalidate_recordset(['state'])
+        self.assertEqual(transaction_flow.state, 'sent')
+        self.assertEqual(payment_flow.state, 'sent')
+
+        # The initial reports already reached the administration. Create their RE while the old
+        # scopes are still known, then remove both the e-invoice and its cash-accounting payment.
+        # Invalidate the cache to ensure the non-stored pdp_is_sent dependency also triggers the
+        # payment recomputation when it has not been read beforehand.
+        self.env.invalidate_all()
+        invoice.peppol_move_state = 'done'
+        self.env.flush_all()
+        (transaction_flow | payment_flow).invalidate_recordset(['rectificative_flow_ids'])
+        transaction_rectificative = transaction_flow.rectificative_flow_ids
+        payment_rectificative = payment_flow.rectificative_flow_ids
+
+        self.assertFalse(invoice.l10n_fr_pdp_flow_10_report_type)
+        self.assertFalse(payment_move.l10n_fr_pdp_flow_10_report_type)
+        self.assertRecordValues(transaction_rectificative | payment_rectificative, [
+            {
+                'report_type': 'transaction',
+                'operation_type': 'sale',
+                'state': 'ready',
+                'transmission_type': 'rectificative',
+                'initial_flow_id': transaction_flow.id,
+            },
+            {
+                'report_type': 'payment',
+                'operation_type': 'sale',
+                'state': 'ready',
+                'transmission_type': 'rectificative',
+                'initial_flow_id': payment_flow.id,
+            },
+        ])
+        # RE flows are full replacements: neither the e-invoice nor its payment remains in scope.
+        self.assertNotIn(invoice, transaction_rectificative._get_moves())
+        self.assertNotIn(payment_move, payment_rectificative._get_moves())
+
+        # Reconciliation can recompute these moves after their report types have been cleared.
+        # A second pass must keep the existing RE flows instead of creating flows without a type.
+        invoice._compute_l10n_fr_pdp_flow_10_report_type()
+        payment_move._compute_l10n_fr_pdp_flow_10_report_type()
+        self.env.flush_all()
+        (transaction_flow | payment_flow).invalidate_recordset(['rectificative_flow_ids'])
+        self.assertFalse(invoice.l10n_fr_pdp_flow_10_report_type)
+        self.assertFalse(payment_move.l10n_fr_pdp_flow_10_report_type)
+        self.assertEqual(transaction_flow.rectificative_flow_ids, transaction_rectificative)
+        self.assertEqual(payment_flow.rectificative_flow_ids, payment_rectificative)
+
+        # Rectificative flows have no deadline window: the cron must transmit both removals now.
+        self._run_send_cron('2025-10-10', identifier='REMOVE-E-INVOICE-FROM-FLOW-10')
+        (transaction_rectificative | payment_rectificative).invalidate_recordset(['state', 'payload_id'])
+        self.assertEqual(transaction_rectificative.state, 'sent')
+        self.assertEqual(payment_rectificative.state, 'sent')
+        self.assertEqual(
+            etree.fromstring(transaction_rectificative.payload_id.raw).findtext('./ReportDocument/TypeCode'),
+            'RE',
+        )
+        self.assertEqual(
+            etree.fromstring(payment_rectificative.payload_id.raw).findtext('./ReportDocument/TypeCode'),
+            'RE',
+        )
 
     def test_error_moves_are_moved_to_rectificative_flow_when_initial_is_sent(self):
         valid_invoice = self._create_reporting_invoice(
@@ -1945,6 +2278,133 @@ class TestPdpReportsFlowLifecycle(TestL10nFrPdpCommon):
             tax_amount,
             float(invoice_node.findtext('MonetaryTotal/TaxAmount')),
             places=2,
+        )
+
+    def _get_eco_and_vat_taxes(self, include_eco_in_vat_base=False, vat_on_payment=False):
+        eco_group = self.env['account.tax.group'].create({
+            'name': 'Eco-participation',
+            'company_id': self.company.id,
+        })
+        eco_tax = self.env['account.tax'].create({
+            'name': 'Eco-participation 12.85',
+            'amount_type': 'fixed',
+            'amount': 12.85,
+            'type_tax_use': 'sale',
+            'tax_scope': 'consu',
+            'company_id': self.company.id,
+            'tax_group_id': eco_group.id,
+            'sequence': 5,
+            'include_base_amount': include_eco_in_vat_base,
+        })
+        vat_ref = 'tva_normale_encaissement' if vat_on_payment else 'tva_normale'
+        vat_tax = self.env['account.chart.template'].ref(vat_ref).copy({
+            'name': 'PDP eco-fee VAT 20%',
+            'sequence': 10,
+            'is_base_affected': True,
+        })
+        return eco_tax | vat_tax
+
+    def test_b2c_fixed_eco_charge_outside_vat_base(self):
+        """A separately billed fixed charge must not be declared as a VAT rate."""
+        # This reproduces the ticket: 1.20 + 0.24 VAT + 12.85 eco = 14.29.
+        invoice = self._create_reporting_invoice(
+            partner=self.b2c_customer,
+            amount=1.20,
+            tax_ids=self._get_eco_and_vat_taxes(),
+        )
+        self.assertFalse(invoice.l10n_fr_pdp_has_error)
+
+        xml = self._build_flow_xml(invoice.l10n_fr_pdp_last_flow_id)
+        transaction = xml.find('./TransactionsReport/Transactions')
+        self.assertAlmostEqual(float(transaction.findtext('TaxExclusiveAmount')), 14.05)
+        self.assertAlmostEqual(float(transaction.findtext('TaxTotal')), 0.24)
+        subtotals = {
+            float(node.findtext('TaxPercent')): node
+            for node in transaction.findall('TaxSubtotal')
+        }
+        self.assertEqual(set(subtotals), {0.0, 20.0})
+        self.assertAlmostEqual(float(subtotals[0.0].findtext('TaxableAmount')), 12.85)
+        self.assertAlmostEqual(float(subtotals[0.0].findtext('TaxTotal')), 0.0)
+        self.assertAlmostEqual(float(subtotals[20.0].findtext('TaxableAmount')), 1.20)
+        self.assertAlmostEqual(float(subtotals[20.0].findtext('TaxTotal')), 0.24)
+
+    def test_b2bi_fixed_eco_charge_outside_vat_base(self):
+        """A detailed report keeps the fixed amount as a charge, not as VAT."""
+        invoice = self._create_reporting_invoice(
+            partner=self.b2bi_customer,
+            amount=1.20,
+            tax_ids=self._get_eco_and_vat_taxes(),
+        )
+        self.assertFalse(invoice.l10n_fr_pdp_has_error)
+
+        xml = self._build_flow_xml(invoice.l10n_fr_pdp_last_flow_id)
+        node = xml.find('./TransactionsReport/Invoice')
+        self.assertAlmostEqual(float(node.findtext('MonetaryTotal/TaxExclusiveAmount')), 14.05)
+        self.assertAlmostEqual(float(node.findtext('MonetaryTotal/TaxAmount')), 0.24)
+        charge = node.find('Line/AllowanceCharge')
+        self.assertEqual(charge.get('ChargeIndicator'), 'true')
+        self.assertAlmostEqual(float(charge.findtext('Amount')), 12.85)
+        subtotals = {
+            float(tax.findtext('TaxCategory/Percent')): tax
+            for tax in node.findall('TaxSubTotal')
+        }
+        self.assertEqual(subtotals[0.0].findtext('TaxCategory/Code'), 'O')
+        self.assertAlmostEqual(float(subtotals[0.0].findtext('TaxableAmount')), 12.85)
+        self.assertAlmostEqual(float(subtotals[20.0].findtext('TaxAmount')), 0.24)
+
+    def test_fixed_eco_charge_in_vat_base(self):
+        """Do not count a fixed charge twice when Odoo includes it in the VAT base."""
+        invoice = self._create_reporting_invoice(
+            partner=self.b2c_customer,
+            amount=1.20,
+            tax_ids=self._get_eco_and_vat_taxes(include_eco_in_vat_base=True),
+        )
+        self.assertFalse(invoice.l10n_fr_pdp_has_error)
+
+        xml = self._build_flow_xml(invoice.l10n_fr_pdp_last_flow_id)
+        transaction = xml.find('./TransactionsReport/Transactions')
+        self.assertAlmostEqual(float(transaction.findtext('TaxExclusiveAmount')), 14.05)
+        self.assertAlmostEqual(float(transaction.findtext('TaxTotal')), 2.81)
+        subtotals = transaction.findall('TaxSubtotal')
+        self.assertEqual(len(subtotals), 1)
+        self.assertEqual(float(subtotals[0].findtext('TaxPercent')), 20.0)
+        self.assertAlmostEqual(float(subtotals[0].findtext('TaxableAmount')), 14.05)
+        self.assertAlmostEqual(float(subtotals[0].findtext('TaxTotal')), 2.81)
+
+    def test_fixed_eco_charge_on_service_payment(self):
+        """A service payment keeps its fixed fee in the zero-rate subtotal."""
+        invoice = self._create_reporting_invoice(
+            partner=self.b2c_customer,
+            amount=1.20,
+            invoice_date='2025-09-03',
+            tax_ids=self._get_eco_and_vat_taxes(vat_on_payment=True),
+        )
+        payment = self._register_payment(invoice, '2025-09-09')
+        xml = self._build_flow_xml(payment.move_id.l10n_fr_pdp_last_flow_id)
+        subtotals = {
+            float(node.findtext('TaxPercent')): float(node.findtext('Amount'))
+            for node in xml.findall('./PaymentsReport/Transactions/Payment/SubTotals')
+        }
+
+        self.assertEqual(set(subtotals), {0.0, 20.0})
+        self.assertAlmostEqual(subtotals[0.0], 12.85)
+        self.assertAlmostEqual(subtotals[20.0], 1.44)
+
+    def test_price_included_fixed_tax_remains_blocked(self):
+        """An included fixed tax cannot be declared as an added line charge."""
+        taxes = self._get_eco_and_vat_taxes()
+        eco_tax = taxes.filtered(lambda tax: tax.amount_type == 'fixed')
+        eco_tax.price_include = True
+        invoice = self._create_reporting_invoice(
+            partner=self.b2c_customer,
+            amount=20.0,
+            tax_ids=taxes,
+        )
+
+        self.assertTrue(invoice.l10n_fr_pdp_has_error)
+        self.assertIn(
+            'is not supported by French e-reporting',
+            '\n'.join(invoice._get_l10n_fr_pdp_errors()),
         )
 
     def test_invalid_invoice_identifier_is_rejected_for_flow_reporting(self):
