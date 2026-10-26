@@ -3290,6 +3290,32 @@ class TestStockValuation(TestStockValuationCommon):
         self.assertEqual(report_lines[-1].quantity, 3)
         self.assertEqual(report_lines[-1].added_value, 30)
 
+    def test_avco_report_for_lot_valuated_product(self):
+        """Ensure that the AVCO justification report for lot valuated
+        product is accurate at all steps.
+        """
+        self.product_avco.write({
+            'tracking': 'lot',
+            'lot_valuated': True,
+        })
+        lot1, lot2 = self.env['stock.lot'].create([{
+            'name': f'Lot{i}',
+            'product_id': self.product_avco.id,
+        } for i in range(0, 2)])
+        self._make_in_move(self.product_avco, quantity=1, unit_cost=10, lot_ids=lot1)
+        self._make_in_move(self.product_avco, quantity=1, unit_cost=20, lot_ids=lot2)
+        self._make_out_move(self.product_avco, quantity=1, lot_ids=lot2)
+        report_lines = self.env['stock.avco.report'].search([('product_id', '=', self.product_avco.id)]).sorted('date, id')[1:]
+        self.assertEqual(report_lines[-1].avco_value, self.product_avco.standard_price)
+        self.assertRecordValues(
+            report_lines,
+            [
+                {'added_value': 10, 'total_quantity': 1, 'total_value': 10, 'avco_value': 10},
+                {'added_value': 20, 'total_quantity': 2, 'total_value': 30, 'avco_value': 15},
+                {'added_value': -20, 'total_quantity': 1, 'total_value': 10, 'avco_value': 10},
+            ],
+        )
+
     def test_avco_report_after_cost_method_change(self):
         """Ensure that the AVCO justification report for a product is accurate at all steps, even if
         the cost method changed after some moves.
@@ -3789,6 +3815,32 @@ class TestStockValuation(TestStockValuationCommon):
 
         # Company B should not have the cost from Company A, so the standard_price should remain 0.0
         self.assertEqual(product.standard_price, 0.0)
+
+    def test_multi_company_fifo_stack_isolation(self):
+        """ Check that when multiple companies are selected, the fifo logic only uses moves
+        from the main company to compute the value of the outgoing move
+        """
+        self.product_fifo.categ_id.with_company(self.other_company).property_cost_method = 'fifo'
+
+        self._make_in_move(product=self.product_fifo, quantity=10.0, unit_cost=200.0, company=self.company)
+        self._make_in_move(product=self.product_fifo, quantity=10.0, unit_cost=100.0, company=self.other_company)
+
+        other_warehouse = self.env['stock.warehouse'].search([('company_id', '=', self.other_company.id)], limit=1)
+        out_move = self.env['stock.move'].create({
+            'product_id': self.product_fifo.id,
+            'location_id': other_warehouse.lot_stock_id.id,
+            'location_dest_id': self.customer_location.id,
+            'product_uom_qty': 1,
+            'company_id': self.other_company.id,
+        })
+        out_move_with_comp = out_move.with_company(self.other_company).with_context(allowed_company_ids=[self.other_company.id, self.company.id])
+        out_move_with_comp._action_confirm()
+        out_move_with_comp._action_assign()
+        out_move_with_comp.move_line_ids.quantity = 1.0
+        out_move_with_comp.picked = True
+        out_move_with_comp._action_done()
+
+        self.assertEqual(out_move_with_comp.value, 100)
 
     def test_standard_price_in_qty_history_report_after_recount(self):
         """Ensure the quantity history report reflects the product's standard price
